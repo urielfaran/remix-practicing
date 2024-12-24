@@ -23,7 +23,7 @@ function TodoDisplay({ todo, isEditing, setIsEditing }: DisplayTodoProps) {
   const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
 
   const todoActions = [
-    <DeleteButton id={todo.id} action="delete-todo" text="Delete Todo" />,
+    <DeleteButton id={todo.id} action='"delete-todo"' text="Delete Todo" />,
     <CompleteTodoButton id={todo.id} />,
     <EditTodoButton isEditing={isEditing} setIsEditing={setIsEditing} />,
   ];

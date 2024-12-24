@@ -20,7 +20,7 @@ interface DisplayListProps {
 }
 function DisplayList({ list }: DisplayListProps) {
   const listActions = [
-    <DeleteButton id={list.id} action="delete-list" text="Delete List" />,
+    <DeleteButton id={list.id} action='"delete-list"' text="Delete List" />,
   ];
 
   return (
