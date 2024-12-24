@@ -1,9 +1,9 @@
 import { Todo } from "@prisma/client";
 import { differenceInDays, format } from "date-fns";
-import { Ban, CheckCircle, Ellipsis } from "lucide-react";
+import { Ban, Ellipsis } from "lucide-react";
 import { useState } from "react";
-import { Form } from "react-router";
 import { cn } from "~/lib/utils";
+import UncompleteTodoButton from "../action-buttons/UncompleteTodoButton";
 import TodoActionDropdown from "../dropdowns/TodoActionDropdown";
 import TodoForm from "../forms/TodoForm";
 import { Button } from "../ui/button";
@@ -35,20 +35,7 @@ function TodoDisplay({ todo, isEditing, setIsEditing }: DisplayTodoProps) {
       <CardDescription className="space-y-3">
         <p>{todo.description}</p>
         <div className="flex justify-between items-center">
-          {todo.completeTime && (
-            <Form method="POST">
-              <Button
-                type="submit"
-                size={"icon"}
-                variant={"ghost"}
-                name="_action"
-                value='"uncomplete-todo"'
-              >
-                <CheckCircle className="text-green-400" />
-              </Button>
-              <input type="text" hidden readOnly name="id" value={todo.id} />
-            </Form>
-          )}
+          {todo.completeTime && <UncompleteTodoButton todo={todo} />}
           <div className="flex-1 flex justify-end">
             <Button variant={isLate ? "destructive" : "outline"}>
               {format(todo.dueTime, "dd.MM.yyyy")}
