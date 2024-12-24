@@ -9,11 +9,11 @@ export const createTodoSchema = z.object({
     (v) => (v === "undefined" ? new Date() : v),
     z.coerce.date()
   ),
-  listId: z.number()
+  listId: z.coerce.number()
 });
 
 export const updateTodoSchema = createTodoSchema.merge(
   z.object({
-    id: z.number()
+    id: z.coerce.number()
   })
 )

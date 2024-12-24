@@ -1,35 +1,47 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Todo } from "@prisma/client";
-import { Form, useFetcher } from "@remix-run/react";
+import { Form, useFetcher } from "react-router";
 import { Loader2Icon } from "lucide-react";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { createListSchema, updateListSchema } from "~/schemas/listSchema";
-import { FormActions } from "./TodoForm";
-import { Button } from "./ui/button";
+import { createTodoSchema, updateTodoSchema } from "~/schemas/todoSchema";
+import { Button } from "~/components/ui/button";
+import { DatePicker } from "~/components/ui/date-picker";
 import {
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Form as ShadForm,
-} from "./ui/form";
-import { Input } from "./ui/input";
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Form as ShadForm,
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
+import { ListIdContext } from "~/hooks/listIdContext";
+import { useContext } from "react";
+
+export enum FormActions {
+  Create,
+  Update,
+}
 
 interface TodoFormProps {
-  list?: Todo;
+  todo?: Todo;
   action: keyof typeof FormActions;
 }
 
-function ListForm({ action, list }: TodoFormProps) {
+function TodoForm({ action, todo }: TodoFormProps) {
   const fetcher = useFetcher<ToastProps>();
-  const schema = list ? updateListSchema : createListSchema;
+  const schema = todo ? updateTodoSchema : createTodoSchema;
   const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 
+  const listId = useContext(ListIdContext);
+
   const defaultValues = {
     title: undefined,
+    description: "",
+    dueTime: undefined,
+    listId: listId
   };
   
   const form = useRemixForm<z.infer<typeof schema>>({
@@ -37,9 +49,10 @@ function ListForm({ action, list }: TodoFormProps) {
     submitConfig: {
       method: "POST",
     },
-    defaultValues: list ?? defaultValues,
+    defaultValues: todo ?? defaultValues,
     submitData: {
-      _action: list ? "update-list" : "create-list",
+      _action: todo ? "update-todo" : "create-todo",
+      listId: listId
     },
     fetcher: fetcher,
   });
@@ -67,6 +80,43 @@ function ListForm({ action, list }: TodoFormProps) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>{"description"}</FormLabel>
+              <Input
+                {...field}
+                className="flex-grow"
+                value={field.value ?? ""}
+                placeholder={"description"}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="dueTime"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>{"End Date"}</FormLabel>
+              <DatePicker
+                value={field.value}
+                calendarProps={{
+                  mode: "single",
+                  selected: field.value,
+                  onSelect: field.onChange,
+                  initialFocus: true,
+                }}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button
           variant="default"
           className="m-1 w-full"
@@ -76,7 +126,7 @@ function ListForm({ action, list }: TodoFormProps) {
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              {action === "Create" ? "creating list..." : "updating list..."}{" "}
+              {action === "Create" ? "creating todo..." : "updating todo..."}{" "}
               <span>
                 <Loader2Icon className="animate-spin" />
               </span>
@@ -104,4 +154,4 @@ function ListForm({ action, list }: TodoFormProps) {
   );
 }
 
-export default ListForm;
+export default TodoForm;

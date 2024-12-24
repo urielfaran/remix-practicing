@@ -1,42 +1,35 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Todo } from "@prisma/client";
-import { Form, useFetcher } from "@remix-run/react";
+import { Form, useFetcher } from "react-router";
 import { Loader2Icon } from "lucide-react";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { createTodoSchema, updateTodoSchema } from "~/schemas/todoSchema";
-import { Button } from "./ui/button";
-import { DatePicker } from "./ui/date-picker";
+import { createListSchema, updateListSchema } from "~/schemas/listSchema";
+import { FormActions } from "./TodoForm";
+import { Button } from "~/components/ui/button";
 import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Form as ShadForm,
-} from "./ui/form";
-import { Input } from "./ui/input";
-
-export enum FormActions {
-  Create,
-  Update,
-}
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Form as ShadForm,
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
 
 interface TodoFormProps {
-  todo?: Todo;
+  list?: Todo;
   action: keyof typeof FormActions;
 }
 
-function TodoForm({ action, todo }: TodoFormProps) {
+function ListForm({ action, list }: TodoFormProps) {
   const fetcher = useFetcher<ToastProps>();
-  const schema = todo ? updateTodoSchema : createTodoSchema;
+  const schema = list ? updateListSchema : createListSchema;
   const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 
   const defaultValues = {
     title: undefined,
-    description: "",
-    dueTime: undefined,
   };
   
   const form = useRemixForm<z.infer<typeof schema>>({
@@ -44,9 +37,9 @@ function TodoForm({ action, todo }: TodoFormProps) {
     submitConfig: {
       method: "POST",
     },
-    defaultValues: todo ?? defaultValues,
+    defaultValues: list ?? defaultValues,
     submitData: {
-      _action: todo ? "update-todo" : "create-todo",
+      _action: list ? "update-list" : "create-list",
     },
     fetcher: fetcher,
   });
@@ -74,43 +67,6 @@ function TodoForm({ action, todo }: TodoFormProps) {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>{"description"}</FormLabel>
-              <Input
-                {...field}
-                className="flex-grow"
-                value={field.value ?? ""}
-                placeholder={"description"}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="dueTime"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>{"End Date"}</FormLabel>
-              <DatePicker
-                value={field.value}
-                calendarProps={{
-                  mode: "single",
-                  selected: field.value,
-                  onSelect: field.onChange,
-                  initialFocus: true,
-                }}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <Button
           variant="default"
           className="m-1 w-full"
@@ -120,7 +76,7 @@ function TodoForm({ action, todo }: TodoFormProps) {
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              {action === "Create" ? "creating todo..." : "updating todo..."}{" "}
+              {action === "Create" ? "creating list..." : "updating list..."}{" "}
               <span>
                 <Loader2Icon className="animate-spin" />
               </span>
@@ -148,4 +104,4 @@ function TodoForm({ action, todo }: TodoFormProps) {
   );
 }
 
-export default TodoForm;
+export default ListForm;

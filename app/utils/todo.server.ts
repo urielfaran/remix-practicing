@@ -47,13 +47,13 @@ export async function createTodo({
   description,
   dueTime,
   listId
-}: Prisma.TodoCreateInput & { listId: number }) {
+}: Prisma.TodoCreateWithoutListInput & { listId: number }) {
   return prisma.todo.create({
     data: {
       title: title,
       description: description,
       dueTime: dueTime,
-      isCompleted: false,
+      // isCompleted: false,
       listId: listId
     },
   });

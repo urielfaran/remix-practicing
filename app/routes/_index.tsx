@@ -1,83 +1,103 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { data, useLoaderData } from "@remix-run/react";
+import { ActionFunctionArgs, data } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-import AddListButton from "~/components/AddListButton";
-import CreateTodo from "~/components/CreateTodo";
-import DisplayList from "~/components/DisplayList";
-import TodoCard from "~/components/DisplayTodo";
-import FilterTodos from "~/components/FilterTodos";
+import AddListButton from "~/components/action-buttons/AddListButton";
+import DisplayList from "~/components/display-data/DisplayList";
 import { ModeToggle } from "~/components/mode-toggle";
-import ProgressBar from "~/components/ProgressBar";
-import { Card, CardContent } from "~/components/ui/card";
+import { AppSidebar } from "~/components/sidebar-components/AppSidebar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "~/components/ui/breadcrumb";
 import { Separator } from "~/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "~/components/ui/sidebar";
 import { createListSchema, updateListSchema } from "~/schemas/listSchema";
 import { createTodoSchema, updateTodoSchema } from "~/schemas/todoSchema";
-import { createList, getAllLists } from "~/utils/list.server";
+import {
+  createList,
+  deleteList,
+  getAllLists,
+  updateList,
+} from "~/utils/list.server";
 import {
   completeTodo,
   createTodo,
   deleteTodo,
-  getAllToDos,
   updateTodo,
 } from "~/utils/todo.server";
 import { getRequestField } from "~/utils/utils";
+import type { Route } from "./+types/_index";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
+export async function loader() {
+  // const url = new URL(request.url);
 
-  const query = url.searchParams.get("query") || "";
-  const startDateStr = url.searchParams.get("startDate");
-  const endDateStr = url.searchParams.get("endDate");
+  // const query = url.searchParams.get("query") || "";
+  // const startDateStr = url.searchParams.get("startDate");
+  // const endDateStr = url.searchParams.get("endDate");
 
-  const startDate = startDateStr ? new Date(startDateStr) : undefined;
-  const endDate = endDateStr ? new Date(endDateStr) : undefined;
+  // const startDate = startDateStr ? new Date(startDateStr) : undefined;
+  // const endDate = endDateStr ? new Date(endDateStr) : undefined;
 
-  const todos = await getAllToDos({ query, startDate, endDate });
+  // const todos = await getAllToDos({ query, startDate, endDate });
   const lists = await getAllLists();
 
-  return { todos, lists };
+  return { lists };
 }
 
-export default function Index() {
-  const { todos, lists } = useLoaderData<typeof loader>();
-
-  const startOfToday = new Date();
-  startOfToday.setHours(0, 0, 0, 0);
-  const onTimePrecent =
-    (todos.filter((todo) => todo.dueTime >= startOfToday).length * 100) /
-    todos.length;
+export default function Index({ loaderData }: Route.ComponentProps) {
+  const { lists } = loaderData;
 
   return (
-    <div className="flex flex-col h-screen items-center space-y-5">
-      <header className="border-b-2 dark:border-zinc-300 w-full flex flex-row justify-between p-4 m-1">
-        <ModeToggle />
-      </header>
-      {/* <Card>
-        <CreateTodo />
-      </Card> */}
-      {/* <Separator /> */}
-      {/* <FilterTodos /> */}
-      {/* <ProgressBar onTimePrecent={onTimePrecent} /> */}
-      <Card className="w-5/6 h-5/6 ">
-        <div className="flex flex-row gap-2">
-          <AddListButton />
-          <CardContent className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-7 w-full p-4">
-          {lists.map((list) => (
-            <DisplayList key={list.id} list={list} />
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <ModeToggle />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">
+                    Building Your Application
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+        <ScrollArea className="flex  min-w-0">
+          <div className="flex flex-row gap-7 min-w-0 overflow-x-auto p-4">
+            <AddListButton />
+            {lists.map((list) => (
+              <DisplayList key={list.id} list={list} />
             ))}
-            </CardContent>
-        </div>
-      </Card>
-    </div>
+          </div>
+        </ScrollArea>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   const _action = await getRequestField("_action", request);
-
+  console.log(_action);
   type createTodoSchemaType = z.infer<typeof createTodoSchema>;
   const createTodoResolver = zodResolver(createTodoSchema);
   type updateTodoSchemaType = z.infer<typeof updateTodoSchema>;
@@ -94,7 +114,10 @@ export async function action({ request }: ActionFunctionArgs) {
         errors,
         data: payload,
         receivedValues: defaultValues,
-      } = await getValidatedFormData<createTodoSchemaType>(request, createTodoResolver);
+      } = await getValidatedFormData<createTodoSchemaType>(
+        request,
+        createTodoResolver
+      );
 
       if (errors) {
         return data({ errors, defaultValues, payload }, { status: 400 });
@@ -105,6 +128,7 @@ export async function action({ request }: ActionFunctionArgs) {
           title: payload.title,
           description: payload.description,
           dueTime: payload.dueTime,
+          listId: payload.listId,
         });
       } catch (err) {
         return data(
@@ -128,7 +152,10 @@ export async function action({ request }: ActionFunctionArgs) {
         errors,
         data: payloud,
         receivedValues: defaultValues,
-      } = await getValidatedFormData<updateTodoSchemaType>(request, updateTodoResolver);
+      } = await getValidatedFormData<updateTodoSchemaType>(
+        request,
+        updateTodoResolver
+      );
 
       if (errors) {
         return data({ errors, defaultValues, payloud }, { status: 400 });
@@ -186,7 +213,7 @@ export async function action({ request }: ActionFunctionArgs) {
         stringified: false,
       });
       invariant(id);
-
+      console.log(id);
       try {
         await completeTodo(Number(id));
       } catch (errors) {
@@ -211,7 +238,10 @@ export async function action({ request }: ActionFunctionArgs) {
         errors,
         data: payload,
         receivedValues: defaultValues,
-      } = await getValidatedFormData<createListSchemaType>(request, createListResolver);
+      } = await getValidatedFormData<createListSchemaType>(
+        request,
+        createListResolver
+      );
 
       if (errors) {
         return data({ errors, defaultValues, payload }, { status: 400 });
@@ -237,7 +267,65 @@ export async function action({ request }: ActionFunctionArgs) {
         toastContent: "New List has been added to!",
       });
     }
+    case "update-list": {
+      const {
+        errors,
+        data: payload,
+        receivedValues: defaultValues,
+      } = await getValidatedFormData<updateListSchemaType>(
+        request,
+        updateListResolver
+      );
 
+      if (errors) {
+        return data({ errors, defaultValues, payload }, { status: 400 });
+      }
+      try {
+        // throw new Error()
+        await updateList({
+          title: payload.title,
+          id: payload.id,
+        });
+      } catch (err) {
+        return data(
+          {
+            err,
+            payload,
+            toastTitle: "List Updation Has Been Failed",
+            toastContent: "Could not update List!",
+          },
+          { status: 400 }
+        );
+      }
+      return data({
+        toastTitle: "List Has Been Updated",
+        toastContent: "List has been updated successfully!",
+      });
+    }
+    case "delete-list": {
+      const id = await getRequestField("id", request, {
+        stringified: false,
+      });
+      invariant(id);
+
+      try {
+        await deleteList(Number(id));
+      } catch (errors) {
+        return data(
+          {
+            errors,
+            id,
+            toastTitle: "List Deletion Has Been Failed",
+            toastContent: "Could not delete List!",
+          },
+          { status: 400 }
+        );
+      }
+      return data({
+        toastTitle: "List Has Been Deleted",
+        toastContent: "List has been deleted successfully!",
+      });
+    }
     default:
       return null;
   }

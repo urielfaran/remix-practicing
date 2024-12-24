@@ -9,14 +9,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { Form } from "@remix-run/react";
+} from "../ui/alert-dialog";
+import { Form } from "react-router";
 
 interface DeleteDialogProps extends PropsWithChildren {
   text: string;
   id: number;
 }
-function DeleteDialog({ children, text, id }: DeleteDialogProps) {
+function CompleteDialog({ children, text, id }: DeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -32,7 +32,7 @@ function DeleteDialog({ children, text, id }: DeleteDialogProps) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <Form className="flex items-center space-x-2" method="post">
             <input type="text" hidden readOnly value={id} name="id" />
-            <AlertDialogAction name="_action" type="submit" value="complete-todo">
+            <AlertDialogAction name="_action" type="submit" value='"complete-todo"'>
               Complete
             </AlertDialogAction>
           </Form>
@@ -42,4 +42,4 @@ function DeleteDialog({ children, text, id }: DeleteDialogProps) {
   );
 }
 
-export default DeleteDialog;
+export default CompleteDialog;
