@@ -29,11 +29,9 @@ function DisplayList({ list }: DisplayListProps) {
         </ListActionDropdown>
       </div>
       <CardDescription className="flex flex-col gap-2 overflow-y-auto">
-        {list.todos
-          .filter((todo) => !todo.isCompleted)
-          .map((todo, index) => (
-            <TodoCard todo={todo} key={index} />
-          ))}
+        {list.todos.map((todo, index) => (
+          <TodoCard todo={todo} key={index} />
+        ))}
       </CardDescription>
       <ListIdContext.Provider value={list.id}>
         <div className="p-1 w-full">

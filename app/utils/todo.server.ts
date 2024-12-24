@@ -13,7 +13,7 @@ export async function getAllToDos({
   return prisma.todo.findMany({
     where: {
       dueTime: { lte: endDate, gte: startDate },
-      isCompleted: false,
+      completeTime: null,
       OR: [
         {
           title: {
@@ -46,7 +46,7 @@ export async function createTodo({
   title,
   description,
   dueTime,
-  listId
+  listId,
 }: Prisma.TodoCreateWithoutListInput & { listId: number }) {
   return prisma.todo.create({
     data: {
@@ -54,7 +54,7 @@ export async function createTodo({
       description: description,
       dueTime: dueTime,
       // isCompleted: false,
-      listId: listId
+      listId: listId,
     },
   });
 }
@@ -76,5 +76,15 @@ export async function deleteTodo(id: number) {
 }
 
 export async function completeTodo(id: number) {
-  return prisma.todo.update({ where: { id: id }, data: { isCompleted: true } });
+  return prisma.todo.update({
+    where: { id: id },
+    data: { completeTime: new Date() },
+  });
+}
+
+export async function uncompleteTodo(id: number) {
+  return prisma.todo.update({
+    where: { id: id },
+    data: { completeTime: null },
+  });
 }

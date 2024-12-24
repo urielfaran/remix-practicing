@@ -60,7 +60,7 @@ function ListForm({ action, list }: TodoFormProps) {
               <Input
                 {...field}
                 className="flex-grow"
-                // value={field.value}
+                value={field.value ?? ""}
                 placeholder={"title"}
               />
               <FormMessage />

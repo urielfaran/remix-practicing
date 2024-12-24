@@ -14,17 +14,25 @@ datasource db {
 }
 
 model Todo {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  dueTime     DateTime
-  isCompleted Boolean  @default(false)
-  List        List    @relation(fields: [listId], references: [id], onDelete: Cascade )
-  listId      Int
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?
+  dueTime      DateTime
+  completeTime DateTime?
+  List         List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId       Int
 }
 
 model List {
+  id      Int    @id @default(autoincrement())
+  todos   Todo[]
+  title   String
+  Board   Board? @relation(fields: [boardId], references: [id])
+  boardId Int?
+}
+
+model Board {
   id    Int    @id @default(autoincrement())
-  todos Todo[] 
-  title String
+  lists List[]
+  name  String
 }

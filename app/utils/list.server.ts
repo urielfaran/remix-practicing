@@ -3,9 +3,9 @@ import { prisma } from "~/db.server";
 
 export async function getAllLists() {
   return prisma.list.findMany({
-    include:{
-      todos: true
-    }
+    include: {
+      todos: true,
+    },
   });
 }
 
@@ -21,9 +21,7 @@ export async function getAllOnTimeToDos() {
   });
 }
 
-export async function createList({
-  title,
-}: Prisma.ListCreateInput) {
+export async function createList({ title }: Prisma.ListCreateInput) {
   return prisma.list.create({
     data: {
       title: title,
@@ -33,7 +31,7 @@ export async function createList({
 
 export async function updateList({
   title,
-  id
+  id,
 }: Prisma.ListUpdateInput & { id: number }) {
   return prisma.list.update({
     where: { id: id },

@@ -33,6 +33,7 @@ import {
   completeTodo,
   createTodo,
   deleteTodo,
+  uncompleteTodo,
   updateTodo,
 } from "~/utils/todo.server";
 import { getRequestField } from "~/utils/utils";
@@ -213,7 +214,6 @@ export async function action({ request }: ActionFunctionArgs) {
         stringified: false,
       });
       invariant(id);
-      console.log(id);
       try {
         await completeTodo(Number(id));
       } catch (errors) {
@@ -230,6 +230,30 @@ export async function action({ request }: ActionFunctionArgs) {
       return data({
         toastTitle: "Todo Has Been Completed",
         toastContent: "Todo has been completed successfully!",
+      });
+    }
+
+    case "uncomplete-todo": {
+      const id = await getRequestField("id", request, {
+        stringified: false,
+      });
+      invariant(id);
+      try {
+        await uncompleteTodo(Number(id));
+      } catch (errors) {
+        return data(
+          {
+            errors,
+            id,
+            toastTitle: "Todo Uncompletion Has Been Failed",
+            toastContent: "Could not uncomplete todo!",
+          },
+          { status: 400 }
+        );
+      }
+      return data({
+        toastTitle: "Todo Has Been Uncompleted",
+        toastContent: "Todo has been uncomplete successfully!",
       });
     }
 

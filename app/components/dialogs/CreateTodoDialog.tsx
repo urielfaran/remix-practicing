@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "../ui/dialog"
 
 interface CreateTodoDialogProps extends PropsWithChildren {}
 
-type t = Omit<Todo, "id" | "isCompleted">;
+type t = Omit<Todo, "id" | "completeTime">;
 export type TodoFormType = Record<keyof t, string>;
 
 function CreateTodo({ children }: CreateTodoDialogProps) {
