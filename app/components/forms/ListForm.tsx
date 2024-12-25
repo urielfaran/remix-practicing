@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Todo } from "@prisma/client";
+import { List } from "@prisma/client";
 import { Form, useFetcher } from "react-router";
 import { Loader2Icon } from "lucide-react";
 import { useRemixForm } from "remix-hook-form";
@@ -9,29 +9,34 @@ import { createListSchema, updateListSchema } from "~/schemas/listSchema";
 import { FormActions } from "./TodoForm";
 import { Button } from "~/components/ui/button";
 import {
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Form as ShadForm,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Form as ShadForm,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { useContext } from "react";
+import { BoardIdContext } from "~/hooks/itemIdContexts";
 
-interface TodoFormProps {
-  list?: Todo;
+interface ListFormProps {
+  list?: List;
   action: keyof typeof FormActions;
 }
 
-function ListForm({ action, list }: TodoFormProps) {
+function ListForm({ action, list }: ListFormProps) {
   const fetcher = useFetcher<ToastProps>();
   const schema = list ? updateListSchema : createListSchema;
   const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 
+  const boardId = useContext(BoardIdContext);
+
   const defaultValues = {
     title: undefined,
+    boardId: boardId,
   };
-  
+
   const form = useRemixForm<z.infer<typeof schema>>({
     resolver,
     submitConfig: {
@@ -40,6 +45,7 @@ function ListForm({ action, list }: TodoFormProps) {
     defaultValues: list ?? defaultValues,
     submitData: {
       _action: list ? "update-list" : "create-list",
+      boardId: boardId,
     },
     fetcher: fetcher,
   });

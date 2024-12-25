@@ -1,14 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Todo } from "@prisma/client";
-import { Form, useFetcher } from "react-router";
+import { Board } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
+import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
-import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { createTodoSchema, updateTodoSchema } from "~/schemas/todoSchema";
 import { Button } from "~/components/ui/button";
-import { DatePicker } from "~/components/ui/date-picker";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -16,43 +14,35 @@ import {
   Form as ShadForm,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { ListIdContext } from "~/hooks/itemIdContexts";
-import { useContext } from "react";
+import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
+import { createBoardSchema, updateBoardSchema } from "~/schemas/boardSchema";
+import { FormActions } from "./TodoForm";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
-export enum FormActions {
-  Create,
-  Update,
-}
-
-interface TodoFormProps {
-  todo?: Todo;
+interface BoardFormProps {
+  board?: Board;
   action: keyof typeof FormActions;
 }
 
-function TodoForm({ action, todo }: TodoFormProps) {
+function BoardForm({ action, board }: BoardFormProps) {
   const fetcher = useFetcher<ToastProps>();
-  const schema = todo ? updateTodoSchema : createTodoSchema;
+  const schema = board ? updateBoardSchema : createBoardSchema;
   const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 
-  const listId = useContext(ListIdContext);
-
   const defaultValues = {
-    title: undefined,
-    description: "",
-    dueTime: undefined,
-    listId: listId
+    name: undefined,
+    backgroundColor: undefined,
   };
-  
+
   const form = useRemixForm<z.infer<typeof schema>>({
     resolver,
     submitConfig: {
       method: "POST",
     },
-    defaultValues: todo ?? defaultValues,
+    defaultValues: board ?? defaultValues,
     submitData: {
-      _action: todo ? "update-todo" : "create-todo",
-      listId: listId
+      _action: board ? "update-board" : "create-board",
     },
     fetcher: fetcher,
   });
@@ -66,53 +56,38 @@ function TodoForm({ action, todo }: TodoFormProps) {
       >
         <FormField
           control={form.control}
-          name="title"
+          name="name"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>{"title"}</FormLabel>
-              <Input
-                {...field}
-                className="flex-grow"
-                // value={field.value}
-                placeholder={"title"}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>{"description"}</FormLabel>
+              <FormLabel>{"name"}</FormLabel>
               <Input
                 {...field}
                 className="flex-grow"
                 value={field.value ?? ""}
-                placeholder={"description"}
+                placeholder={"name"}
               />
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
-          name="dueTime"
+          name="backgroundColor"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>{"End Date"}</FormLabel>
-              <DatePicker
-                value={field.value}
-                calendarProps={{
-                  mode: "single",
-                  selected: field.value,
-                  onSelect: field.onChange,
-                  initialFocus: true,
-                }}
-              />
+              <FormLabel>{"backgroundColor"}</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a verified email to display" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="m@example.com">m@example.com</SelectItem>
+                  <SelectItem value="m@google.com">m@google.com</SelectItem>
+                  <SelectItem value="m@support.com">m@support.com</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -126,7 +101,7 @@ function TodoForm({ action, todo }: TodoFormProps) {
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              {action === "Create" ? "creating todo..." : "updating todo..."}{" "}
+              {action === "Create" ? "creating list..." : "updating list..."}{" "}
               <span>
                 <Loader2Icon className="animate-spin" />
               </span>
@@ -154,4 +129,4 @@ function TodoForm({ action, todo }: TodoFormProps) {
   );
 }
 
-export default TodoForm;
+export default BoardForm;

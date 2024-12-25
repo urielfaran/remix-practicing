@@ -14,12 +14,12 @@ datasource db {
 }
 
 model Todo {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   title        String
   description  String?
   dueTime      DateTime
   completeTime DateTime?
-  List         List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  List         List      @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId       Int
 }
 
@@ -32,7 +32,8 @@ model List {
 }
 
 model Board {
-  id    Int    @id @default(autoincrement())
-  lists List[]
-  name  String
+  id              Int     @id @default(autoincrement())
+  lists           List[]
+  name            String
+  backgroundColor String?
 }

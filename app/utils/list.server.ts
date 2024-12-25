@@ -1,10 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
 
-export async function getAllLists() {
+export async function getAllLists(boardId: number) {
   return prisma.list.findMany({
     include: {
       todos: true,
+    },
+    where: {
+      boardId: boardId,
     },
   });
 }
@@ -21,10 +24,14 @@ export async function getAllOnTimeToDos() {
   });
 }
 
-export async function createList({ title }: Prisma.ListCreateInput) {
+export async function createList({
+  title,
+  boardId
+}: Prisma.ListCreateInput & { boardId: number }) {
   return prisma.list.create({
     data: {
       title: title,
+      boardId: boardId,
     },
   });
 }

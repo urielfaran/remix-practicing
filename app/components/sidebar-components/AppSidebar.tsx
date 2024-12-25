@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
@@ -13,10 +12,10 @@ import {
   Settings2,
   SquareTerminal,
 } from "lucide-react";
+import * as React from "react";
 
-import { NavProjects } from "./NavProjects";
-import { NavUser } from "./NavUser";
-import { TeamSwitcher } from "./TeamSwitcher";
+import { Board } from "@prisma/client";
+import { Link } from "react-router";
 import {
   Sidebar,
   SidebarContent,
@@ -25,6 +24,8 @@ import {
   SidebarRail,
 } from "~/components/ui/sidebar";
 import { NavMain } from "./NavMain";
+import { NavProjects } from "./NavProjects";
+import { NavUser } from "./NavUser";
 
 // This is sample data.
 const data = {
@@ -156,14 +157,20 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  boards: Board[];
+}
+
+export function AppSidebar({ boards, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <Link to={"/"} className="p-1">
+          {"Home"}
+        </Link>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain boards={boards} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
