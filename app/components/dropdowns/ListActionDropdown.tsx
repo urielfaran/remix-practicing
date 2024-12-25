@@ -1,33 +1,24 @@
-import { PropsWithChildren } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+import { Ellipsis } from "lucide-react";
 import DeleteButton from "../action-buttons/DeleteButton";
-interface ListActionDropdownProps extends PropsWithChildren {
+import { Button } from "../ui/button";
+import GenericActionDropdown from "./GenericActionDropdown";
+
+interface ListActionDropdownProps {
   listId: number;
 }
 
-function ListActionDropdown({ children, listId }: ListActionDropdownProps) {
+function ListActionDropdown({ listId }: ListActionDropdownProps) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" side="right">
-        <DropdownMenuLabel>List Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup className="space-y-2">
-          <DeleteButton
-            id={listId}
-            action={'"delete-list"'}
-            text={"Delete List"}
-          />
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <GenericActionDropdown
+      triggerButton={
+        <Button variant={"ghost"} size={"icon"}>
+          <Ellipsis />
+        </Button>
+      }
+      label="List Actions"
+    >
+      <DeleteButton id={listId} action='"delete-list"' text="Delete List" />
+    </GenericActionDropdown>
   );
 }
 

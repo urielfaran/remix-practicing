@@ -1,6 +1,6 @@
 import { Todo } from "@prisma/client";
 import { differenceInDays, format } from "date-fns";
-import { Ban, Ellipsis } from "lucide-react";
+import { Ban } from "lucide-react";
 import { useState } from "react";
 import { cn } from "~/lib/utils";
 import UncompleteTodoButton from "../action-buttons/UncompleteTodoButton";
@@ -8,10 +8,6 @@ import TodoActionDropdown from "../dropdowns/TodoActionDropdown";
 import TodoForm from "../forms/TodoForm";
 import { Button } from "../ui/button";
 import { Card, CardDescription, CardTitle } from "../ui/card";
-import DeleteButton from "../action-buttons/DeleteButton";
-import CompleteTodoButton from "../action-buttons/CompleteTodoButton";
-import EditTodoButton from "../action-buttons/EditTodoButton";
-import GenericActionDropdown from "../dropdowns/GenericActionDropdown";
 
 interface DisplayTodoProps {
   todo: Todo;
@@ -22,32 +18,18 @@ interface DisplayTodoProps {
 function TodoDisplay({ todo, isEditing, setIsEditing }: DisplayTodoProps) {
   const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
 
-  const todoActions = [
-    <DeleteButton id={todo.id} action='"delete-todo"' text="Delete Todo" />,
-    <CompleteTodoButton id={todo.id} />,
-    <EditTodoButton isEditing={isEditing} setIsEditing={setIsEditing} />,
-  ];
-
   return (
     <>
       <div className="flex flex-row justify-between items-center">
         <CardTitle className="flex-1 outline-none">{todo.title}</CardTitle>
-        {/* <TodoActionDropdown
-          todoId={todo.id}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-        >
-          <Button variant={"ghost"} size={"icon"}>
-            <Ellipsis />
-          </Button>
-        </TodoActionDropdown> */}
-        <GenericActionDropdown actions={todoActions} label="Todo Actions">
-          <Button variant={"ghost"} size={"icon"}>
-            <Ellipsis />
-          </Button>
-        </GenericActionDropdown>
+        {!todo.completeTime && (
+          <TodoActionDropdown
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            todoId={todo.id}
+          />
+        )}
       </div>
-
       <CardDescription className="space-y-3">
         <p>{todo.description}</p>
         <div className="flex justify-between items-center">
