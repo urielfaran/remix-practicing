@@ -15,17 +15,16 @@ interface DisplayListProps {
 }
 function DisplayBoard({ board }: DisplayListProps) {
   return (
-    <Card className="min-w-72 min-h-28 bg-secondary h-fit cursor-pointer group">
+    <Card className="min-w-72 min-h-28 bg-secondary h-fit cursor-pointer group relative">
+      <Link
+        to={`/board/${board.id}/${board.name}`}
+        className="absolute inset-0 z-0"
+      />
       <div className="p-2 flex flex-row justify-center bg-transparent relative z-10">
         <UpdateBoardInput board={board} />
         <div className="invisible group-hover:visible">
           <BoardActionDropdown boardId={board.id} />
         </div>
-        <Link
-          to={`/board/${board.id}/${board.name}`}
-          // className="absolute inset-0"
-          // aria-hidden="true"
-        ></Link>
       </div>
     </Card>
   );
