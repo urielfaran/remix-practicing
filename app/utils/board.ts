@@ -1,8 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
 
-export async function getAllBoards() {
+export async function getAllBoards(query: string) {
   return prisma.board.findMany({
+    where: {
+      name: {
+        contains: query,
+      },
+    },
     include: {
       lists: true,
     },

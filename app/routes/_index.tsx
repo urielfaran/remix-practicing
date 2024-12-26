@@ -14,9 +14,13 @@ import {
 } from "~/utils/board";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/_index";
+import FilterBoards from "~/components/filter-components/FilterBoards";
 
-export async function loader() {
-  const boards = await getAllBoards();
+export async function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  const query = url.searchParams.get("query") || "";
+
+  const boards = await getAllBoards(query);
 
   return { boards };
 }
@@ -24,11 +28,16 @@ export async function loader() {
 export default function Index({ loaderData }: Route.ComponentProps) {
   const { boards } = loaderData;
   return (
-    <div className="w-5/6 flex flex-wrap gap-4 p-4">
-      <AddBoardButton />
-      {boards.map((board, index) => (
-        <DisplayBoard board={board} key={index} />
-      ))}
+    <div className="w-4/5 mx-auto">
+      <div className="flex flex-row justify-end">
+        <FilterBoards />
+      </div>
+      <div className="flex flex-wrap gap-4 p-4">
+        <AddBoardButton />
+        {boards.map((board, index) => (
+          <DisplayBoard board={board} key={index} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -5,14 +5,14 @@ import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import { filterTodosSchema } from "~/schemas/filterTodos.schema";
 import FilterPopover from "./FilterPopover";
-import { Button } from "./ui/button";
+import { Button } from "~/components/ui/button";
 import {
   FormField,
   FormItem,
   FormMessage,
   Form as ShadForm
-} from "./ui/form";
-import { Input } from "./ui/input";
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
 
 function FilterTodos() {
 
