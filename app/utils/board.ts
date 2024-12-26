@@ -1,7 +1,11 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
 
-export async function getAllBoards(query: string) {
+export async function getAllBoards() {
+  return prisma.board.findMany({});
+}
+
+export async function getFilterBoards(query: string) {
   return prisma.board.findMany({
     where: {
       name: {
@@ -14,10 +18,14 @@ export async function getAllBoards(query: string) {
   });
 }
 
-export async function createBoard({ name }: Prisma.BoardCreateInput) {
+export async function createBoard({
+  name,
+  backgroundColor,
+}: Prisma.BoardCreateInput) {
   return prisma.board.create({
     data: {
       name: name,
+      backgroundColor: backgroundColor,
     },
   });
 }

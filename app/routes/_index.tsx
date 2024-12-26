@@ -10,6 +10,7 @@ import {
   createBoard,
   deleteBoard,
   getAllBoards,
+  getFilterBoards,
   updateBoard,
 } from "~/utils/board";
 import { getRequestField } from "~/utils/utils";
@@ -20,7 +21,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const query = url.searchParams.get("query") || "";
 
-  const boards = await getAllBoards(query);
+  const boards = await getFilterBoards(query);
 
   return { boards };
 }
@@ -64,9 +65,11 @@ export async function action({ request }: ActionFunctionArgs) {
       if (errors) {
         return data({ errors, defaultValues, payload }, { status: 400 });
       }
+      console.log(payload)
       try {
         await createBoard({
           name: payload.name,
+          backgroundColor: payload.backgroundColor
         });
       } catch (err) {
         return data(

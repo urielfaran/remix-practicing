@@ -17,7 +17,13 @@ import { Input } from "~/components/ui/input";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
 import { createBoardSchema, updateBoardSchema } from "~/schemas/boardSchema";
 import { FormActions } from "./TodoForm";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface BoardFormProps {
   board?: Board;
@@ -46,6 +52,17 @@ function BoardForm({ action, board }: BoardFormProps) {
     },
     fetcher: fetcher,
   });
+
+  const colors = [
+    {
+      value: "gradient-to-r from-indigo-500 via-purple-500 to-pink-500",
+      text: "red",
+    },
+    {
+      value: "gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%",
+      text: "red",
+    },
+  ];
 
   const { isSubmitting } = form.formState;
   return (
@@ -76,16 +93,25 @@ function BoardForm({ action, board }: BoardFormProps) {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>{"backgroundColor"}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value || ""}
+              >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue placeholder="Select Your Board Color" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
+                  {colors.map((color, index) => (
+                    <SelectItem
+                      key={index}
+                      value={color.value}
+                      className={`bg-${color.value} flex items-center justify-center min-h-10 m-2`}
+                    >
+                      <span className="text-white"></span>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
