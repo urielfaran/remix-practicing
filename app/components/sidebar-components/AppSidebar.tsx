@@ -23,6 +23,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "~/components/ui/sidebar";
+import { HomeHeader } from "./HomeHeader";
 import { NavMain } from "./NavMain";
 import { NavProjects } from "./NavProjects";
 import { NavUser } from "./NavUser";
@@ -165,8 +166,8 @@ export function AppSidebar({ boards, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <Link to={"/"} className="p-1">
-          {"Home"}
+        <Link to={"/"}>
+          <HomeHeader />
         </Link>
       </SidebarHeader>
       <SidebarContent>
