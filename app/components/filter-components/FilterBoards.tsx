@@ -1,11 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "react-router";
-import { Delete, Filter, Search } from "lucide-react";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
-import { filterTodosSchema } from "~/schemas/filterTodos.schema";
-import FilterPopover from "./FilterPopover";
-import { Button } from "~/components/ui/button";
 import {
   FormField,
   FormItem,
@@ -46,7 +42,10 @@ function FilterBoards() {
               <Input
                 {...field}
                 value={field.value ? field.value.toString() : ""}
-                onChange={field.onChange}
+                onChange={(e) => {
+                  field.onChange(e.target.value);
+                  form.handleSubmit();
+                }}
                 placeholder="search..."
               />
               <FormMessage />

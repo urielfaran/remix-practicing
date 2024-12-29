@@ -1,13 +1,15 @@
 import { Todo } from "@prisma/client";
 import { differenceInDays, format } from "date-fns";
-import { Ban } from "lucide-react";
+import { Ban, Pencil } from "lucide-react";
 import { useState } from "react";
 import { cn } from "~/lib/utils";
 import UncompleteTodoButton from "../action-buttons/UncompleteTodoButton";
 import TodoActionDropdown from "../dropdowns/TodoActionDropdown";
+import UpdateTodoDueTime from "../dropdowns/UpdateTodoDueTime";
 import TodoForm from "../forms/TodoForm";
 import { Button } from "../ui/button";
 import { Card, CardDescription, CardTitle } from "../ui/card";
+import UpdateTodoContent from "../dropdowns/UpdateTodoContent";
 
 interface DisplayTodoProps {
   todo: Todo;
@@ -20,8 +22,16 @@ function TodoDisplay({ todo, isEditing, setIsEditing }: DisplayTodoProps) {
 
   return (
     <>
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row justify-between items-center group relative z-10">
         <CardTitle className="flex-1 outline-none">{todo.title}</CardTitle>
+        <Button
+          size={"sm"}
+          variant={"ghost"}
+          className="invisible group-hover:visible"
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          <Pencil />
+        </Button>
         {!todo.completeTime && (
           <TodoActionDropdown
             isEditing={isEditing}
@@ -35,9 +45,11 @@ function TodoDisplay({ todo, isEditing, setIsEditing }: DisplayTodoProps) {
         <div className="flex justify-between items-center">
           {todo.completeTime && <UncompleteTodoButton todo={todo} />}
           <div className="flex-1 flex justify-end">
-            <Button variant={isLate ? "destructive" : "outline"}>
-              {format(todo.dueTime, "dd.MM.yyyy")}
-            </Button>
+            <UpdateTodoDueTime todoId={todo.id}>
+              <Button variant={isLate ? "destructive" : "outline"}>
+                {format(todo.dueTime, "dd.MM.yyyy")}
+              </Button>
+            </UpdateTodoDueTime>
           </div>
         </div>
       </CardDescription>
@@ -56,7 +68,19 @@ function TodoCard({ todo }: { todo: Todo }) {
       })}
     >
       {isEditing ? (
-        <TodoForm action={"Update"} todo={todo} />
+        <>
+          <UpdateTodoContent todo={todo} />
+          <Button
+            className="mt-auto max-w-full"
+            onClick={() => setIsEditing(!isEditing)}
+            variant={"destructive"}
+          >
+            <>
+              <span>Cancel</span>
+              <Ban />
+            </>
+          </Button>
+        </>
       ) : (
         <TodoDisplay
           todo={todo}
@@ -64,18 +88,6 @@ function TodoCard({ todo }: { todo: Todo }) {
           setIsEditing={setIsEditing}
         />
       )}
-      {isEditing ? (
-        <Button
-          className="mt-auto max-w-full"
-          onClick={() => setIsEditing(!isEditing)}
-          variant={"destructive"}
-        >
-          <>
-            <span>Cancel</span>
-            <Ban />
-          </>
-        </Button>
-      ) : null}
     </Card>
   );
 }

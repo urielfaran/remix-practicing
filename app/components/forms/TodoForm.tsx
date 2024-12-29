@@ -5,7 +5,7 @@ import { Loader2Icon } from "lucide-react";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { createTodoSchema, updateTodoSchema } from "~/schemas/todoSchema";
+import { createTodoSchema } from "~/schemas/todoSchema";
 import { Button } from "~/components/ui/button";
 import { DatePicker } from "~/components/ui/date-picker";
 import {
@@ -31,7 +31,9 @@ interface TodoFormProps {
 
 function TodoForm({ action, todo }: TodoFormProps) {
   const fetcher = useFetcher<ToastProps>();
-  const schema = todo ? updateTodoSchema : createTodoSchema;
+  // const schema = todo ? updateTodoSchema : createTodoSchema;
+  const schema = createTodoSchema;
+
   const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 

@@ -60,11 +60,16 @@ export async function createTodo({
 }
 
 export async function updateTodo({
-  title,
+  id,
   description,
   dueTime,
-  id,
-}: Prisma.TodoUpdateInput & { id: number }) {
+  title,
+}: {
+  id: number;
+  title?: string;
+  description?: string;
+  dueTime?: Date;
+}) {
   return prisma.todo.update({
     where: { id: id },
     data: { title: title, description: description, dueTime: dueTime },

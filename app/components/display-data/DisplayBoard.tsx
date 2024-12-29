@@ -17,7 +17,7 @@ interface DisplayListProps {
 }
 function DisplayBoard({ board }: DisplayListProps) {
   const bg = `bg-${board.backgroundColor ?? "secondary"}`; 
-
+  
   return (
     <Card
       className={clsx(

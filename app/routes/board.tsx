@@ -6,8 +6,13 @@ import { z } from "zod";
 import AddListButton from "~/components/action-buttons/AddListButton";
 import DisplayList from "~/components/display-data/DisplayList";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { BoardIdContext } from "~/hooks/itemIdContexts";
 import { createListSchema, updateListSchema } from "~/schemas/listSchema";
-import { createTodoSchema, updateTodoSchema } from "~/schemas/todoSchema";
+import {
+  createTodoSchema,
+  todoContentSchema,
+  todoDueTimeSchema,
+} from "~/schemas/todoSchema";
 import {
   createList,
   deleteList,
@@ -23,7 +28,6 @@ import {
 } from "~/utils/todo.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
-import { BoardIdContext } from "~/hooks/itemIdContexts";
 export async function loader({ params }: Route.LoaderArgs) {
   const boardId = Number(params.id);
   invariant(boardId, "Invalid boardId");
@@ -64,11 +68,16 @@ export async function action({ request }: ActionFunctionArgs) {
 
   type createTodoSchemaType = z.infer<typeof createTodoSchema>;
   const createTodoResolver = zodResolver(createTodoSchema);
-  type updateTodoSchemaType = z.infer<typeof updateTodoSchema>;
-  const updateTodoResolver = zodResolver(updateTodoSchema);
+
+  type updateTodoDueTimeSchemaType = z.infer<typeof todoDueTimeSchema>;
+  const updateTodoDueTimeResolver = zodResolver(todoDueTimeSchema);
+
+  type updateTodoContentSchemaType = z.infer<typeof todoContentSchema>;
+  const updateTodoContentResolver = zodResolver(todoContentSchema);
 
   type createListSchemaType = z.infer<typeof createListSchema>;
   const createListResolver = zodResolver(createListSchema);
+
   type updateListSchemaType = z.infer<typeof updateListSchema>;
   const updateListResolver = zodResolver(updateListSchema);
 
@@ -111,14 +120,14 @@ export async function action({ request }: ActionFunctionArgs) {
       });
     }
 
-    case "update-todo": {
+    case "update-todo-content": {
       const {
         errors,
         data: payloud,
         receivedValues: defaultValues,
-      } = await getValidatedFormData<updateTodoSchemaType>(
+      } = await getValidatedFormData<updateTodoContentSchemaType>(
         request,
-        updateTodoResolver
+        updateTodoContentResolver
       );
 
       if (errors) {
@@ -129,7 +138,41 @@ export async function action({ request }: ActionFunctionArgs) {
         await updateTodo({
           id: payloud.id,
           title: payloud.title,
-          description: payloud.description,
+          description: payloud.description || "",
+        });
+      } catch (err) {
+        return Response.json(
+          {
+            err,
+            toastTitle: "Todo Updation Has Been Failed",
+            toastContent: "Could not update todo!",
+          },
+          { status: 400 }
+        );
+      }
+      return Response.json({
+        ok: true,
+        toastTitle: "Todo Has Been Updated",
+        toastContent: "Todo has been updated successfully!",
+      });
+    }
+    case "update-todo-due-time": {
+      const {
+        errors,
+        data: payloud,
+        receivedValues: defaultValues,
+      } = await getValidatedFormData<updateTodoDueTimeSchemaType>(
+        request,
+        updateTodoDueTimeResolver
+      );
+
+      if (errors) {
+        return data({ errors, defaultValues, payloud }, { status: 400 });
+      }
+
+      try {
+        await updateTodo({
+          id: payloud.id,
           dueTime: payloud.dueTime,
         });
       } catch (err) {
