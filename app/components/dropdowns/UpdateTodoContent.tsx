@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Todo } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
 import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
@@ -7,26 +8,26 @@ import { Button } from "~/components/ui/button";
 import {
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
-  Form as ShadForm,
+  Form as ShadForm
 } from "~/components/ui/form";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
 import { todoContentSchema } from "~/schemas/todoSchema";
 import { Input } from "../ui/input";
-import { Todo } from "@prisma/client";
 
 interface UpdateTodoDueTimeProps {
   todo: Todo;
 }
 
+export type updateTodoContentSchemaType = z.infer<typeof todoContentSchema>;
+export const updateTodoContentResolver = zodResolver(todoContentSchema)
+
 function UpdateTodoContent({ todo }: UpdateTodoDueTimeProps) {
   const fetcher = useFetcher<ToastProps>();
-  const resolver = zodResolver(todoContentSchema);
   useResponseToast(fetcher.data);
 
-  const form = useRemixForm<z.infer<typeof todoContentSchema>>({
-    resolver,
+  const form = useRemixForm<updateTodoContentSchemaType>({
+    resolver: updateTodoContentResolver,
     submitConfig: {
       method: "POST",
     },

@@ -27,7 +27,7 @@ export async function getAllOnTimeToDos() {
 export async function createList({
   title,
   boardId
-}: Prisma.ListCreateInput & { boardId: number }) {
+}: {title: string, boardId: number}) {
   return prisma.list.create({
     data: {
       title: title,

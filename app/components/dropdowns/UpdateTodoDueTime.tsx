@@ -24,9 +24,11 @@ interface UpdateTodoDueTimeProps extends PropsWithChildren {
   todoId: number;
 }
 
+export type updateTodoDueTimeSchemaType = z.infer<typeof todoDueTimeSchema>;
+export const updateTodoDueTimeResolver = zodResolver(todoDueTimeSchema);
+
 function UpdateTodoDueTime({ children, todoId }: UpdateTodoDueTimeProps) {
   const fetcher = useFetcher<ToastProps>();
-  const resolver = zodResolver(todoDueTimeSchema);
   useResponseToast(fetcher.data);
 
   const defaultValues = {
@@ -34,8 +36,8 @@ function UpdateTodoDueTime({ children, todoId }: UpdateTodoDueTimeProps) {
     id: todoId,
 
   };
-  const form = useRemixForm<z.infer<typeof todoDueTimeSchema>>({
-    resolver,
+  const form = useRemixForm<updateTodoDueTimeSchemaType>({
+    resolver: updateTodoDueTimeResolver,
     submitConfig: {
       method: "POST",
     },

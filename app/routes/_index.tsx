@@ -1,21 +1,23 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ActionFunctionArgs, data } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
-import { z } from "zod";
 import AddBoardButton from "~/components/action-buttons/AddBoardButton";
 import DisplayBoard from "~/components/display-data/DisplayBoard";
-import { createBoardSchema, updateBoardSchema } from "~/schemas/boardSchema";
+import FilterBoards from "~/components/filter-components/FilterBoards";
+import {
+  createBoardResolver,
+  createBoardSchemaType,
+  updateBoardResolver,
+  updateBoardSchemaType,
+} from "~/components/forms/BoardForm";
 import {
   createBoard,
   deleteBoard,
-  getAllBoards,
   getFilterBoards,
   updateBoard,
 } from "~/utils/board";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/_index";
-import FilterBoards from "~/components/filter-components/FilterBoards";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
@@ -46,11 +48,6 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 export async function action({ request }: ActionFunctionArgs) {
   const _action = await getRequestField("_action", request);
 
-  type createBoardSchemaType = z.infer<typeof createBoardSchema>;
-  const createBoardResolver = zodResolver(createBoardSchema);
-  type updateBoardSchemaType = z.infer<typeof updateBoardSchema>;
-  const updateBoardResolver = zodResolver(updateBoardSchema);
-
   switch (_action) {
     case "create-board": {
       const {
@@ -65,11 +62,11 @@ export async function action({ request }: ActionFunctionArgs) {
       if (errors) {
         return data({ errors, defaultValues, payload }, { status: 400 });
       }
-      console.log(payload)
+      console.log(payload);
       try {
         await createBoard({
           name: payload.name,
-          backgroundColor: payload.backgroundColor
+          backgroundColor: payload.backgroundColor,
         });
       } catch (err) {
         return data(

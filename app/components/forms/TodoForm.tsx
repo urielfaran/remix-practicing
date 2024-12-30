@@ -29,12 +29,13 @@ interface TodoFormProps {
   action: keyof typeof FormActions;
 }
 
+export type createTodoSchemaType = z.infer<typeof createTodoSchema>;
+export const createTodoResolver = zodResolver(createTodoSchema);
+
 function TodoForm({ action, todo }: TodoFormProps) {
   const fetcher = useFetcher<ToastProps>();
   // const schema = todo ? updateTodoSchema : createTodoSchema;
-  const schema = createTodoSchema;
 
-  const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 
   const listId = useContext(ListIdContext);
@@ -43,18 +44,18 @@ function TodoForm({ action, todo }: TodoFormProps) {
     title: undefined,
     description: "",
     dueTime: undefined,
-    listId: listId
+    listId: listId,
   };
-  
-  const form = useRemixForm<z.infer<typeof schema>>({
-    resolver,
+
+  const form = useRemixForm<createTodoSchemaType>({
+    resolver: createTodoResolver,
     submitConfig: {
       method: "POST",
     },
     defaultValues: todo ?? defaultValues,
     submitData: {
       _action: todo ? "update-todo" : "create-todo",
-      listId: listId
+      listId: listId,
     },
     fetcher: fetcher,
   });
@@ -75,7 +76,7 @@ function TodoForm({ action, todo }: TodoFormProps) {
               <Input
                 {...field}
                 className="flex-grow"
-                // value={field.value}
+                value={field.value ?? ""}
                 placeholder={"title"}
               />
               <FormMessage />

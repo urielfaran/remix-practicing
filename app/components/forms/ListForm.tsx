@@ -24,10 +24,15 @@ interface ListFormProps {
   action: keyof typeof FormActions;
 }
 
+export type createListSchemaType = z.infer<typeof createListSchema>;
+export const createListResolver = zodResolver(createListSchema);
+
+export type updateListSchemaType = z.infer<typeof updateListSchema>;
+export const updateListResolver = zodResolver(updateListSchema);
+
 function ListForm({ action, list }: ListFormProps) {
   const fetcher = useFetcher<ToastProps>();
   const schema = list ? updateListSchema : createListSchema;
-  const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 
   const boardId = useContext(BoardIdContext);
@@ -38,7 +43,7 @@ function ListForm({ action, list }: ListFormProps) {
   };
 
   const form = useRemixForm<z.infer<typeof schema>>({
-    resolver,
+    resolver: zodResolver(schema),
     submitConfig: {
       method: "POST",
     },

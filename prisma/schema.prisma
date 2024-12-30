@@ -27,8 +27,8 @@ model List {
   id      Int    @id @default(autoincrement())
   todos   Todo[]
   title   String
-  Board   Board? @relation(fields: [boardId], references: [id])
-  boardId Int?
+  Board   Board @relation(fields: [boardId], references: [id])
+  boardId Int
 }
 
 model Board {

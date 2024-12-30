@@ -1,18 +1,28 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ActionFunctionArgs, data } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
-import { z } from "zod";
 import AddListButton from "~/components/action-buttons/AddListButton";
 import DisplayList from "~/components/display-data/DisplayList";
+import {
+  updateTodoContentResolver,
+  updateTodoContentSchemaType,
+} from "~/components/dropdowns/UpdateTodoContent";
+import {
+  updateTodoDueTimeResolver,
+  updateTodoDueTimeSchemaType,
+} from "~/components/dropdowns/UpdateTodoDueTime";
+import {
+  createListResolver,
+  createListSchemaType,
+  updateListResolver,
+  updateListSchemaType,
+} from "~/components/forms/ListForm";
+import {
+  createTodoResolver,
+  createTodoSchemaType,
+} from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
-import { createListSchema, updateListSchema } from "~/schemas/listSchema";
-import {
-  createTodoSchema,
-  todoContentSchema,
-  todoDueTimeSchema,
-} from "~/schemas/todoSchema";
 import {
   createList,
   deleteList,
@@ -66,21 +76,6 @@ export default Board;
 export async function action({ request }: ActionFunctionArgs) {
   const _action = await getRequestField("_action", request);
 
-  type createTodoSchemaType = z.infer<typeof createTodoSchema>;
-  const createTodoResolver = zodResolver(createTodoSchema);
-
-  type updateTodoDueTimeSchemaType = z.infer<typeof todoDueTimeSchema>;
-  const updateTodoDueTimeResolver = zodResolver(todoDueTimeSchema);
-
-  type updateTodoContentSchemaType = z.infer<typeof todoContentSchema>;
-  const updateTodoContentResolver = zodResolver(todoContentSchema);
-
-  type createListSchemaType = z.infer<typeof createListSchema>;
-  const createListResolver = zodResolver(createListSchema);
-
-  type updateListSchemaType = z.infer<typeof updateListSchema>;
-  const updateListResolver = zodResolver(updateListSchema);
-
   switch (_action) {
     case "create-todo": {
       const {
@@ -96,7 +91,6 @@ export async function action({ request }: ActionFunctionArgs) {
         return data({ errors, defaultValues, payload }, { status: 400 });
       }
       try {
-        // throw new Error()
         await createTodo({
           title: payload.title,
           description: payload.description,
@@ -311,7 +305,6 @@ export async function action({ request }: ActionFunctionArgs) {
         return data({ errors, defaultValues, payload }, { status: 400 });
       }
       try {
-        // throw new Error()
         await updateList({
           title: payload.title,
           id: payload.id,
