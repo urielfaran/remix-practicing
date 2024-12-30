@@ -12,15 +12,11 @@ import { Card, CardDescription, CardTitle } from "../ui/card";
 
 interface DisplayTodoProps {
   todo: Todo;
-  isEditing: boolean;
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   dialogStyle: dialogStyleType;
 }
 
 function TodoDisplay({
   todo,
-  isEditing,
-  setIsEditing,
   dialogStyle,
 }: DisplayTodoProps) {
   const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
@@ -40,8 +36,6 @@ function TodoDisplay({
         </EditTodoDialog>
         {!todo.completeTime && (
           <TodoActionDropdown
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
             todoId={todo.id}
           />
         )}
@@ -72,7 +66,6 @@ function TodoDisplay({
 }
 
 function TodoCard({ todo }: { todo: Todo }) {
-  const [isEditing, setIsEditing] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const [dialogStyle, setDialogStyle] = useState({
@@ -100,8 +93,6 @@ function TodoCard({ todo }: { todo: Todo }) {
     >
       <TodoDisplay
         todo={todo}
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
         dialogStyle={dialogStyle}
       />
     </Card>

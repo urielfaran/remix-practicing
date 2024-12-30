@@ -5,6 +5,7 @@ export async function getAllBoards() {
   return prisma.board.findMany({});
 }
 
+
 export async function getFilterBoards(query: string) {
   return prisma.board.findMany({
     where: {
