@@ -60,12 +60,11 @@ function BoardForm({ action, board }: BoardFormProps) {
 
   const colors = [
     {
-      value: "gradient-to-r from-indigo-500 via-purple-500 to-pink-500",
-      text: "red",
+      value: "linear-gradient(#e66465, #9198e5)",
     },
+    { value: "linear-gradient(to right, #8360c3, #2ebf91)" },
     {
-      value: "gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%",
-      text: "red",
+      value: "linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%)",
     },
   ];
 
@@ -97,28 +96,43 @@ function BoardForm({ action, board }: BoardFormProps) {
           name="backgroundColor"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>{"backgroundColor"}</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value || ""}
-              >
+              <FormLabel>{"background color"}</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger
+                    style={{
+                      background: field.value || "transparent",
+                    }}
+                    className={`border rounded-md ${
+                      field.value
+                        ? "text-white border-transparent"
+                        : "border-gray-300 text-inherit"
+                    }`}
+                  >
                     <SelectValue placeholder="Select Your Board Color" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {colors.map((color, index) => (
-                    <SelectItem
-                      key={index}
-                      value={color.value}
-                      className={`bg-${color.value} flex items-center justify-center min-h-10 m-2`}
-                    >
-                      <span className="text-white"></span>
-                    </SelectItem>
-                  ))}
+                  <div className="grid grid-cols-2 gap-2">
+                    {colors.map((color, index) => (
+                      <SelectItem
+                        key={index}
+                        value={color.value}
+                        className="min-h-10"
+                        style={{
+                          background: color.value.startsWith("linear-gradient")
+                            ? color.value
+                            : color.value,
+                          borderRadius: "4px", // Optional: Make the dropdown items rounded
+                        }}
+                      >
+                        <span className="text-white"></span>
+                      </SelectItem>
+                    ))}
+                  </div>
                 </SelectContent>
               </Select>
+
               <FormMessage />
             </FormItem>
           )}
