@@ -11,8 +11,8 @@ function BoardActionDropdown({ boardId }: BoardActionDropdownProps) {
   return (
     <GenericActionDropdown
       triggerButton={
-        <Button variant={"ghost"} size={"icon"}>
-          <Ellipsis />
+        <Button variant={"ghost"} size={"icon"} className="hover: bg-inherit">
+          <Ellipsis className="hover:-scale-150 transition-transform duration-150" />
         </Button>
       }
       label="Board Actions"

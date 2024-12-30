@@ -20,7 +20,7 @@ function GenericActionDropdown({
 }: DropdownActionProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>{triggerButton}</DropdownMenuTrigger>
+      <DropdownMenuTrigger className="hover:bg-inherit" asChild>{triggerButton}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" side="right">
         <DropdownMenuLabel>{label}</DropdownMenuLabel>
         <DropdownMenuSeparator />

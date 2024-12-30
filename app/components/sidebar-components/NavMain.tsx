@@ -2,6 +2,7 @@
 
 import { Board } from "@prisma/client";
 import { ChevronRight, Clipboard } from "lucide-react";
+import { useLocation } from "@remix-run/react"; // import to access current location
 
 import {
   Collapsible,
@@ -18,8 +19,11 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "~/components/ui/sidebar";
+import { useParams } from "react-router";
 
 export function NavMain({ boards }: { boards: Board[] }) {
+  const { id } = useParams(); // Get the current board ID from the URL params
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -38,7 +42,10 @@ export function NavMain({ boards }: { boards: Board[] }) {
                 {boards?.map((board) => (
                   <SidebarMenuSubItem key={board.id}>
                     <SidebarMenuSubButton asChild>
-                      <a href={`/board/${board.id}/${board.name}`}>
+                      <a
+                        href={`/board/${board.id}/${board.name}`}
+                        className={board.id === Number(id) ? "font-bold" : ""}
+                      >
                         <span>{board.name}</span>
                       </a>
                     </SidebarMenuSubButton>

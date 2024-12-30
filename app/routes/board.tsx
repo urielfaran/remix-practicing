@@ -23,12 +23,8 @@ import {
 } from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
-import {
-  createList,
-  deleteList,
-  getAllLists,
-  updateList,
-} from "~/utils/list.server";
+import { getBoard } from "~/utils/board";
+import { createList, deleteList, updateList } from "~/utils/list.server";
 import {
   completeTodo,
   createTodo,
@@ -49,21 +45,32 @@ export async function loader({ params }: Route.LoaderArgs) {
   // const endDate = endDateStr ? new Date(endDateStr) : undefined;
 
   // const todos = await getAllToDos({ query, startDate, endDate });
-  const lists = await getAllLists(boardId);
+  const board = await getBoard(boardId);
 
-  return { lists, boardId };
+  invariant(board, "board doesnt exist");
+
+  return { board };
 }
 
 function Board({ loaderData }: Route.ComponentProps) {
-  const { lists, boardId } = loaderData;
+  const { board } = loaderData;
+
+  const bg = `${board.backgroundColor ?? "secondary"}`;
 
   return (
-    <ScrollArea className="flex min-w-0">
+    <ScrollArea
+      className="flex min-w-0 h-full"
+      style={{
+        background: bg.startsWith("linear-gradient")
+          ? bg
+          : `var(--color-${bg})`,
+      }}
+    >
       <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
-        <BoardIdContext.Provider value={boardId}>
+        <BoardIdContext.Provider value={board?.id}>
           <AddListButton />
         </BoardIdContext.Provider>
-        {lists.map((list) => (
+        {board.lists.map((list) => (
           <DisplayList key={list.id} list={list} />
         ))}
       </div>

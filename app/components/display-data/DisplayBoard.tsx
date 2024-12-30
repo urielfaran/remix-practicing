@@ -13,25 +13,30 @@ export type BoardWithLists = Prisma.BoardGetPayload<{
 interface DisplayListProps {
   board: BoardWithLists;
 }
+
 function DisplayBoard({ board }: DisplayListProps) {
   const bg = `${board.backgroundColor ?? "secondary"}`;
-  console.log(bg, board.backgroundColor);
   return (
     <Card
       className={"min-w-72 min-h-28 h-fit cursor-pointer group relative"}
       style={{
         background: bg.startsWith("linear-gradient")
           ? bg
-          : `var(--color-${bg})`
+          : `var(--color-${bg})`,
       }}
     >
       <Link
         to={`/board/${board.id}/${board.name}`}
         className="absolute inset-0 z-0"
       />
-      <div className="p-2 flex flex-row justify-center bg-transparent relative z-10">
-        <UpdateBoardInput board={board} />
-        <div className="invisible group-hover:visible">
+      <div className="p-2 flex flex-row justify-between bg-transparent">
+        <div onClick={(e) => e.stopPropagation()} className="relative z-10">
+          <UpdateBoardInput board={board} />
+        </div>
+        <div
+          className="invisible group-hover:visible relative z-10"
+          onClick={(e) => e.stopPropagation()}
+        >
           <BoardActionDropdown boardId={board.id} />
         </div>
       </div>

@@ -5,6 +5,21 @@ export async function getAllBoards() {
   return prisma.board.findMany({});
 }
 
+export async function getBoard(boardId: number) {
+  return prisma.board.findUnique({
+    where: {
+      id: boardId,
+    },
+    include: {
+      lists: {
+        include: {
+          todos: true
+        }
+      },
+    }
+  });
+}
+
 
 export async function getFilterBoards(query: string) {
   return prisma.board.findMany({

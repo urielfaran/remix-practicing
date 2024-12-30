@@ -9,7 +9,7 @@ function UpdateBoardInput({ board }: UpdateBoardInputProps) {
 
   return (
     <div
-      className="m-2 flex-1 outline-none"
+      className="m-2 outline-none"
       onBlur={(e) => {
         const editName = String(e.currentTarget.textContent).trim();
         if (board.name !== editName.trim()) {
