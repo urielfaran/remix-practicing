@@ -18,11 +18,11 @@ interface DisplayListProps {
 function DisplayList({ list }: DisplayListProps) {
   return (
     <Card className="min-w-64 bg-secondary h-fit">
-      <div className="p-2 flex flex-row justify-center bg-transparent">
+      <div className="p-2 pb-0 flex flex-row justify-center bg-transparent">
         <UpdateListInput list={list} />
         <ListActionDropdown listId={list.id} />
       </div>
-      <CardDescription className="flex flex-col gap-2 overflow-y-auto">
+      <CardDescription className="flex flex-col gap-2 overflow-y-auto p-2">
         {list.todos.map((todo, index) => (
           <TodoCard todo={todo} key={index} />
         ))}

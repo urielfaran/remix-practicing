@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Todo } from "@prisma/client";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, Save } from "lucide-react";
 import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
@@ -74,10 +74,10 @@ function UpdateTodoContent({ todo }: UpdateTodoDueTimeProps) {
           )}
         />
         <Button
-          variant="default"
-          className="m-1 w-full"
+          // className="m-1 w-full"
           type="submit"
           name="_action"
+          size={'sm'}
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -88,8 +88,9 @@ function UpdateTodoContent({ todo }: UpdateTodoDueTimeProps) {
               </span>
             </span>
           ) : (
-            "Update"
+            "Save"
           )}
+          <Save/>
         </Button>
       </Form>
     </ShadForm>

@@ -7,8 +7,9 @@ export const createListSchema = z.object({
   boardId: z.coerce.number(),
 });
 
-export const updateListSchema = createListSchema.merge(
-  z.object({
-    id: z.number(),
-  })
-);
+export const updateListSchema = z.object({
+  title: z.string({
+    required_error: "enter title",
+  }),
+  id: z.number(),
+});

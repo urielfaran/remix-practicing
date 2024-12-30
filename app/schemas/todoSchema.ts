@@ -1,9 +1,5 @@
 import { z } from "zod";
 
-export const todoIdSchema = z.object({
-  id: z.coerce.number(),
-});
-
 export const todoDueTimeSchema = z.object({
   dueTime: z.preprocess(
     (v) => (v === "undefined" ? new Date() : v),

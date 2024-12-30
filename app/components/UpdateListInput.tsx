@@ -9,7 +9,7 @@ function UpdateListInput({ list }: UpdateListInputProps) {
 
   return (
     <div
-      className="m-2 flex-1 outline-none"
+      className="p-2 pb-0 flex-1 outline-none"
       onBlur={(e) => {
         const editTitle = String(e.currentTarget.textContent).trim();
         if (list.title !== editTitle.trim()) {
