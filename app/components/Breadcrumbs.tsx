@@ -31,26 +31,30 @@ function Breadcrumbs({ boards }: BreadcrumbsProps) {
         </BreadcrumbItem>
         <BreadcrumbSeparator className="hidden md:block" />
         <BreadcrumbItem className="hidden md:block">Boards</BreadcrumbItem>
-        <BreadcrumbSeparator className="hidden md:block" />
-        <BreadcrumbItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1">
-              {locations[locations.length - 1]} <ChevronDownIcon />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              {boards.map((board) => (
-                <BreadcrumbLink
-                  key={board.id}
-                  href={`/board/${board.id}/${board.name}`}
-                >
-                  <DropdownMenuItem key={board.id}>
-                    {board.name}
-                  </DropdownMenuItem>
-                </BreadcrumbLink>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </BreadcrumbItem>
+        {locations[locations.length - 1] && (
+          <>
+            <BreadcrumbSeparator className="hidden md:block" />
+            <BreadcrumbItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1">
+                  {locations[locations.length - 1]} <ChevronDownIcon />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  {boards.map((board) => (
+                    <BreadcrumbLink
+                      key={board.id}
+                      href={`/board/${board.id}/${board.name}`}
+                    >
+                      <DropdownMenuItem key={board.id}>
+                        {board.name}
+                      </DropdownMenuItem>
+                    </BreadcrumbLink>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </BreadcrumbItem>
+          </>
+        )}
       </BreadcrumbList>
     </Breadcrumb>
   );
