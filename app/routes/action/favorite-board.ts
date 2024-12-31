@@ -1,5 +1,5 @@
 import { getRequestField } from "~/utils/utils";
-import type { Route } from "./+types/toggleFavorite";
+import type { Route } from "./+types/favorite-board";
 import invariant from "tiny-invariant";
 import { favoriteBoard } from "~/utils/board";
 import { data } from "react-router";
@@ -22,19 +22,21 @@ export async function action({ request }: Route.ActionArgs) {
         errors,
         id,
         toastTitle: `Board ${
-          isFavorite ? "Unfavorite" : "Favorite"
-        } Toggle Has Been Failed`,
+          isFavorite && "Remove From"
+        } Favorites Toggle Has Been Failed`,
         toastContent: `Could not ${
-          isFavorite ? "Unfavorite" : "Favorite"
-        } board!`,
+          isFavorite ? "remove board from" : "add board to"
+        } favorites!`,
       },
       { status: 400 }
     );
   }
   return data({
-    toastTitle: `Board Has Been ${isFavorite ? "Unfavorited" : "Favorited"}`,
-    toastContent: `Board has been ${
-      isFavorite ? "Unfavorited" : "Favorited"
-    } successfully!`,
+    toastTitle: `Board Has Been ${
+      isFavorite ? "Removed From" : "Added To"
+    } Favorites`,
+    toastContent: `Board has been successfully ${
+      isFavorite ? "removed From" : "added To"
+    }  favorites!`,
   });
 }
