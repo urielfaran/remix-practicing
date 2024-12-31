@@ -20,7 +20,7 @@ function FavoriteBoard({ boardId, isFavorite }: FavoriteBoardProps) {
   return (
     <fetcher.Form method="POST" action="/action/favorite-board">
       <Button
-        className="hover:scale-125 hover:bg-transparent z-10"
+        className="hover:scale-125 hover:bg-transparent z-10 transition delay-150 duration-300 ease-in-out"
         variant={"ghost"}
         size={"sm"}
         type="submit"

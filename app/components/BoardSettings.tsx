@@ -16,13 +16,13 @@ interface BoardSettingsProps extends PropsWithChildren {}
 function BoardSettings({ children }: BoardSettingsProps) {
   return (
     <Sheet>
-      <SheetTrigger>{children}</SheetTrigger>
+      <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Edit Board</SheetTitle>
           <SheetDescription>Make changes to your board here.</SheetDescription>
         </SheetHeader>
-        <div className="grid gap-4 py-4">
+        {/* <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Name
@@ -35,7 +35,7 @@ function BoardSettings({ children }: BoardSettingsProps) {
             </Label>
             <Input id="username" value="~peduarte" className="col-span-3" />
           </div>
-        </div>
+        </div> */}
         <SheetFooter>
           <SheetClose asChild>
             <Button type="submit">Save changes</Button>

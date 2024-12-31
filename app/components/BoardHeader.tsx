@@ -18,7 +18,7 @@ function BoardHeader({ board }: BoardHeaderProps) {
       </div>
       <div className="flex flex-row mr-2 gap-3">
         <BoardSettings>
-          <Button variant={'ghost'}>
+          <Button variant={'ghost'} className="hover:bg-inherit hover:scale-125 transition delay-150 duration-300 ease-in-out">
             <Ellipsis />
           </Button>
         </BoardSettings>
