@@ -20,13 +20,13 @@ function GenericActionDropdown({
 }: DropdownActionProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="hover:bg-inherit" asChild>{triggerButton}</DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" side="right">
+      <DropdownMenuTrigger className="hover:bg-inherit" asChild>
+        {triggerButton}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" side="bottom">
         <DropdownMenuLabel>{label}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup className="space-y-2">
-          {children}
-        </DropdownMenuGroup>
+        <DropdownMenuGroup className="space-y-2">{children}</DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

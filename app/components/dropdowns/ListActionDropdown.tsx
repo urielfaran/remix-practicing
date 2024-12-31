@@ -17,7 +17,7 @@ function ListActionDropdown({ listId }: ListActionDropdownProps) {
       }
       label="List Actions"
     >
-      <DeleteButton id={listId} action='"delete-list"' text="Delete List" />
+      <DeleteButton id={listId} action="list" text="Delete List" />
     </GenericActionDropdown>
   );
 }

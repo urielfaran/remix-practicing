@@ -2,6 +2,7 @@ import { ActionFunctionArgs, data } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
 import AddListButton from "~/components/action-buttons/AddListButton";
+import BoardHeader from "~/components/BoardHeader";
 import DisplayList from "~/components/display-data/DisplayList";
 import {
   updateTodoContentResolver,
@@ -24,11 +25,10 @@ import {
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
 import { getBoard } from "~/utils/board";
-import { createList, deleteList, updateList } from "~/utils/list.server";
+import { createList, updateList } from "~/utils/list.server";
 import {
   completeTodo,
   createTodo,
-  deleteTodo,
   uncompleteTodo,
   updateTodo,
 } from "~/utils/todo.server";
@@ -66,6 +66,7 @@ function Board({ loaderData }: Route.ComponentProps) {
           : `var(--color-${bg})`,
       }}
     >
+      <BoardHeader board={board} />
       <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
         <BoardIdContext.Provider value={board?.id}>
           <AddListButton />
@@ -192,30 +193,6 @@ export async function action({ request }: ActionFunctionArgs) {
         toastContent: "Todo has been updated successfully!",
       });
     }
-    case "delete-todo": {
-      const id = await getRequestField("id", request, {
-        stringified: false,
-      });
-      invariant(id);
-
-      try {
-        await deleteTodo(Number(id));
-      } catch (errors) {
-        return data(
-          {
-            errors,
-            id,
-            toastTitle: "Todo Deletion Has Been Failed",
-            toastContent: "Could not delete todo!",
-          },
-          { status: 400 }
-        );
-      }
-      return data({
-        toastTitle: "Todo Has Been Deleted",
-        toastContent: "Todo has been deleted successfully!",
-      });
-    }
     case "complete-todo": {
       const id = await getRequestField("id", request, {
         stringified: false,
@@ -330,30 +307,6 @@ export async function action({ request }: ActionFunctionArgs) {
       return data({
         toastTitle: "List Has Been Updated",
         toastContent: "List has been updated successfully!",
-      });
-    }
-    case "delete-list": {
-      const id = await getRequestField("id", request, {
-        stringified: false,
-      });
-      invariant(id);
-
-      try {
-        await deleteList(Number(id));
-      } catch (errors) {
-        return data(
-          {
-            errors,
-            id,
-            toastTitle: "List Deletion Has Been Failed",
-            toastContent: "Could not delete List!",
-          },
-          { status: 400 }
-        );
-      }
-      return data({
-        toastTitle: "List Has Been Deleted",
-        toastContent: "List has been deleted successfully!",
       });
     }
     default:

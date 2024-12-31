@@ -20,7 +20,7 @@ function TodoActionDropdown({
       }
       label="Todo Actions"
     >
-      <DeleteButton id={todoId} action='"delete-todo"' text="Delete Todo" />
+      <DeleteButton id={todoId} action="todo" text="Delete Todo" />
       <CompleteTodoButton id={todoId} />
     </GenericActionDropdown>
   );

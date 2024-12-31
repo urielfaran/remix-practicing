@@ -10,6 +10,7 @@ function UpdateBoardInput({ board }: UpdateBoardInputProps) {
   return (
     <div
       className="m-2 outline-none"
+      // onClick={(e)=> e.stopPropagation()}
       onBlur={(e) => {
         const editName = String(e.currentTarget.textContent).trim();
         if (board.name !== editName.trim()) {

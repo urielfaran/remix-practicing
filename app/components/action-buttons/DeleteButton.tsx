@@ -3,6 +3,7 @@ import { useFetcher } from "react-router";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
 import { Button } from "../ui/button";
 
+
 interface DeleteButtonProps {
   id: number;
   action: string;
@@ -13,12 +14,10 @@ function DeleteButton({ id, action, text }: DeleteButtonProps) {
   useResponseToast(fetcher.data);
 
   return (
-    <fetcher.Form method="POST">
+    <fetcher.Form method="POST" action={`/action/delete-${action}`}>
       <input name="id" hidden readOnly value={id} />
       <Button
-        name="_action"
         type="submit"
-        value={action}
         variant={"ghost"}
         size={"sm"}
         className={

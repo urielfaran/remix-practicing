@@ -146,7 +146,7 @@ function BoardForm({ action, board }: BoardFormProps) {
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              {action === "Create" ? "creating list..." : "updating list..."}{" "}
+              {action === "Create" ? "creating board..." : "updating board..."}{" "}
               <span>
                 <Loader2Icon className="animate-spin" />
               </span>

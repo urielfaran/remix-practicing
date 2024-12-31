@@ -13,13 +13,12 @@ export async function getBoard(boardId: number) {
     include: {
       lists: {
         include: {
-          todos: true
-        }
+          todos: true,
+        },
       },
-    }
+    },
   });
 }
-
 
 export async function getFilterBoards(query: string) {
   return prisma.board.findMany({
@@ -50,6 +49,17 @@ export async function deleteBoard(id: number) {
   return prisma.board.delete({
     where: {
       id: id,
+    },
+  });
+}
+
+export async function favoriteBoard(id: number, favoriteStatus: boolean) {
+  return prisma.board.update({
+    where: {
+      id: id,
+    },
+    data: {
+      isFavorite: !favoriteStatus,
     },
   });
 }

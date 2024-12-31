@@ -25,7 +25,7 @@ import {
 } from "~/components/ui/sidebar";
 import { HomeHeader } from "./HomeHeader";
 import { NavMain } from "./NavMain";
-import { NavProjects } from "./NavProjects";
+import { FavoriteBoards } from "./NavFavorites";
 import { NavUser } from "./NavUser";
 
 // This is sample data.
@@ -163,6 +163,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ boards, ...props }: AppSidebarProps) {
+  const favoriteBoards = boards.filter((board) => board.isFavorite);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -172,7 +173,7 @@ export function AppSidebar({ boards, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain boards={boards} />
-        <NavProjects projects={data.projects} />
+        <FavoriteBoards boards={favoriteBoards} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

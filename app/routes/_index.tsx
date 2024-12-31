@@ -1,6 +1,5 @@
-import { ActionFunctionArgs, data } from "react-router";
+import { ActionFunctionArgs, data, redirect } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
-import invariant from "tiny-invariant";
 import AddBoardButton from "~/components/action-buttons/AddBoardButton";
 import DisplayBoard from "~/components/display-data/DisplayBoard";
 import FilterBoards from "~/components/filter-components/FilterBoards";
@@ -10,12 +9,7 @@ import {
   updateBoardResolver,
   updateBoardSchemaType,
 } from "~/components/forms/BoardForm";
-import {
-  createBoard,
-  deleteBoard,
-  getFilterBoards,
-  updateBoard,
-} from "~/utils/board";
+import { createBoard, getFilterBoards, updateBoard } from "~/utils/board";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/_index";
 
@@ -62,11 +56,16 @@ export async function action({ request }: ActionFunctionArgs) {
       if (errors) {
         return data({ errors, defaultValues, payload }, { status: 400 });
       }
-      console.log(payload);
       try {
-        await createBoard({
+        const newBoard = await createBoard({
           name: payload.name,
           backgroundColor: payload.backgroundColor,
+        });
+        return redirect(`/board/${newBoard.id}/${newBoard.name}`, {
+          headers: {
+            toastTitle: "Board Has Been Created",
+            toastContent: "New board has been added to your list!",
+          },
         });
       } catch (err) {
         return data(
@@ -79,10 +78,6 @@ export async function action({ request }: ActionFunctionArgs) {
           { status: 400 }
         );
       }
-      return data({
-        toastTitle: "Board Has Been Created",
-        toastContent: "New board has been added to your list!",
-      });
     }
 
     case "update-board": {
@@ -121,31 +116,6 @@ export async function action({ request }: ActionFunctionArgs) {
         toastContent: "Board has been updated successfully!",
       });
     }
-    case "delete-board": {
-      const id = await getRequestField("id", request, {
-        stringified: false,
-      });
-      invariant(id);
-
-      try {
-        await deleteBoard(Number(id));
-      } catch (errors) {
-        return data(
-          {
-            errors,
-            id,
-            toastTitle: "Todo Deletion Has Been Failed",
-            toastContent: "Could not delete todo!",
-          },
-          { status: 400 }
-        );
-      }
-      return data({
-        toastTitle: "Todo Has Been Deleted",
-        toastContent: "Todo has been deleted successfully!",
-      });
-    }
-
     default:
       return null;
   }

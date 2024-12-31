@@ -11,13 +11,17 @@ function BoardActionDropdown({ boardId }: BoardActionDropdownProps) {
   return (
     <GenericActionDropdown
       triggerButton={
-        <Button variant={"ghost"} size={"icon"} className="hover: bg-inherit">
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          className="hover:bg-inherit shrink-0"
+        >
           <Ellipsis className="hover:-scale-150 transition-transform duration-150" />
         </Button>
       }
       label="Board Actions"
     >
-      <DeleteButton id={boardId} action='"delete-board"' text="Delete board" />
+      <DeleteButton id={boardId} action="board" text="Delete board" />
     </GenericActionDropdown>
   );
 }

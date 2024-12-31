@@ -1,6 +1,11 @@
 import { PropsWithChildren } from "react";
 import BoardForm from "../forms/BoardForm";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 interface CreateListDialogProps extends PropsWithChildren {}
 
