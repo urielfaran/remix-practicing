@@ -165,7 +165,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 export function AppSidebar({ boards, ...props }: AppSidebarProps) {
   const favoriteBoards = boards.filter((board) => board.isFavorite);
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
         <Link to={"/"}>
           <HomeHeader />
