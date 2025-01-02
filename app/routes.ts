@@ -14,6 +14,8 @@ export default [
     route("/delete-list", "./routes/action/delete-list.ts"),
     route("/delete-board", "./routes/action/delete-board.ts"),
     route("/update-board", "./routes/action/update-board.ts"),
+    route("/update-list", "./routes/action/update-list.ts"),
+
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),

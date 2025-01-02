@@ -16,7 +16,7 @@ export async function action({ request }: Route.ActionArgs) {
     request,
     updateBoardResolver
   );
-
+  console.log(payload)
   if (errors) {
     return data({ errors, defaultValues, payload }, { status: 400 });
   }
