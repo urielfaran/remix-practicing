@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Board, Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
 
 export async function getAllBoards() {
@@ -65,19 +65,13 @@ export async function favoriteBoard(id: number, favoriteStatus: boolean) {
 }
 
 export async function updateBoard({
-  name,
   id,
-  backgroundColor,
-}: {
-  name?: string;
-  backgroundColor?: string | null;
-  id: number;
+  ...data
+}: Prisma.BoardUpdateInput & {
+  id: Board["id"];
 }) {
   return prisma.board.update({
     where: { id: id },
-    data: {
-      name: name,
-      backgroundColor: backgroundColor,
-    },
+    data: data,
   });
 }

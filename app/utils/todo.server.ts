@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Todo } from "@prisma/client";
 import { prisma } from "~/db.server";
 
 export async function getAllToDos({
@@ -47,7 +47,9 @@ export async function createTodo({
   description,
   dueTime,
   listId,
-}: Prisma.TodoCreateWithoutListInput & { listId: number }) {
+}: Prisma.TodoCreateWithoutListInput & {
+  listId: Todo["listId"];
+}) {
   return prisma.todo.create({
     data: {
       title: title,
@@ -64,11 +66,8 @@ export async function updateTodo({
   description,
   dueTime,
   title,
-}: {
-  id: number;
-  title?: string;
-  description?: string;
-  dueTime?: Date;
+}: Prisma.TodoUpdateInput & {
+  id: Todo["id"];
 }) {
   return prisma.todo.update({
     where: { id: id },

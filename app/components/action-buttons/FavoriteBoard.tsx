@@ -4,7 +4,7 @@ import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { favoriteBoardSchema } from "~/schemas/boardSchema";
+import { favoriteBoardSchema } from "~/schemas/board.schema";
 
 interface FavoriteBoardProps {
   boardId: number;

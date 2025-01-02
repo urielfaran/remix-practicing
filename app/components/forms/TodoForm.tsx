@@ -5,7 +5,7 @@ import { Loader2Icon } from "lucide-react";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { createTodoSchema } from "~/schemas/todoSchema";
+import { createTodoSchema } from "~/schemas/todo.schema";
 import { Button } from "~/components/ui/button";
 import { DatePicker } from "~/components/ui/date-picker";
 import {

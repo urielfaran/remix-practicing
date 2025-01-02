@@ -125,7 +125,7 @@ export async function action({ request }: ActionFunctionArgs) {
     case "update-todo-content": {
       const {
         errors,
-        data: payloud,
+        data: payload,
         receivedValues: defaultValues,
       } = await getValidatedFormData<updateTodoContentSchemaType>(
         request,
@@ -133,14 +133,14 @@ export async function action({ request }: ActionFunctionArgs) {
       );
 
       if (errors) {
-        return data({ errors, defaultValues, payloud }, { status: 400 });
+        return data({ errors, defaultValues, payload }, { status: 400 });
       }
 
       try {
         await updateTodo({
-          id: payloud.id,
-          title: payloud.title,
-          description: payloud.description || "",
+          id: payload.id,
+          title: payload.title,
+          description: payload.description || "",
         });
       } catch (err) {
         return Response.json(
@@ -161,7 +161,7 @@ export async function action({ request }: ActionFunctionArgs) {
     case "update-todo-due-time": {
       const {
         errors,
-        data: payloud,
+        data: payload,
         receivedValues: defaultValues,
       } = await getValidatedFormData<updateTodoDueTimeSchemaType>(
         request,
@@ -169,13 +169,13 @@ export async function action({ request }: ActionFunctionArgs) {
       );
 
       if (errors) {
-        return data({ errors, defaultValues, payloud }, { status: 400 });
+        return data({ errors, defaultValues, payload }, { status: 400 });
       }
 
       try {
         await updateTodo({
-          id: payloud.id,
-          dueTime: payloud.dueTime,
+          id: payload.id,
+          dueTime: payload.dueTime,
         });
       } catch (err) {
         return Response.json(
@@ -255,10 +255,7 @@ export async function action({ request }: ActionFunctionArgs) {
         return data({ errors, defaultValues, payload }, { status: 400 });
       }
       try {
-        await createList({
-          title: payload.title,
-          boardId: payload.boardId,
-        });
+        await createList(payload);
       } catch (err) {
         return data(
           {

@@ -12,6 +12,7 @@ export default [
     route("/delete-todo", "./routes/action/delete-todo.ts"),
     route("/delete-list", "./routes/action/delete-list.ts"),
     route("/delete-board", "./routes/action/delete-board.ts"),
+    route("/update-board", "./routes/action/update-board.ts"),
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),

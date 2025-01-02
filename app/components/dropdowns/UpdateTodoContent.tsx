@@ -12,7 +12,7 @@ import {
   Form as ShadForm
 } from "~/components/ui/form";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { todoContentSchema } from "~/schemas/todoSchema";
+import { todoContentSchema } from "~/schemas/todo.schema";
 import { Input } from "../ui/input";
 
 interface UpdateTodoDueTimeProps {

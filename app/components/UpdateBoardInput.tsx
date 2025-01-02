@@ -18,9 +18,9 @@ function UpdateBoardInput({ board }: UpdateBoardInputProps) {
             {
               name: JSON.stringify(String(e.target.textContent)),
               id: board.id,
-              _action: JSON.stringify("update-board"),
             },
             {
+              action: "/action/update-board",
               method: "post",
             }
           );

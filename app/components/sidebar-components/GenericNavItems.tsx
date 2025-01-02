@@ -57,7 +57,7 @@ function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
                   >
                     <SidebarMenuSubButton
                       asChild
-                      className="hover:bg-inherit mt-1"
+                      className="hover:bg-inherit mt-1 focus-visible:bg-inherit"
                     >
                       <a
                         href={`/board/${board.id}/${board.name}`}

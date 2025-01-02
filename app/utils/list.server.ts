@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { List, Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
 
 export async function getAllLists(boardId: number) {
@@ -11,8 +11,6 @@ export async function getAllLists(boardId: number) {
     },
   });
 }
-
-
 
 export async function getAllOnTimeToDos() {
   const startOfToday = new Date();
@@ -28,8 +26,10 @@ export async function getAllOnTimeToDos() {
 
 export async function createList({
   title,
-  boardId
-}: {title: string, boardId: number}) {
+  boardId,
+}: Prisma.ListCreateWithoutBoardInput & {
+  boardId: List["boardId"];
+}) {
   return prisma.list.create({
     data: {
       title: title,
@@ -41,7 +41,9 @@ export async function createList({
 export async function updateList({
   title,
   id,
-}: Prisma.ListUpdateInput & { id: number }) {
+}: Prisma.ListUpdateInput & {
+  id: List["id"];
+}) {
   return prisma.list.update({
     where: { id: id },
     data: { title: title },

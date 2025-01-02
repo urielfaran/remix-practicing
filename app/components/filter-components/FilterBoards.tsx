@@ -9,7 +9,7 @@ import {
   Form as ShadForm,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { filterBoardsSchema } from "~/schemas/filterBoardsSchema";
+import { filterBoardsSchema } from "~/schemas/filterBoards.schema";
 
 function FilterBoards() {
   const defaultValues = {

@@ -5,7 +5,7 @@ import { Loader2Icon } from "lucide-react";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { createListSchema, updateListSchema } from "~/schemas/listSchema";
+import { createListSchema, updateListSchema } from "~/schemas/list.schema";
 import { FormActions } from "./TodoForm";
 import { Button } from "~/components/ui/button";
 import {

@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { todoDueTimeSchema } from "~/schemas/todoSchema";
+import { todoDueTimeSchema } from "~/schemas/todo.schema";
 import { Calendar } from "../ui/calendar";
 
 interface UpdateTodoDueTimeProps extends PropsWithChildren {

@@ -5,11 +5,9 @@ import DisplayBoard from "~/components/display-data/DisplayBoard";
 import FilterBoards from "~/components/filter-components/FilterBoards";
 import {
   createBoardResolver,
-  createBoardSchemaType,
-  updateBoardResolver,
-  updateBoardSchemaType,
+  createBoardSchemaType
 } from "~/components/forms/BoardForm";
-import { createBoard, getFilterBoards, updateBoard } from "~/utils/board";
+import { createBoard, getFilterBoards } from "~/utils/board";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/_index";
 
@@ -78,43 +76,6 @@ export async function action({ request }: ActionFunctionArgs) {
           { status: 400 }
         );
       }
-    }
-
-    case "update-board": {
-      const {
-        errors,
-        data: payloud,
-        receivedValues: defaultValues,
-      } = await getValidatedFormData<updateBoardSchemaType>(
-        request,
-        updateBoardResolver
-      );
-
-      if (errors) {
-        return data({ errors, defaultValues, payloud }, { status: 400 });
-      }
-
-      try {
-        await updateBoard({
-          id: payloud.id,
-          name: payloud.name,
-          backgroundColor: payloud.backgroundColor,
-        });
-      } catch (err) {
-        return Response.json(
-          {
-            err,
-            toastTitle: "Board Updation Has Been Failed",
-            toastContent: "Could not update board!",
-          },
-          { status: 400 }
-        );
-      }
-      return Response.json({
-        ok: true,
-        toastTitle: "Board Has Been Updated",
-        toastContent: "Board has been updated successfully!",
-      });
     }
     default:
       return null;
