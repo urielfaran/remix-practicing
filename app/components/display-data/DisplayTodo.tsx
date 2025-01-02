@@ -15,10 +15,7 @@ interface DisplayTodoProps {
   dialogStyle: dialogStyleType;
 }
 
-function TodoDisplay({
-  todo,
-  dialogStyle,
-}: DisplayTodoProps) {
+function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
   const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
 
   return (
@@ -37,6 +34,7 @@ function TodoDisplay({
         {!todo.completeTime && (
           <TodoActionDropdown
             todoId={todo.id}
+            todoCompleteTime={todo.completeTime ? true: false}
           />
         )}
       </div>
@@ -91,10 +89,7 @@ function TodoCard({ todo }: { todo: Todo }) {
       ref={cardRef}
       className={cn("relative grid min-w-48 p-2 hover:ring-2")}
     >
-      <TodoDisplay
-        todo={todo}
-        dialogStyle={dialogStyle}
-      />
+      <TodoDisplay todo={todo} dialogStyle={dialogStyle} />
     </Card>
   );
 }

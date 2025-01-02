@@ -6,10 +6,12 @@ import GenericActionDropdown from "./GenericActionDropdown";
 
 interface TodoActionDropdownProps {
   todoId: number;
+  todoCompleteTime: boolean;
 }
 
 function TodoActionDropdown({
   todoId,
+  todoCompleteTime
 }: TodoActionDropdownProps) {
   return (
     <GenericActionDropdown
@@ -21,7 +23,7 @@ function TodoActionDropdown({
       label="Todo Actions"
     >
       <DeleteButton id={todoId} action="todo" text="Delete Todo" />
-      <CompleteTodoButton id={todoId} />
+      <CompleteTodoButton id={todoId} todoCompleteTime= {todoCompleteTime}/>
     </GenericActionDropdown>
   );
 }

@@ -27,13 +27,15 @@ import { BoardIdContext } from "~/hooks/itemIdContexts";
 import { getBoard } from "~/utils/board";
 import { createList, updateList } from "~/utils/list.server";
 import {
-  completeTodo,
   createTodo,
-  uncompleteTodo,
-  updateTodo,
+  updateTodo
 } from "~/utils/todo.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
+
+export function meta({ params }: Route.MetaArgs) {
+  return [{ title: params.name }];
+}
 export async function loader({ params }: Route.LoaderArgs) {
   const boardId = Number(params.id);
   invariant(boardId, "Invalid boardId");
@@ -193,53 +195,53 @@ export async function action({ request }: ActionFunctionArgs) {
         toastContent: "Todo has been updated successfully!",
       });
     }
-    case "complete-todo": {
-      const id = await getRequestField("id", request, {
-        stringified: false,
-      });
-      invariant(id);
-      try {
-        await completeTodo(Number(id));
-      } catch (errors) {
-        return data(
-          {
-            errors,
-            id,
-            toastTitle: "Todo Completion Has Been Failed",
-            toastContent: "Could not complete todo!",
-          },
-          { status: 400 }
-        );
-      }
-      return data({
-        toastTitle: "Todo Has Been Completed",
-        toastContent: "Todo has been completed successfully!",
-      });
-    }
+    // case "complete-todo": {
+    //   const id = await getRequestField("id", request, {
+    //     stringified: false,
+    //   });
+    //   invariant(id);
+    //   try {
+    //     await completeTodo(Number(id));
+    //   } catch (errors) {
+    //     return data(
+    //       {
+    //         errors,
+    //         id,
+    //         toastTitle: "Todo Completion Has Been Failed",
+    //         toastContent: "Could not complete todo!",
+    //       },
+    //       { status: 400 }
+    //     );
+    //   }
+    //   return data({
+    //     toastTitle: "Todo Has Been Completed",
+    //     toastContent: "Todo has been completed successfully!",
+    //   });
+    // }
 
-    case "uncomplete-todo": {
-      const id = await getRequestField("id", request, {
-        stringified: false,
-      });
-      invariant(id);
-      try {
-        await uncompleteTodo(Number(id));
-      } catch (errors) {
-        return data(
-          {
-            errors,
-            id,
-            toastTitle: "Todo Uncompletion Has Been Failed",
-            toastContent: "Could not uncomplete todo!",
-          },
-          { status: 400 }
-        );
-      }
-      return data({
-        toastTitle: "Todo Has Been Uncompleted",
-        toastContent: "Todo has been uncomplete successfully!",
-      });
-    }
+    // case "uncomplete-todo": {
+    //   const id = await getRequestField("id", request, {
+    //     stringified: false,
+    //   });
+    //   invariant(id);
+    //   try {
+    //     await uncompleteTodo(Number(id));
+    //   } catch (errors) {
+    //     return data(
+    //       {
+    //         errors,
+    //         id,
+    //         toastTitle: "Todo Uncompletion Has Been Failed",
+    //         toastContent: "Could not uncomplete todo!",
+    //       },
+    //       { status: 400 }
+    //     );
+    //   }
+    //   return data({
+    //     toastTitle: "Todo Has Been Uncompleted",
+    //     toastContent: "Todo has been uncomplete successfully!",
+    //   });
+    // }
 
     case "create-list": {
       const {

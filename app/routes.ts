@@ -8,6 +8,7 @@ import {
 
 export default [
   ...prefix("/action", [
+    route("/complete-todo", "./routes/action/complete-todo.ts"),
     route("/favorite-board", "./routes/action/favorite-board.ts"),
     route("/delete-todo", "./routes/action/delete-todo.ts"),
     route("/delete-list", "./routes/action/delete-list.ts"),

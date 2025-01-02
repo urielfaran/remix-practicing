@@ -79,16 +79,9 @@ export async function deleteTodo(id: number) {
   return prisma.todo.delete({ where: { id: id } });
 }
 
-export async function completeTodo(id: number) {
+export async function completeTodo(id: number, isCompleted: boolean) {
   return prisma.todo.update({
     where: { id: id },
-    data: { completeTime: new Date() },
-  });
-}
-
-export async function uncompleteTodo(id: number) {
-  return prisma.todo.update({
-    where: { id: id },
-    data: { completeTime: null },
+    data: { completeTime: isCompleted ? null : new Date() },
   });
 }
