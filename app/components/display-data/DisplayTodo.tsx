@@ -3,7 +3,7 @@ import { differenceInDays, format } from "date-fns";
 import { Calendar, Pencil } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "~/lib/utils";
-import UncompleteTodoButton from "../action-buttons/UncompleteTodoButton";
+import GenericCompleteButton from "../action-buttons/GenericCompleteButton";
 import EditTodoDialog, { dialogStyleType } from "../dialogs/EditTodoDialog";
 import TodoActionDropdown from "../dropdowns/TodoActionDropdown";
 import UpdateTodoDueTime from "../dropdowns/UpdateTodoDueTime";
@@ -34,14 +34,19 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
         {!todo.completeTime && (
           <TodoActionDropdown
             todoId={todo.id}
-            todoCompleteTime={todo.completeTime ? true: false}
+            todoCompleteTime={todo.completeTime ? true : false}
           />
         )}
       </div>
       <CardDescription className="space-y-3">
         <p>{todo.description}</p>
         <div className="flex justify-between items-center">
-          {todo.completeTime && <UncompleteTodoButton todo={todo} />}
+          {todo.completeTime && (
+            <GenericCompleteButton
+              todoCompleteTime={todo.completeTime ? true : false}
+              todoId={todo.id}
+            />
+          )}
           <div className="flex-1 flex justify-end">
             <UpdateTodoDueTime todoId={todo.id}>
               <Button
