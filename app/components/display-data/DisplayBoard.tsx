@@ -4,6 +4,7 @@ import FavoriteBoard from "../action-buttons/FavoriteBoard";
 import BoardActionDropdown from "../dropdowns/BoardActionDropdown";
 import EditableText from "../EditableText";
 import { Card } from "../ui/card";
+import { cn } from "~/lib/utils";
 
 export type BoardWithLists = Prisma.BoardGetPayload<{
   include: {
@@ -16,14 +17,21 @@ interface DisplayListProps {
 }
 
 function DisplayBoard({ board }: DisplayListProps) {
-  const bg = `${board.backgroundColor ?? "secondary"}`;
+  const bgType = board.backgroundColor?.startsWith("url") ?? false;
   return (
     <Card
-      className={"min-w-72 min-h-28 h-fit cursor-pointer group relative"}
+      className={cn("min-w-72 min-h-28 h-fit cursor-pointer group relative", {
+        "bg-secondary": board.backgroundColor === null, // Apply 'bg-secondary' if backgroundColor is not defined
+        "bg-cover bg-center": bgType, // Apply these if it's an image URL
+      })}
       style={{
-        background: bg.startsWith("linear-gradient")
-          ? bg
-          : `var(--color-${bg})`,
+        ...(board.backgroundColor && bgType // Check if the value is an image URL
+          ? {
+              backgroundImage: board.backgroundColor, // Apply the image as a background
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+            }
+          : { background: board.backgroundColor || "secondary" }), // Use fallback color if no backgroundColor
       }}
     >
       <Link

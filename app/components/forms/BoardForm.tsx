@@ -24,7 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { colors } from "~/utils/colors";
+import { backgrounds, colors } from "~/utils/backgrounds";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface BoardFormProps {
   board?: Board;
@@ -59,7 +60,6 @@ function BoardForm({ action, board }: BoardFormProps) {
     fetcher: fetcher,
   });
 
-
   const { isSubmitting } = form.formState;
   return (
     <ShadForm {...form}>
@@ -88,12 +88,12 @@ function BoardForm({ action, board }: BoardFormProps) {
           name="backgroundColor"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>{"background color"}</FormLabel>
+              <FormLabel>{"Background Color"}</FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger
                     style={{
-                      background: field.value || "transparent",
+                      background: field.value || "transparent", // Display background or transparent
                     }}
                     className={`border rounded-md ${
                       field.value
@@ -105,30 +105,35 @@ function BoardForm({ action, board }: BoardFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <div className="grid grid-cols-2 gap-2">
-                    {colors.map((color, index) => (
-                      <SelectItem
-                        key={index}
-                        value={color}
-                        className="min-h-10"
-                        style={{
-                          background: color.startsWith("linear-gradient")
-                            ? color
-                            : color,
-                          borderRadius: "4px", // Optional: Make the dropdown items rounded
-                        }}
-                      >
-                        <span className="text-white"></span>
-                      </SelectItem>
-                    ))}
-                  </div>
+                  <ScrollArea>
+                    <div className="grid grid-cols-2 gap-2">
+                      {backgrounds.map((bg, index) => (
+                        <SelectItem
+                          key={index}
+                          value={bg}
+                          className="min-h-16"
+                          style={{
+                            ...(bg.startsWith("url") // Check if the value is an image URL
+                              ? {
+                                  backgroundImage: bg, // Apply the image as a background
+                                  backgroundPosition: "center",
+                                  backgroundSize: "cover",
+                                }
+                              : { background: bg }), // Otherwise, apply as a color gradient
+                            borderRadius: "4px",
+                          }}
+                        >
+                        </SelectItem>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </SelectContent>
               </Select>
-
               <FormMessage />
             </FormItem>
           )}
         />
+
         <Button
           variant="default"
           className="m-1 w-full"

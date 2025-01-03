@@ -1,7 +1,7 @@
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/favorite-board";
 import invariant from "tiny-invariant";
-import { favoriteBoard } from "~/utils/board";
+import { favoriteBoard } from "~/utils/board.server";
 import { data } from "react-router";
 
 export async function action({ request }: Route.ActionArgs) {

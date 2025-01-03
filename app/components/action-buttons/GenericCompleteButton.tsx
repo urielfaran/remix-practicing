@@ -21,7 +21,7 @@ function GenericCompleteButton({
 
   const soundUrl =
     fetcher.data?.toastTitle && fetcher.data.toastTitle.includes("Completed")
-      ? "/sounds/complete-sound.mp3"
+      ? "/sounds/complete-sound2.mp3"
       : "";
       
 

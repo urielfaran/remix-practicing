@@ -7,7 +7,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-import { getAllBoards } from "~/utils/board";
+import { getAllBoards } from "~/utils/board.server";
 import type { Route } from "./+types/layout";
 import Breadcrumbs from "~/components/Breadcrumbs";
 

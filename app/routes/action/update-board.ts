@@ -5,7 +5,7 @@ import {
   updateBoardSchemaType,
 } from "~/components/forms/BoardForm";
 import { data } from "react-router";
-import { updateBoard } from "~/utils/board";
+import { updateBoard } from "~/utils/board.server";
 
 export async function action({ request }: Route.ActionArgs) {
   const {
@@ -16,7 +16,6 @@ export async function action({ request }: Route.ActionArgs) {
     request,
     updateBoardResolver
   );
-  console.log(payload)
   if (errors) {
     return data({ errors, defaultValues, payload }, { status: 400 });
   }

@@ -68,15 +68,20 @@ function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
                         <div
                           className="w-5 h-5 rounded-sm"
                           style={{
-                            background: `${
-                              board.backgroundColor ?? "secondary"
-                            }`.startsWith("linear-gradient")
-                              ? `${board.backgroundColor ?? "secondary"}`
-                              : `var(--color-${`${
-                                  board.backgroundColor ?? "secondary"
-                                }`})`,
+                            ...(board.backgroundColor &&
+                            board.backgroundColor.startsWith("url") 
+                              ? {
+                                  backgroundImage: board.backgroundColor,
+                                  backgroundPosition: "center",
+                                  backgroundSize: "cover",
+                                }
+                              : {
+                                  background:
+                                    board.backgroundColor || "secondary",
+                                }), 
                           }}
                         />
+
                         <span>{board.name}</span>
                       </a>
                     </SidebarMenuSubButton>

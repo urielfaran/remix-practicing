@@ -14,7 +14,7 @@ import {
 } from "~/components/ui/sheet";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
 import { cn } from "~/lib/utils";
-import { colors } from "~/utils/colors";
+import { backgrounds, colors } from "~/utils/backgrounds";
 interface ChangeBoardColorProps extends PropsWithChildren {
   board: Board;
 }
@@ -35,22 +35,28 @@ function ChangeBoardColor({ children, board }: ChangeBoardColorProps) {
           </SheetDescription>
         </SheetHeader>
         <div className="grid grid-cols-2 gap-4 p-1">
-          {colors.map((color, index) => (
+          {backgrounds.map((bg, index) => (
             <Button
-              onClick={() => setChosenBackground(color)}
+              onClick={() => setChosenBackground(bg)}
               key={index}
-              className={cn("min-h-10", {
-                "ring-4 ring-secondary-foreground": chosenBackground === color,
+              className={cn("min-h-16", {
+                "ring-4 ring-secondary-foreground": chosenBackground === bg,
               })}
               style={{
-                background: color.startsWith("linear-gradient") ? color : color,
+                ...(bg.startsWith("url") // Check if the value is an image URL
+                  ? {
+                      backgroundImage: bg, // Apply the image as a background
+                      backgroundPosition: "center",
+                      backgroundSize: "cover",
+                    }
+                  : { background: bg }), // Otherwise, apply as a color gradient
                 borderRadius: "4px",
               }}
             />
           ))}
         </div>
 
-        <SheetFooter className="pt-2">
+        <SheetFooter className="pt-2 flex">
           <SheetClose asChild>
             <fetcher.Form method="POST" action="/action/update-board">
               <Button type="submit">Save changes</Button>

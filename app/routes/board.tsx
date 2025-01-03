@@ -15,8 +15,6 @@ import {
 import {
   createListResolver,
   createListSchemaType,
-  updateListResolver,
-  updateListSchemaType,
 } from "~/components/forms/ListForm";
 import {
   createTodoResolver,
@@ -24,14 +22,12 @@ import {
 } from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
-import { getBoard } from "~/utils/board";
-import { createList, updateList } from "~/utils/list.server";
-import {
-  createTodo,
-  updateTodo
-} from "~/utils/todo.server";
+import { getBoard } from "~/utils/board.server";
+import { createList } from "~/utils/list.server";
+import { createTodo, updateTodo } from "~/utils/todo.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
+import { cn } from "~/lib/utils";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -58,14 +54,21 @@ function Board({ loaderData }: Route.ComponentProps) {
   const { board } = loaderData;
 
   const bg = `${board.backgroundColor ?? "secondary"}`;
+  const bgType = board.backgroundColor?.startsWith("url") ?? false;
 
   return (
     <ScrollArea
-      className="flex min-w-0 h-full"
+      className={cn("flex min-w-0 h-full", {
+        bgType: "bg-cover bg-center",
+      })}
       style={{
-        background: bg.startsWith("linear-gradient")
-          ? bg
-          : `var(--color-${bg})`,
+        ...(bgType // Check if the value is an image URL
+          ? {
+              backgroundImage: bg, // Apply the image as a background
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+            }
+          : { background: bg }), // Otherwise, apply as a color gradient
       }}
     >
       <BoardHeader board={board} />

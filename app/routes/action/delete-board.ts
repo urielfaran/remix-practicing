@@ -1,8 +1,9 @@
 import { data, redirect } from "react-router";
 import invariant from "tiny-invariant";
-import { deleteBoard } from "~/utils/board";
+import { deleteBoard } from "~/utils/board.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/delete-board";
+
 export async function action({ request }: Route.ActionArgs) {
   const id = await getRequestField("id", request, {
     stringified: false,

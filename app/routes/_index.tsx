@@ -7,7 +7,7 @@ import {
   createBoardResolver,
   createBoardSchemaType
 } from "~/components/forms/BoardForm";
-import { createBoard, getFilterBoards } from "~/utils/board";
+import { createBoard, getFilterBoards } from "~/utils/board.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/_index";
 
