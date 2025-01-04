@@ -21,3 +21,22 @@ export const images = [
 ];
 
 export const backgrounds = colors.concat(images);
+
+export function getBackgroundStyle(boardBg: string | null) {
+  const bgType = boardBg?.startsWith("url") ?? false;
+  const className = {
+    "bg-secondary": boardBg === null, // Apply 'bg-secondary' if boardBg is not defined
+    "bg-cover bg-center": bgType, // Apply these if it's an image URL
+  };
+  const style = {
+    ...(boardBg && bgType // Check if the value is an image URL
+      ? {
+          backgroundImage: boardBg, // Apply the image as a background
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+        }
+      : { background: boardBg || "secondary" }), // Use fallback color if no backgroundColor
+  };
+
+  return { className, style };
+}

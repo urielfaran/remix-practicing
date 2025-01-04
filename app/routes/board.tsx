@@ -28,6 +28,7 @@ import { createTodo, updateTodo } from "~/utils/todo.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
 import { cn } from "~/lib/utils";
+import { getBackgroundStyle } from "~/utils/backgrounds";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -53,23 +54,14 @@ export async function loader({ params }: Route.LoaderArgs) {
 function Board({ loaderData }: Route.ComponentProps) {
   const { board } = loaderData;
 
-  const bg = `${board.backgroundColor ?? "secondary"}`;
-  const bgType = board.backgroundColor?.startsWith("url") ?? false;
+  const { className, style } = getBackgroundStyle(board.backgroundColor);
 
   return (
     <ScrollArea
       className={cn("flex min-w-0 h-full", {
-        bgType: "bg-cover bg-center",
+        className,
       })}
-      style={{
-        ...(bgType // Check if the value is an image URL
-          ? {
-              backgroundImage: bg, // Apply the image as a background
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-            }
-          : { background: bg }), // Otherwise, apply as a color gradient
-      }}
+      style={style}
     >
       <BoardHeader board={board} />
       <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
