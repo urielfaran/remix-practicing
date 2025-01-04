@@ -66,7 +66,7 @@ function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
                         })}
                       >
                         <div
-                          className="w-5 h-5 rounded-sm"
+                          className="w-5 h-5 rounded-sm border-2"
                           style={{
                             ...(board.backgroundColor &&
                             board.backgroundColor.startsWith("url") 

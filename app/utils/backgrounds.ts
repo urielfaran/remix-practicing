@@ -23,20 +23,36 @@ export const images = [
 export const backgrounds = colors.concat(images);
 
 export function getBackgroundStyle(boardBg: string | null) {
-  const bgType = boardBg?.startsWith("url") ?? false;
-  const className = {
-    "bg-secondary": boardBg === null, // Apply 'bg-secondary' if boardBg is not defined
-    "bg-cover bg-center": bgType, // Apply these if it's an image URL
-  };
-  const style = {
-    ...(boardBg && bgType // Check if the value is an image URL
-      ? {
-          backgroundImage: boardBg, // Apply the image as a background
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }
-      : { background: boardBg || "secondary" }), // Use fallback color if no backgroundColor
-  };
+  // Check if the background is an image URL
+  const isImageUrl = boardBg?.startsWith("url") ?? false;
+
+  // Default variables
+  let className = "";
+  let style = {};
+
+  // Case 1: If background is null, use secondary color
+  if (boardBg === null) {
+    className = "";
+    style = {
+      backgroundColor: "hsl(var(--secondary))", // Use secondary background color (CSS variable)
+    };
+  }
+  // Case 2: If it's an image URL, apply image-related styles
+  else if (isImageUrl) {
+    className = "bg-cover bg-center"; // Tailwind classes for image background
+    style = {
+      backgroundImage: boardBg, // Set image as background
+      backgroundPosition: "center",
+      backgroundSize: "cover",
+    };
+  }
+  // Case 3: For gradients or solid colors, apply directly
+  else {
+    className = ""; // No class needed for gradient or solid color
+    style = {
+      background: boardBg, // Use the provided background (gradient or solid color)
+    };
+  }
 
   return { className, style };
 }

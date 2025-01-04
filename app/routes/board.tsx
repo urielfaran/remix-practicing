@@ -58,9 +58,7 @@ function Board({ loaderData }: Route.ComponentProps) {
 
   return (
     <ScrollArea
-      className={cn("flex min-w-0 h-full", {
-        className,
-      })}
+      className={cn("flex min-w-0 h-full", className)} // className is applied only if needed
       style={style}
     >
       <BoardHeader board={board} />

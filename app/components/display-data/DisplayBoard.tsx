@@ -19,6 +19,7 @@ interface DisplayListProps {
 
 function DisplayBoard({ board }: DisplayListProps) {
   const { className, style } = getBackgroundStyle(board.backgroundColor);
+
   return (
     <Card
       className={cn("min-w-72 min-h-28 h-fit cursor-pointer group relative", {
