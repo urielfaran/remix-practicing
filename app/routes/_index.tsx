@@ -1,17 +1,24 @@
 import { ActionFunctionArgs, data, redirect } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
+import invariant from "tiny-invariant";
+import { authenticator } from "~/auth/authenticator";
 import AddBoardButton from "~/components/action-buttons/AddBoardButton";
 import DisplayBoard from "~/components/display-data/DisplayBoard";
 import FilterBoards from "~/components/filter-components/FilterBoards";
 import {
   createBoardResolver,
-  createBoardSchemaType
+  createBoardSchemaType,
 } from "~/components/forms/BoardForm";
 import { createBoard, getFilterBoards } from "~/utils/board.server";
+import { getUserById } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/_index";
 
 export async function loader({ request }: Route.LoaderArgs) {
+  const userId = await authenticator.requireUser(request, "/login");
+  const user = await getUserById(Number(userId));
+  invariant(user, "user is not logged in");
+
   const url = new URL(request.url);
   const query = url.searchParams.get("query") || "";
 

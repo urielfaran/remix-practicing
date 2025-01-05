@@ -36,6 +36,8 @@
     "@react-router/fs-routes": "^7.0.2",
     "@react-router/node": "^7.0.0",
     "@react-router/serve": "^7.0.0",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -72,6 +74,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
+    "tsx": "^4.19.2",
     "typescript": "^5.1.6",
     "vite": "^5.1.0",
     "vite-tsconfig-paths": "^4.2.1"
@@ -80,6 +83,6 @@
     "node": ">=20.0.0"
   },
   "prisma": {
-    "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   }
 }

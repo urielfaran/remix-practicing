@@ -1,9 +1,8 @@
 import { Check, CheckCircle } from "lucide-react";
-import { Button } from "../ui/button";
 import { useFetcher } from "react-router";
-import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { useEffect, useState } from "react";
 import usePlaySound from "~/hooks/usePlaySound";
+import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
+import { Button } from "../ui/button";
 
 interface GenericCompleteButtonProps {
   todoId: number;
@@ -23,7 +22,6 @@ function GenericCompleteButton({
     fetcher.data?.toastTitle && fetcher.data.toastTitle.includes("Completed")
       ? "/sounds/complete-sound2.mp3"
       : "";
-      
 
   usePlaySound({ url: soundUrl });
 

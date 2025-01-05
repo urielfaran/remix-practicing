@@ -15,11 +15,14 @@ export default [
     route("/delete-board", "./routes/action/delete-board.ts"),
     route("/update-board", "./routes/action/update-board.ts"),
     route("/update-list", "./routes/action/update-list.ts"),
+    route("/logout", "./routes/action/logout.ts"),
 
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),
     route("board/:id/:name", "./routes/board.tsx"),
   ]),
+  route("/login", "./routes/login.tsx"),
+
   route("action/set-theme", "./routes/action.set-theme.ts"),
 ] satisfies RouteConfig;

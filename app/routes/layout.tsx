@@ -10,6 +10,7 @@ import {
 import { getAllBoards } from "~/utils/board.server";
 import type { Route } from "./+types/layout";
 import Breadcrumbs from "~/components/Breadcrumbs";
+import Logout from "~/components/action-buttons/Logout";
 
 export async function loader() {
   const boards = await getAllBoards();
@@ -26,6 +27,7 @@ function layout({ loaderData }: Route.ComponentProps) {
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <ModeToggle />
+            <Logout/>
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumbs boards={boards} />
           </div>
