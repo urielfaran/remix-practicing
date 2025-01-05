@@ -13,12 +13,23 @@ export type BoardWithLists = Prisma.BoardGetPayload<{
   };
 }>;
 
+export type UserWithPermissions = Prisma.UserGetPayload<{
+  include: {
+    UserBoardPermission: true;
+  };
+}>;
+
 interface DisplayListProps {
   board: BoardWithLists;
+  user: UserWithPermissions;
 }
 
-function DisplayBoard({ board }: DisplayListProps) {
+function DisplayBoard({ board, user }: DisplayListProps) {
   const { className, style } = getBackgroundStyle(board.backgroundColor);
+
+  const boardPermission = user.UserBoardPermission.find(
+    (permission) => permission.boardId == board.id
+  );
 
   return (
     <Card
@@ -33,17 +44,23 @@ function DisplayBoard({ board }: DisplayListProps) {
       />
       <div className="p-2 flex flex-row justify-between bg-transparent">
         <div className="relative z-10 p-2">
-          <EditableText
-            actionName="/action/update-board"
-            id={board.id}
-            text={board.name}
-            fieldName="name"
-          />
+          {boardPermission?.permission === "owner" ? (
+            <EditableText
+              actionName="/action/update-board"
+              id={board.id}
+              text={board.name}
+              fieldName="name"
+            />
+          ) : (
+            board.name
+          )}
         </div>
         {/*make the button visible when clicking it*/}
-        <div className="invisible group-hover:visible relative z-10">
-          <BoardActionDropdown boardId={board.id} />
-        </div>
+        {boardPermission?.permission === "owner" && (
+          <div className="invisible group-hover:visible relative z-10">
+            <BoardActionDropdown boardId={board.id} />
+          </div>
+        )}
       </div>
       <div className="absolute bottom-2 right-1">
         <FavoriteBoard boardId={board.id} isFavorite={board.isFavorite} />

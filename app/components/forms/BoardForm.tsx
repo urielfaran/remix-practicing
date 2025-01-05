@@ -26,6 +26,8 @@ import {
 } from "../ui/select";
 import { backgrounds, colors } from "~/utils/backgrounds";
 import { ScrollArea } from "../ui/scroll-area";
+import { useContext } from "react";
+import { UserIdContext } from "~/hooks/itemIdContexts";
 
 interface BoardFormProps {
   board?: Board;
@@ -43,10 +45,14 @@ function BoardForm({ action, board }: BoardFormProps) {
   const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 
+  const userId = useContext(UserIdContext)
+
   const defaultValues = {
     name: undefined,
     backgroundColor: undefined,
   };
+
+
 
   const form = useRemixForm<z.infer<typeof schema>>({
     resolver,
@@ -56,6 +62,7 @@ function BoardForm({ action, board }: BoardFormProps) {
     defaultValues: board ?? defaultValues,
     submitData: {
       _action: board ? "update-board" : "create-board",
+      userId: userId
     },
     fetcher: fetcher,
   });

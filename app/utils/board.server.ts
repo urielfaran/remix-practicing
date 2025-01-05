@@ -20,11 +20,16 @@ export async function getBoard(boardId: number) {
   });
 }
 
-export async function getFilterBoards(query: string) {
+export async function getFilterBoards(query: string, userId: number) {
   return prisma.board.findMany({
     where: {
       name: {
         contains: query,
+      },
+      UserBoardPermission: {
+        some: {
+          userId: userId,
+        },
       },
     },
     include: {
@@ -36,11 +41,18 @@ export async function getFilterBoards(query: string) {
 export async function createBoard({
   name,
   backgroundColor,
-}: Prisma.BoardCreateInput) {
+  userId,
+}: Prisma.BoardCreateInput & { userId: number }) {
   return prisma.board.create({
     data: {
       name: name,
       backgroundColor: backgroundColor,
+      UserBoardPermission: {
+        create: {
+          userId: userId,
+          permission: "owner",
+        },
+      },
     },
   });
 }
