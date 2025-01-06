@@ -1,6 +1,7 @@
-import { ActionFunctionArgs, data } from "react-router";
+import { ActionFunctionArgs, data, redirect } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
+import { authenticator } from "~/auth/authenticator";
 import AddListButton from "~/components/action-buttons/AddListButton";
 import BoardHeader from "~/components/BoardHeader";
 import DisplayList from "~/components/display-data/DisplayList";
@@ -22,52 +23,54 @@ import {
 } from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
-import { getBoard } from "~/utils/board.server";
-import { createList } from "~/utils/list.server";
-import { createTodo, updateTodo } from "~/utils/todo.server";
-import { getRequestField } from "~/utils/utils";
-import type { Route } from "./+types/board";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
+import { createList } from "~/utils/list.server";
+import { hasPermission, Permissions } from "~/utils/permissions";
+import { createTodo, updateTodo } from "~/utils/todo.server";
+import { getAllUsersWithoutPermission, getUserWithBoardById } from "~/utils/user.server";
+import { getRequestField } from "~/utils/utils";
+import type { Route } from "./+types/board";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
 }
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
   const boardId = Number(params.id);
   invariant(boardId, "Invalid boardId");
-  // const query = url.searchParams.get("query") || "";
-  // const startDateStr = url.searchParams.get("startDate");
-  // const endDateStr = url.searchParams.get("endDate");
 
-  // const startDate = startDateStr ? new Date(startDateStr) : undefined;
-  // const endDate = endDateStr ? new Date(endDateStr) : undefined;
+  const userId = await authenticator.requireUser(request, "/login");
 
-  // const todos = await getAllToDos({ query, startDate, endDate });
-  const board = await getBoard(boardId);
+  const user = await getUserWithBoardById(Number(userId), boardId);
+  invariant(user, "board doesnt exist");
 
-  invariant(board, "board doesnt exist");
+  if (!user.UserBoardPermission) redirect("/");
+  const { board, permissions } = user?.UserBoardPermission[0] ?? {};
 
-  return { board };
+  const users = await getAllUsersWithoutPermission(board.id)
+
+  return { board, permissions, users };
 }
 
 function Board({ loaderData }: Route.ComponentProps) {
-  const { board } = loaderData;
+  const { board, permissions, users } = loaderData;
 
   const { className, style } = getBackgroundStyle(board.backgroundColor);
 
+  // const isDeletePermission = hasPermission(permissions, Permissions.DELETE);
+  const isEditPermission = hasPermission(permissions, Permissions.WRITE);
+
   return (
-    <ScrollArea
-      className={cn("flex min-w-0 h-full", className)} // className is applied only if needed
-      style={style}
-    >
-      <BoardHeader board={board} />
+    <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
+      <BoardHeader board={board} permissions={permissions} users={users}/>
       <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
-        <BoardIdContext.Provider value={board?.id}>
-          <AddListButton />
-        </BoardIdContext.Provider>
+        {isEditPermission && (
+          <BoardIdContext.Provider value={board?.id}>
+            <AddListButton />
+          </BoardIdContext.Provider>
+        )}
         {board.lists.map((list) => (
-          <DisplayList key={list.id} list={list} />
+          <DisplayList key={list.id} list={list} permissions={permissions}/>
         ))}
       </div>
     </ScrollArea>

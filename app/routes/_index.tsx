@@ -49,6 +49,9 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
 export async function action({ request }: ActionFunctionArgs) {
   const _action = await getRequestField("_action", request);
+  const userId = await authenticator.getUserId(request);
+
+  invariant(userId, "user is required");
 
   switch (_action) {
     case "create-board": {
@@ -68,7 +71,7 @@ export async function action({ request }: ActionFunctionArgs) {
         const newBoard = await createBoard({
           name: payload.name,
           backgroundColor: payload.backgroundColor,
-          userId: payload.userId,
+          userId: Number(userId),
         });
         return redirect(`/board/${newBoard.id}/${newBoard.name}`, {
           headers: {

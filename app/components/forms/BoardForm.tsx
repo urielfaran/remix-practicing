@@ -16,7 +16,8 @@ import {
 import { Input } from "~/components/ui/input";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
 import { createBoardSchema, updateBoardSchema } from "~/schemas/board.schema";
-import { FormActions } from "./TodoForm";
+import { backgrounds } from "~/utils/backgrounds";
+import { ScrollArea } from "../ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -24,10 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { backgrounds, colors } from "~/utils/backgrounds";
-import { ScrollArea } from "../ui/scroll-area";
-import { useContext } from "react";
-import { UserIdContext } from "~/hooks/itemIdContexts";
+import { FormActions } from "./TodoForm";
 
 interface BoardFormProps {
   board?: Board;
@@ -45,14 +43,10 @@ function BoardForm({ action, board }: BoardFormProps) {
   const resolver = zodResolver(schema);
   useResponseToast(fetcher.data);
 
-  const userId = useContext(UserIdContext)
-
   const defaultValues = {
     name: undefined,
     backgroundColor: undefined,
   };
-
-
 
   const form = useRemixForm<z.infer<typeof schema>>({
     resolver,
@@ -62,12 +56,12 @@ function BoardForm({ action, board }: BoardFormProps) {
     defaultValues: board ?? defaultValues,
     submitData: {
       _action: board ? "update-board" : "create-board",
-      userId: userId
     },
     fetcher: fetcher,
   });
 
   const { isSubmitting } = form.formState;
+  console.log(form.formState.errors);
   return (
     <ShadForm {...form}>
       <Form
@@ -129,8 +123,7 @@ function BoardForm({ action, board }: BoardFormProps) {
                               : { background: bg }), // Otherwise, apply as a color gradient
                             borderRadius: "4px",
                           }}
-                        >
-                        </SelectItem>
+                        ></SelectItem>
                       ))}
                     </div>
                   </ScrollArea>

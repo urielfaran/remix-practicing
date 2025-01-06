@@ -7,16 +7,14 @@ async function main() {
   // Seed your database here
   // You can do something like this:
 
-  await authenticator.register({
-    username: "test",
-    password: "password",
-  });
-  // await prisma.user.create({
-  //   data: {
-  //     username: 'test',
-  //     password: 'password',
-  //   },
+  // await authenticator.register({
+  //   username: "test",
+  //   password: "password",
   // });
+  await authenticator.register({
+    username: "test1",
+    password: "password1",
+  });
 }
 
 main()

@@ -6,6 +6,7 @@ import EditableText from "../EditableText";
 import { Card } from "../ui/card";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
+import { hasPermission, Permissions } from "~/utils/permissions";
 
 export type BoardWithLists = Prisma.BoardGetPayload<{
   include: {
@@ -27,8 +28,13 @@ interface DisplayListProps {
 function DisplayBoard({ board, user }: DisplayListProps) {
   const { className, style } = getBackgroundStyle(board.backgroundColor);
 
-  const boardPermission = user.UserBoardPermission.find(
-    (permission) => permission.boardId == board.id
+  const isDeletePermission = hasPermission(
+    user.UserBoardPermission[0].permissions,
+    Permissions.DELETE
+  );
+  const isEditPermission = hasPermission(
+    user.UserBoardPermission[0].permissions,
+    Permissions.WRITE
   );
 
   return (
@@ -44,7 +50,7 @@ function DisplayBoard({ board, user }: DisplayListProps) {
       />
       <div className="p-2 flex flex-row justify-between bg-transparent">
         <div className="relative z-10 p-2">
-          {boardPermission?.permission === "owner" ? (
+          {isDeletePermission ? (
             <EditableText
               actionName="/action/update-board"
               id={board.id}
@@ -56,7 +62,7 @@ function DisplayBoard({ board, user }: DisplayListProps) {
           )}
         </div>
         {/*make the button visible when clicking it*/}
-        {boardPermission?.permission === "owner" && (
+        {isDeletePermission && ( 
           <div className="invisible group-hover:visible relative z-10">
             <BoardActionDropdown boardId={board.id} />
           </div>

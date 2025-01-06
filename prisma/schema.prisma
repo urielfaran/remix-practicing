@@ -37,7 +37,6 @@ model Board {
   name                String
   backgroundColor     String?
   isFavorite          Boolean               @default(false)
-  // User                User
   UserBoardPermission UserBoardPermission[]
 }
 
@@ -54,13 +53,7 @@ model UserBoardPermission {
   boardId Int
   user    User  @relation(fields: [userId], references: [id])
   userId  Int
-  permission Permission
+  permissions Int
 
   @@unique([boardId, userId])
-}
-
-enum Permission {
-  owner
-  editor
-  viewer
 }

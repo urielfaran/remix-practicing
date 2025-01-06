@@ -1,5 +1,6 @@
 import { Board, Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
+import { combinePermissions, Permissions } from "./permissions";
 
 export async function getAllBoards() {
   return prisma.board.findMany({});
@@ -50,7 +51,11 @@ export async function createBoard({
       UserBoardPermission: {
         create: {
           userId: userId,
-          permission: "owner",
+          permissions: combinePermissions(
+            Permissions.READ,
+            Permissions.WRITE,
+            Permissions.DELETE
+          ),
         },
       },
     },

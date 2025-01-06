@@ -9,29 +9,35 @@ import TodoActionDropdown from "../dropdowns/TodoActionDropdown";
 import UpdateTodoDueTime from "../dropdowns/UpdateTodoDueTime";
 import { Button } from "../ui/button";
 import { Card, CardDescription, CardTitle } from "../ui/card";
+import { hasPermission, Permissions } from "~/utils/permissions";
 
-interface DisplayTodoProps {
+interface TodoCardProps {
   todo: Todo;
-  dialogStyle: dialogStyleType;
+  permissions: number;
 }
 
-function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
+type DisplayTodoProps = TodoCardProps & { dialogStyle: dialogStyleType };
+
+function TodoDisplay({ todo, dialogStyle, permissions }: DisplayTodoProps) {
   const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
+  const isEditPermission = hasPermission(permissions, Permissions.WRITE);
 
   return (
     <>
       <div className="flex flex-row justify-between items-center group relative z-10">
         <CardTitle className="flex-1 outline-none">{todo.title}</CardTitle>
-        <EditTodoDialog todo={todo} dialogStyle={dialogStyle}>
-          <Button
-            size={"sm"}
-            variant={"ghost"}
-            className="invisible group-hover:visible"
-          >
-            <Pencil />
-          </Button>
-        </EditTodoDialog>
-        {!todo.completeTime && (
+        {isEditPermission && (
+          <EditTodoDialog todo={todo} dialogStyle={dialogStyle}>
+            <Button
+              size={"sm"}
+              variant={"ghost"}
+              className="invisible group-hover:visible"
+            >
+              <Pencil />
+            </Button>
+          </EditTodoDialog>
+        )}
+        {isEditPermission && !todo.completeTime && (
           <TodoActionDropdown
             todoId={todo.id}
             todoCompleteTime={todo.completeTime ? true : false}
@@ -41,14 +47,28 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
       <CardDescription className="space-y-3">
         <p>{todo.description}</p>
         <div className="flex justify-between items-center">
-          {todo.completeTime && (
+          {isEditPermission && todo.completeTime && (
             <GenericCompleteButton
               todoCompleteTime={todo.completeTime ? true : false}
               todoId={todo.id}
             />
           )}
           <div className="flex-1 flex justify-end">
-            <UpdateTodoDueTime todoId={todo.id}>
+            {isEditPermission ? (
+              <UpdateTodoDueTime todoId={todo.id}>
+                <Button
+                  variant={isLate ? "destructive" : "ghost"}
+                  className={cn("", {
+                    "bg-green-600 hover:bg-green-700 text-white":
+                      todo.completeTime,
+                  })}
+                  size={"sm"}
+                >
+                  <Calendar />
+                  {format(todo.dueTime, "MMM d, yyyy")}
+                </Button>
+              </UpdateTodoDueTime>
+            ) : (
               <Button
                 variant={isLate ? "destructive" : "ghost"}
                 className={cn("", {
@@ -60,7 +80,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
                 <Calendar />
                 {format(todo.dueTime, "MMM d, yyyy")}
               </Button>
-            </UpdateTodoDueTime>
+            )}
           </div>
         </div>
       </CardDescription>
@@ -68,7 +88,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
   );
 }
 
-function TodoCard({ todo }: { todo: Todo }) {
+function TodoCard({ todo, permissions }: TodoCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const [dialogStyle, setDialogStyle] = useState({
@@ -94,7 +114,11 @@ function TodoCard({ todo }: { todo: Todo }) {
       ref={cardRef}
       className={cn("relative grid min-w-48 p-2 hover:ring-2")}
     >
-      <TodoDisplay todo={todo} dialogStyle={dialogStyle} />
+      <TodoDisplay
+        todo={todo}
+        dialogStyle={dialogStyle}
+        permissions={permissions}
+      />
     </Card>
   );
 }

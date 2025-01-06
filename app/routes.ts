@@ -15,6 +15,7 @@ export default [
     route("/delete-board", "./routes/action/delete-board.ts"),
     route("/update-board", "./routes/action/update-board.ts"),
     route("/update-list", "./routes/action/update-list.ts"),
+    route("/share-board", "./routes/action/share-board.ts"),
     route("/logout", "./routes/action/logout.ts"),
 
   ]),

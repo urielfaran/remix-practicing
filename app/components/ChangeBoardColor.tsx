@@ -14,7 +14,7 @@ import {
 } from "~/components/ui/sheet";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
 import { cn } from "~/lib/utils";
-import { backgrounds, colors } from "~/utils/backgrounds";
+import { backgrounds } from "~/utils/backgrounds";
 interface ChangeBoardColorProps extends PropsWithChildren {
   board: Board;
 }
