@@ -10,10 +10,10 @@ export async function action({ request }: Route.ActionArgs) {
     data: payload,
     receivedValues: defaultValues,
   } = await getValidatedFormData<shareBoardType>(request, shareBoardResolver);
-
   if (errors) {
     return data({ errors, defaultValues, payload }, { status: 400 });
   }
+  console.log(payload)
 
   return {};
 }

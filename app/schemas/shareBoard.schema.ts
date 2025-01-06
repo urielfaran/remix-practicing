@@ -7,3 +7,10 @@ export const shareBoardSchema = z.object({
     required_error: "You need to select a permission type.",
   }),
 });
+
+export const permissionType = shareBoardSchema.omit({
+  boardId: true,
+  userId: true,
+});
+
+

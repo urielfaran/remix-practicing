@@ -11,7 +11,7 @@ import { Form, useFetcher } from "react-router";
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { shareBoardSchema } from "~/schemas/shareBoard.schema";
+import { permissionType, shareBoardSchema } from "~/schemas/shareBoard.schema";
 import { useRemixForm } from "remix-hook-form";
 import {
   FormControl,
@@ -22,6 +22,7 @@ import {
   Form as ShadForm,
 } from "~/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Loader2Icon } from "lucide-react";
 
 interface ShareBoardDialogProps extends PropsWithChildren {
   users: User[];
@@ -31,18 +32,21 @@ interface ShareBoardDialogProps extends PropsWithChildren {
 export const shareBoardResolver = zodResolver(shareBoardSchema);
 export type shareBoardType = z.infer<typeof shareBoardSchema>;
 
+export const permissionTypeResolver = zodResolver(permissionType);
+export type permissionTypeType = z.infer<typeof permissionType>;
+
 function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
   const fetcher = useFetcher();
   const [userId, setUserId] = useState<number | undefined>(undefined);
 
   const defaultValues = {
-    userId: userId,
-    boardId: boardId,
+    // userId: userId,
+    // boardId: boardId,
     type: undefined,
   };
 
-  const form = useRemixForm<shareBoardType>({
-    resolver: shareBoardResolver,
+  const form = useRemixForm<permissionTypeType>({
+    resolver: permissionTypeResolver,
     submitConfig: {
       method: "POST",
     },
@@ -55,6 +59,8 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
     defaultValues,
   });
 
+  const { isSubmitting } = form.formState;
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -63,13 +69,9 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
         className="sm:max-w-[425px] min-h-40"
       >
         <DialogTitle>Share Your Board With Other Users</DialogTitle>
+        <UsersCombobox users={users} userId={userId} setUserId={setUserId} />
         <ShadForm {...form}>
           <Form onSubmit={form.handleSubmit} className="w-2/3 space-y-6">
-            <UsersCombobox
-              users={users}
-              userId={userId}
-              setUserId={setUserId}
-            />
             <FormField
               control={form.control}
               name="type"
@@ -108,7 +110,23 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
             />
             <input type="text" name="boardId" hidden readOnly value={boardId} />
             <input type="text" name="userId" hidden readOnly value={userId} />
-            <Button type="submit">Share Board</Button>
+            <Button
+              variant="default"
+              className="m-1 w-full"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  Loading...
+                  <span>
+                    <Loader2Icon className="animate-spin" />
+                  </span>
+                </span>
+              ) : (
+                "Share Board"
+              )}
+            </Button>
           </Form>
         </ShadForm>
       </DialogContent>
