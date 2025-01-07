@@ -45,5 +45,6 @@ export async function getAllUsersWithoutPermission(boardId: number) {
         },
       },
     },
+    take: 10,
   });
 }

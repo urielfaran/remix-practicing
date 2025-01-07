@@ -3,6 +3,7 @@ import type { Route } from "./+types/favorite-board";
 import invariant from "tiny-invariant";
 import { favoriteBoard } from "~/utils/board.server";
 import { data } from "react-router";
+import { authenticator } from "~/auth/authenticator";
 
 export async function action({ request }: Route.ActionArgs) {
   const id = await getRequestField("id", request, {
@@ -14,8 +15,12 @@ export async function action({ request }: Route.ActionArgs) {
   });
   invariant(favoriteStatus);
   const isFavorite = favoriteStatus === "false" ? false : true;
+
+  const userId = await authenticator.requireUser(request, "/login")
+  invariant(userId, "user is not logged in");
+
   try {
-    await favoriteBoard(Number(id), isFavorite);
+    await favoriteBoard(Number(id), isFavorite, Number(userId));
   } catch (errors) {
     return data(
       {

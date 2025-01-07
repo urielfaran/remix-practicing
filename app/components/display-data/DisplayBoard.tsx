@@ -32,10 +32,6 @@ function DisplayBoard({ board, user }: DisplayListProps) {
     user.UserBoardPermission[0].permissions,
     Permissions.DELETE
   );
-  const isEditPermission = hasPermission(
-    user.UserBoardPermission[0].permissions,
-    Permissions.WRITE
-  );
 
   return (
     <Card
@@ -50,23 +46,21 @@ function DisplayBoard({ board, user }: DisplayListProps) {
       />
       <div className="p-2 flex flex-row justify-between bg-transparent">
         <div className="relative z-10 p-2">
-          {isDeletePermission ? (
-            <EditableText
-              actionName="/action/update-board"
-              id={board.id}
-              text={board.name}
-              fieldName="name"
-            />
-          ) : (
-            board.name
-          )}
+          <EditableText
+            actionName="/action/update-board"
+            id={board.id}
+            text={board.name}
+            fieldName="name"
+            isEditable={isDeletePermission}
+          />
         </div>
         {/*make the button visible when clicking it*/}
-        {isDeletePermission && ( 
-          <div className="invisible group-hover:visible relative z-10">
-            <BoardActionDropdown boardId={board.id} />
-          </div>
-        )}
+        <div className="invisible group-hover:visible relative z-10">
+          <BoardActionDropdown
+            boardId={board.id}
+            isActive={isDeletePermission}
+          />
+        </div>
       </div>
       <div className="absolute bottom-2 right-1">
         <FavoriteBoard boardId={board.id} isFavorite={board.isFavorite} />

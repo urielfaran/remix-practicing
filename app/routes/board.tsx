@@ -23,12 +23,19 @@ import {
 } from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
+import {
+  usePermission,
+  UserPermissionProvider,
+} from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
 import { createList } from "~/utils/list.server";
-import { hasPermission, Permissions } from "~/utils/permissions";
+import { Permissions } from "~/utils/permissions";
 import { createTodo, updateTodo } from "~/utils/todo.server";
-import { getAllUsersWithoutPermission, getUserWithBoardById } from "~/utils/user.server";
+import {
+  getAllUsersWithoutPermission,
+  getUserWithBoardById,
+} from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
 
@@ -47,7 +54,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   if (!user.UserBoardPermission) redirect("/");
   const { board, permissions } = user?.UserBoardPermission[0] ?? {};
 
-  const users = await getAllUsersWithoutPermission(board.id)
+  const users = await getAllUsersWithoutPermission(board.id);
 
   return { board, permissions, users };
 }
@@ -57,23 +64,26 @@ function Board({ loaderData }: Route.ComponentProps) {
 
   const { className, style } = getBackgroundStyle(board.backgroundColor);
 
-  // const isDeletePermission = hasPermission(permissions, Permissions.DELETE);
-  const isEditPermission = hasPermission(permissions, Permissions.WRITE);
+  const { checkPermission } = usePermission();
+  const isEditPermission = checkPermission(Permissions.WRITE);
 
   return (
-    <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
-      <BoardHeader board={board} permissions={permissions} users={users}/>
-      <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
-        {isEditPermission && (
+    <UserPermissionProvider value={permissions}>
+      <ScrollArea
+        className={cn("flex min-w-0 h-full", className)}
+        style={style}
+      >
+        <BoardHeader board={board} users={users} />
+        <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
           <BoardIdContext.Provider value={board?.id}>
-            <AddListButton />
+            <AddListButton isActive={isEditPermission} />
           </BoardIdContext.Provider>
-        )}
-        {board.lists.map((list) => (
-          <DisplayList key={list.id} list={list} permissions={permissions}/>
-        ))}
-      </div>
-    </ScrollArea>
+          {board.lists.map((list) => (
+            <DisplayList key={list.id} list={list} />
+          ))}
+        </div>
+      </ScrollArea>
+    </UserPermissionProvider>
   );
 }
 

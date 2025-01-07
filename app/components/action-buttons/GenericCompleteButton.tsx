@@ -8,12 +8,14 @@ interface GenericCompleteButtonProps {
   todoId: number;
   todoCompleteTime: boolean;
   className?: string;
+  isActive?: boolean;
 }
 
 function GenericCompleteButton({
   todoCompleteTime,
   todoId,
   className,
+  isActive = true,
 }: GenericCompleteButtonProps) {
   const fetcher = useFetcher<ToastProps>();
   useResponseToast(fetcher.data);
@@ -32,6 +34,7 @@ function GenericCompleteButton({
         variant={"ghost"}
         type="submit"
         className={className}
+        disabled={!isActive}
       >
         {!todoCompleteTime && <span>Complete Todo</span>}
         {todoCompleteTime ? (

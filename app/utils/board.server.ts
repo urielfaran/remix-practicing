@@ -21,12 +21,10 @@ export async function getBoard(boardId: number) {
   });
 }
 
-export async function getFilterBoards(query: string, userId: number) {
+export async function getFilterBoards(userId: number, query?: string) {
   return prisma.board.findMany({
     where: {
-      name: {
-        contains: query,
-      },
+      name: query ? { contains: query } : undefined, // Filters only if query exists
       UserBoardPermission: {
         some: {
           userId: userId,
@@ -42,17 +40,17 @@ export async function getFilterBoards(query: string, userId: number) {
 export async function createBoard({
   name,
   backgroundColor,
-  userId,
-}: Prisma.BoardCreateInput & { userId: number }) {
+  creatingUserid,
+}: Prisma.BoardCreateWithoutCreatingUserInput & { creatingUserid: number }) {
   return prisma.board.create({
     data: {
       name: name,
+      creatingUserid: creatingUserid,
       backgroundColor: backgroundColor,
       UserBoardPermission: {
         create: {
-          userId: userId,
+          userId: creatingUserid,
           permissions: combinePermissions(
-            Permissions.READ,
             Permissions.WRITE,
             Permissions.DELETE
           ),
@@ -70,10 +68,17 @@ export async function deleteBoard(id: number) {
   });
 }
 
-export async function favoriteBoard(id: number, favoriteStatus: boolean) {
-  return prisma.board.update({
+export async function favoriteBoard(
+  boardId: number,
+  favoriteStatus: boolean,
+  userId: number,
+) {
+  return prisma.userBoardRelation.update({
     where: {
-      id: id,
+      boardId_userId:{
+        boardId: boardId,
+        userId: userId,
+      }
     },
     data: {
       isFavorite: !favoriteStatus,

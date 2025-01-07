@@ -7,16 +7,18 @@ import GenericActionDropdown from "./GenericActionDropdown";
 interface TodoActionDropdownProps {
   todoId: number;
   todoCompleteTime: boolean;
+  isActive?: boolean;
 }
 
 function TodoActionDropdown({
   todoId,
   todoCompleteTime,
+  isActive = true,
 }: TodoActionDropdownProps) {
   return (
     <GenericActionDropdown
       triggerButton={
-        <Button variant={"ghost"} size={"icon"}>
+        <Button variant={"ghost"} size={"icon"} disabled={!isActive}>
           <Ellipsis />
         </Button>
       }

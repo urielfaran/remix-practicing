@@ -5,9 +5,10 @@ import GenericActionDropdown from "./GenericActionDropdown";
 
 interface BoardActionDropdownProps {
   boardId: number;
+  isActive?: boolean;
 }
 
-function BoardActionDropdown({ boardId }: BoardActionDropdownProps) {
+function BoardActionDropdown({ boardId, isActive= true }: BoardActionDropdownProps) {
   return (
     <GenericActionDropdown
       triggerButton={
@@ -15,6 +16,7 @@ function BoardActionDropdown({ boardId }: BoardActionDropdownProps) {
           variant={"ghost"}
           size={"icon"}
           className="hover:bg-inherit shrink-0"
+          disabled= {!isActive}
         >
           <Ellipsis className="hover:-scale-150 transition-transform duration-150" />
         </Button>

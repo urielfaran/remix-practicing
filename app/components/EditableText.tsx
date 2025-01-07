@@ -7,6 +7,7 @@ interface EditableTextProps {
   actionName: string;
   fieldName: string;
   className?: string;
+  isEditable?: boolean;
 }
 
 function EditableText({
@@ -15,6 +16,7 @@ function EditableText({
   text,
   className,
   fieldName,
+  isEditable = true,
 }: EditableTextProps) {
   const fetcher = useFetcher();
   return (
@@ -35,7 +37,7 @@ function EditableText({
           );
         }
       }}
-      contentEditable
+      contentEditable={isEditable}
       dangerouslySetInnerHTML={{
         __html: fetcher.formData
           ? JSON.parse(fetcher.formData.get(fieldName) as string)

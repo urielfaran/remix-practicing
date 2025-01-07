@@ -5,13 +5,14 @@ import GenericActionDropdown from "./GenericActionDropdown";
 
 interface ListActionDropdownProps {
   listId: number;
+  isActive? : boolean
 }
 
-function ListActionDropdown({ listId }: ListActionDropdownProps) {
+function ListActionDropdown({ listId, isActive }: ListActionDropdownProps) {
   return (
     <GenericActionDropdown
       triggerButton={
-        <Button variant={"ghost"} size={"icon"}>
+        <Button variant={"ghost"} size={"icon"} disabled={!isActive}>
           <Ellipsis />
         </Button>
       }

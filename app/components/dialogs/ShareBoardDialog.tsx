@@ -11,7 +11,11 @@ import { Form, useFetcher } from "react-router";
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { permissionType, shareBoardSchema } from "~/schemas/shareBoard.schema";
+import {
+  permissionsArray,
+  permissionType,
+  shareBoardSchema,
+} from "~/schemas/shareBoard.schema";
 import { useRemixForm } from "remix-hook-form";
 import {
   FormControl,
@@ -40,8 +44,6 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
   const [userId, setUserId] = useState<number | undefined>(undefined);
 
   const defaultValues = {
-    // userId: userId,
-    // boardId: boardId,
     type: undefined,
   };
 
@@ -80,28 +82,21 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
                   <FormLabel>Choose Type</FormLabel>
                   <FormControl>
                     <RadioGroup
-                      onValueChange={field.onChange}
+                      onValueChange={field.onChange} 
                       defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="view" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Viewer</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="edit" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Editor</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="delete" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Creator</FormLabel>
-                      </FormItem>
+                      {permissionsArray.map(({ key, value }, index) => (
+                        <FormItem
+                          className="flex items-center space-x-3 space-y-0"
+                          key={index}
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={key} />
+                          </FormControl>
+                          <FormLabel className="font-normal">{value}</FormLabel>
+                        </FormItem>
+                      ))}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />

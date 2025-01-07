@@ -32,28 +32,32 @@ model List {
 }
 
 model Board {
-  id                  Int                   @id @default(autoincrement())
+  id                  Int                 @id @default(autoincrement())
   lists               List[]
   name                String
   backgroundColor     String?
-  isFavorite          Boolean               @default(false)
-  UserBoardPermission UserBoardPermission[]
+  UserBoardPermission UserBoardRelation[]
+  creatingUser        User                @relation(fields: [creatingUserid], references: [id])
+  creatingUserid      Int
 }
 
 model User {
-  id                  Int                   @id @default(autoincrement())
-  username            String                @unique
+  id                  Int                 @id @default(autoincrement())
+  username            String              @unique
   password            String
-  isDisabled          Boolean               @default(false)
-  UserBoardPermission UserBoardPermission[]
+  isDisabled          Boolean             @default(false)
+  UserBoardPermission UserBoardRelation[]
+
+  Boards Board[]
 }
 
-model UserBoardPermission {
-  board   Board @relation(fields: [boardId], references: [id])
-  boardId Int
-  user    User  @relation(fields: [userId], references: [id])
-  userId  Int
+model UserBoardRelation {
+  board       Board   @relation(fields: [boardId], references: [id])
+  boardId     Int
+  user        User    @relation(fields: [userId], references: [id])
+  userId      Int
   permissions Int
+  isFavorite  Boolean @default(false)
 
   @@unique([boardId, userId])
 }

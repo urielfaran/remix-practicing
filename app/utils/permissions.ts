@@ -1,7 +1,6 @@
 export const Permissions = {
-  READ: 1 << 0, // 0x001 (1)
-  WRITE: 1 << 1, // 0x002 (2)
-  DELETE: 1 << 2, // 0x004 (4)
+  WRITE: 1 << 0, // 0x001 (1)
+  DELETE: 1 << 1, // 0x002 (2)
 } as const;
 
 export type PermissionKey = keyof typeof Permissions;

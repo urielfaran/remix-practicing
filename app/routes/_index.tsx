@@ -23,7 +23,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const query = url.searchParams.get("query") || "";
 
-  const boards = await getFilterBoards(query, user.id);
+  const boards = await getFilterBoards(user.id, query);
 
   return { boards, user };
 }
@@ -71,7 +71,7 @@ export async function action({ request }: ActionFunctionArgs) {
         const newBoard = await createBoard({
           name: payload.name,
           backgroundColor: payload.backgroundColor,
-          userId: Number(userId),
+          creatingUserid: Number(userId),
         });
         return redirect(`/board/${newBoard.id}/${newBoard.name}`, {
           headers: {

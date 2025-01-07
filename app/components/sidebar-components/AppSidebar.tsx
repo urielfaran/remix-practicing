@@ -1,5 +1,3 @@
-"use client";
-
 import {
   AudioWaveform,
   BookOpen,
@@ -27,6 +25,7 @@ import { HomeHeader } from "./HomeHeader";
 import { NavMain } from "./NavMain";
 import { FavoriteBoards } from "./NavFavorites";
 import { NavUser } from "./NavUser";
+import { SharedBoards } from "./SharedBoards";
 
 // This is sample data.
 const data = {
@@ -159,11 +158,13 @@ const data = {
 };
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  boards: Board[];
+  ownedBoards: Board[];
+  sharedBoards: Board[];
+
 }
 
-export function AppSidebar({ boards, ...props }: AppSidebarProps) {
-  const favoriteBoards = boards.filter((board) => board.isFavorite);
+export function AppSidebar({ ownedBoards, sharedBoards, ...props }: AppSidebarProps) {
+  const favoriteBoards = ownedBoards.filter((board) => board.isFavorite);
   return (
     <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
@@ -172,8 +173,9 @@ export function AppSidebar({ boards, ...props }: AppSidebarProps) {
         </Link>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain boards={boards} />
+        <NavMain boards={ownedBoards} />
         <FavoriteBoards boards={favoriteBoards} />
+        <SharedBoards boards={sharedBoards}/>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

@@ -1,11 +1,12 @@
 import { Prisma } from "@prisma/client";
+import { usePermission } from "~/hooks/permissionsContext";
+import { Permissions } from "~/utils/permissions";
 import { ListIdContext } from "../../hooks/itemIdContexts";
 import AddTodoButton from "../action-buttons/AddTodoButton";
 import ListActionDropdown from "../dropdowns/ListActionDropdown";
 import EditableText from "../EditableText";
 import { Card, CardDescription } from "../ui/card";
 import TodoCard from "./DisplayTodo";
-import { hasPermission, Permissions } from "~/utils/permissions";
 
 export type ListWithTodos = Prisma.ListGetPayload<{
   include: {
@@ -15,42 +16,36 @@ export type ListWithTodos = Prisma.ListGetPayload<{
 
 interface DisplayListProps {
   list: ListWithTodos;
-  permissions: number;
 }
 
-function DisplayList({ list, permissions }: DisplayListProps) {
-  // const isDeletePermission = hasPermission(permissions, Permissions.DELETE);
-  const isEditPermission = hasPermission(permissions, Permissions.WRITE);
+function DisplayList({ list }: DisplayListProps) {
+  const { checkPermission } = usePermission();
+  const isEditPermission = checkPermission(Permissions.WRITE);
 
   return (
     <Card className="min-w-64 bg-secondary h-fit">
       <div className="p-4 pb-0 flex-1 flex flex-row justify-between bg-transparent">
-        {isEditPermission ? (
-          <>
-            <EditableText
-              actionName="/action/update-list"
-              id={list.id}
-              text={list.title}
-              fieldName="title"
-            />
-            <ListActionDropdown listId={list.id} />
-          </>
-        ) : (
-          list.title
-        )}
+        <>
+          <EditableText
+            actionName="/action/update-list"
+            id={list.id}
+            text={list.title}
+            fieldName="title"
+            isEditable={isEditPermission}
+          />
+          <ListActionDropdown listId={list.id} isActive={isEditPermission}/>
+        </>
       </div>
       <CardDescription className="flex flex-col gap-2 overflow-y-auto p-2">
         {list.todos.map((todo, index) => (
-          <TodoCard todo={todo} key={index} permissions={permissions} />
+          <TodoCard todo={todo} key={index} />
         ))}
       </CardDescription>
-      {isEditPermission && (
-        <ListIdContext.Provider value={list.id}>
-          <div className="p-1 w-full">
-            <AddTodoButton />
-          </div>
-        </ListIdContext.Provider>
-      )}
+      <ListIdContext.Provider value={list.id}>
+        <div className="p-1 w-full">
+          <AddTodoButton isActive={isEditPermission} />
+        </div>
+      </ListIdContext.Provider>
     </Card>
   );
 }
