@@ -1,37 +1,36 @@
 import { Prisma } from "@prisma/client";
 import { Link } from "react-router";
+import { usePermission } from "~/hooks/permissionsContext";
+import { cn } from "~/lib/utils";
+import { getBackgroundStyle } from "~/utils/backgrounds";
+import { Permissions } from "~/utils/permissions";
 import FavoriteBoard from "../action-buttons/FavoriteBoard";
 import BoardActionDropdown from "../dropdowns/BoardActionDropdown";
 import EditableText from "../EditableText";
 import { Card } from "../ui/card";
-import { cn } from "~/lib/utils";
-import { getBackgroundStyle } from "~/utils/backgrounds";
-import { hasPermission, Permissions } from "~/utils/permissions";
 
 export type BoardWithLists = Prisma.BoardGetPayload<{
   include: {
     lists: true;
-  };
-}>;
-
-export type UserWithPermissions = Prisma.UserGetPayload<{
-  include: {
-    UserBoardPermission: true;
+    UserBoardRelation: {
+      select: {
+        isFavorite: true;
+      };
+    };
   };
 }>;
 
 interface DisplayListProps {
   board: BoardWithLists;
-  user: UserWithPermissions;
 }
 
-function DisplayBoard({ board, user }: DisplayListProps) {
+function DisplayBoard({ board }: DisplayListProps) {
   const { className, style } = getBackgroundStyle(board.backgroundColor);
 
-  const isDeletePermission = hasPermission(
-    user.UserBoardPermission[0].permissions,
-    Permissions.DELETE
-  );
+  const { checkPermission } = usePermission();
+  const isDeletePermission = checkPermission(Permissions.DELETE);
+
+  const isFavorite = board.UserBoardRelation[0].isFavorite;
 
   return (
     <Card
@@ -63,7 +62,7 @@ function DisplayBoard({ board, user }: DisplayListProps) {
         </div>
       </div>
       <div className="absolute bottom-2 right-1">
-        <FavoriteBoard boardId={board.id} isFavorite={board.isFavorite} />
+        <FavoriteBoard boardId={board.id} isFavorite={isFavorite} />
       </div>
     </Card>
   );

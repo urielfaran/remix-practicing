@@ -42,6 +42,7 @@ import type { Route } from "./+types/board";
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
 }
+
 export async function loader({ params, request }: Route.LoaderArgs) {
   const boardId = Number(params.id);
   invariant(boardId, "Invalid boardId");
@@ -51,8 +52,9 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   const user = await getUserWithBoardById(Number(userId), boardId);
   invariant(user, "board doesnt exist");
 
-  if (!user.UserBoardPermission) redirect("/");
-  const { board, permissions } = user?.UserBoardPermission[0] ?? {};
+  if (!user.UserBoardRelation) redirect("/");
+
+  const { board, permissions } = user?.UserBoardRelation[0] ?? {}; // Ensure UserBoardRelation is included here
 
   const users = await getAllUsersWithoutPermission(board.id);
 

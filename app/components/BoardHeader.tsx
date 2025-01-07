@@ -1,5 +1,5 @@
-import { Board, User } from "@prisma/client";
-import { Image, UsersRound  } from "lucide-react";
+import { Prisma, User } from "@prisma/client";
+import { Image, UsersRound } from "lucide-react";
 import { usePermission } from "~/hooks/permissionsContext";
 import { Permissions } from "~/utils/permissions";
 import FavoriteBoard from "./action-buttons/FavoriteBoard";
@@ -8,14 +8,27 @@ import ShareBoardDialog from "./dialogs/ShareBoardDialog";
 import EditableText from "./EditableText";
 import { Button } from "./ui/button";
 
+export type BoardWithRelations = Prisma.BoardGetPayload<{
+  include: {
+    lists: {
+      include: {
+        todos: true;
+      };
+    };
+    UserBoardRelation: true;
+  };
+}>;
+
 interface BoardHeaderProps {
-  board: Board;
+  board: BoardWithRelations;
   users: User[];
 }
 function BoardHeader({ board, users }: BoardHeaderProps) {
   const { checkPermission } = usePermission();
   const isEditPermission = checkPermission(Permissions.WRITE);
   const isDeletePermission = checkPermission(Permissions.DELETE);
+
+  const isFavorite = board.UserBoardRelation[0].isFavorite;
 
   return (
     <div className="bg-background/20 backdrop-filter backdrop-blur-sm p-3 flex flex-row justify-between">
@@ -29,12 +42,12 @@ function BoardHeader({ board, users }: BoardHeaderProps) {
           isEditable={isDeletePermission}
         />
 
-        <FavoriteBoard boardId={board.id} isFavorite={board.isFavorite} />
+        <FavoriteBoard boardId={board.id} isFavorite={isFavorite} />
       </div>
       <div className="flex flex-row mr-2 gap-3">
         <ShareBoardDialog users={users} boardId={board.id}>
           <Button variant={"ghost"} size={"sm"} disabled={!isDeletePermission}>
-            <UsersRound  />
+            <UsersRound />
             Share Board
           </Button>
         </ShareBoardDialog>

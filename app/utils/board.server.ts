@@ -25,7 +25,7 @@ export async function getFilterBoards(userId: number, query?: string) {
   return prisma.board.findMany({
     where: {
       name: query ? { contains: query } : undefined, // Filters only if query exists
-      UserBoardPermission: {
+      UserBoardRelation: {
         some: {
           userId: userId,
         },
@@ -33,6 +33,11 @@ export async function getFilterBoards(userId: number, query?: string) {
     },
     include: {
       lists: true,
+      UserBoardRelation: {
+        select: {
+          isFavorite: true, 
+        },
+      },
     },
   });
 }
@@ -47,7 +52,7 @@ export async function createBoard({
       name: name,
       creatingUserid: creatingUserid,
       backgroundColor: backgroundColor,
-      UserBoardPermission: {
+      UserBoardRelation: {
         create: {
           userId: creatingUserid,
           permissions: combinePermissions(
@@ -71,14 +76,14 @@ export async function deleteBoard(id: number) {
 export async function favoriteBoard(
   boardId: number,
   favoriteStatus: boolean,
-  userId: number,
+  userId: number
 ) {
   return prisma.userBoardRelation.update({
     where: {
-      boardId_userId:{
+      boardId_userId: {
         boardId: boardId,
         userId: userId,
-      }
+      },
     },
     data: {
       isFavorite: !favoriteStatus,
@@ -95,5 +100,40 @@ export async function updateBoard({
   return prisma.board.update({
     where: { id: id },
     data: data,
+  });
+}
+
+export async function getUserFavoriteBoards(userId: number) {
+  return await prisma.board.findMany({
+    where: {
+      UserBoardRelation: {
+        some: {
+          userId: userId,
+          isFavorite: true,
+        },
+      },
+    },
+    include: {
+      UserBoardRelation: {
+        where: {
+          userId: userId,
+        },
+        select: {
+          isFavorite: true,
+          permissions: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getUserBoardRelation(userId: number, boardId: number) {
+  return await prisma.userBoardRelation.findUnique({
+    where: {
+      boardId_userId: {
+        boardId: boardId,
+        userId: userId,
+      },
+    },
   });
 }

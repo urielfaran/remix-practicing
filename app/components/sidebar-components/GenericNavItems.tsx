@@ -28,7 +28,7 @@ interface GenericNavItemsProps extends PropsWithChildren {
 }
 
 function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
-  const { id } = useParams(); // Get the current board ID from the URL params
+  const { id } = useParams(); 
 
   return (
     <SidebarGroup>
@@ -45,53 +45,58 @@ function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {boards?.map((board) => (
-                  <SidebarMenuSubItem
-                    key={board.id}
-                    className={cn(
-                      "flex flex-row hover:bg-muted transition-colors duration-300",
-                      {
-                        "bg-muted-foreground/40": board.id === Number(id),
-                      }
-                    )}
-                  >
-                    <SidebarMenuSubButton
-                      asChild
-                      className="hover:bg-inherit mt-1 focus-visible:bg-inherit"
-                    >
-                      <a
-                        href={`/board/${board.id}/${board.name}`}
-                        className={cn("flex-1", {
-                          "font-bold": board.id === Number(id),
-                        })}
-                      >
-                        <div
-                          className="w-5 h-5 rounded-sm border-2"
-                          style={{
-                            ...(board.backgroundColor &&
-                            board.backgroundColor.startsWith("url") 
-                              ? {
-                                  backgroundImage: board.backgroundColor,
-                                  backgroundPosition: "center",
-                                  backgroundSize: "cover",
-                                }
-                              : {
-                                  background:
-                                    board.backgroundColor || "secondary",
-                                }), 
-                          }}
-                        />
+                {boards.map((board) => {
+                  const isFavorite = true
+                    // board.UserBoardRelation[0]?.isFavorite;
 
-                        <span>{board.name}</span>
-                      </a>
-                    </SidebarMenuSubButton>
-                    <FavoriteBoard
-                      boardId={board.id}
-                      isFavorite={board.isFavorite}
-                    />
-                    <BoardActionDropdown boardId={board.id} key={board.id} />
-                  </SidebarMenuSubItem>
-                ))}
+                  return (
+                    <SidebarMenuSubItem
+                      key={board.id}
+                      className={cn(
+                        "flex flex-row hover:bg-muted transition-colors duration-300",
+                        {
+                          "bg-muted-foreground/40": board.id === Number(id),
+                        }
+                      )}
+                    >
+                      <SidebarMenuSubButton
+                        asChild
+                        className="hover:bg-inherit mt-1 focus-visible:bg-inherit"
+                      >
+                        <a
+                          href={`/board/${board.id}/${board.name}`}
+                          className={cn("flex-1", {
+                            "font-bold": board.id === Number(id),
+                          })}
+                        >
+                          <div
+                            className="w-5 h-5 rounded-sm border-2"
+                            style={{
+                              ...(board.backgroundColor &&
+                              board.backgroundColor.startsWith("url")
+                                ? {
+                                    backgroundImage: board.backgroundColor,
+                                    backgroundPosition: "center",
+                                    backgroundSize: "cover",
+                                  }
+                                : {
+                                    background:
+                                      board.backgroundColor || "secondary",
+                                  }),
+                            }}
+                          />
+
+                          <span>{board.name}</span>
+                        </a>
+                      </SidebarMenuSubButton>
+                      <FavoriteBoard
+                        boardId={board.id}
+                        isFavorite={isFavorite} // Pass the correct isFavorite value here
+                      />
+                      <BoardActionDropdown boardId={board.id} key={board.id} />
+                    </SidebarMenuSubItem>
+                  );
+                })}
               </SidebarMenuSub>
             </CollapsibleContent>
           </SidebarMenuItem>

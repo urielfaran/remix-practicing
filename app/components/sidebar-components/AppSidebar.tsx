@@ -160,11 +160,10 @@ const data = {
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   ownedBoards: Board[];
   sharedBoards: Board[];
-
+  favoriteBoards: Board[]
 }
 
-export function AppSidebar({ ownedBoards, sharedBoards, ...props }: AppSidebarProps) {
-  const favoriteBoards = ownedBoards.filter((board) => board.isFavorite);
+export function AppSidebar({ ownedBoards, sharedBoards, favoriteBoards,...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>

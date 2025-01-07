@@ -36,7 +36,7 @@ model Board {
   lists               List[]
   name                String
   backgroundColor     String?
-  UserBoardPermission UserBoardRelation[]
+  UserBoardRelation UserBoardRelation[]
   creatingUser        User                @relation(fields: [creatingUserid], references: [id])
   creatingUserid      Int
 }
@@ -46,7 +46,7 @@ model User {
   username            String              @unique
   password            String
   isDisabled          Boolean             @default(false)
-  UserBoardPermission UserBoardRelation[]
+  UserBoardRelation UserBoardRelation[]
 
   Boards Board[]
 }

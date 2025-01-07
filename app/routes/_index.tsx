@@ -40,7 +40,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
           <AddBoardButton />
         </UserIdContext.Provider>
         {boards.map((board, index) => (
-          <DisplayBoard board={board} key={index} user={user} />
+          <DisplayBoard board={board} key={index} />
         ))}
       </div>
     </div>

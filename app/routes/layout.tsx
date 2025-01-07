@@ -13,45 +13,34 @@ import {
 } from "~/components/ui/sidebar";
 import { prisma } from "~/db.server";
 import type { Route } from "./+types/layout";
+import {  getUserLayoutBoards } from "~/utils/user.server";
+import { getUserFavoriteBoards } from "~/utils/board.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const userId = await authenticator.requireUser(request, "/login");
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: Number(userId),
-    },
-    include: {
-      Boards: {},
-      UserBoardPermission: {
-        where: {
-          board: {
-            creatingUserid: {
-              not: Number(userId),
-            },
-          },
-        },
-        select: {
-          board: true,
-        },
-      },
-    },
-  });
-  invariant(user, "user is not logged in");
-  const { Boards, UserBoardPermission } = user;
+  invariant(userId, "user is not logged in");
 
-  const sharedBoards = UserBoardPermission.map((board) => board.board);
-  return { sharedBoards, ownedBoards: Boards };
+  const user = await getUserLayoutBoards(Number(userId))
+  invariant(user, "user is not logged in");
+  const { Boards, UserBoardRelation } = user;
+
+  const favoriteBoards = await getUserFavoriteBoards(Number(userId))
+
+  const sharedBoards = UserBoardRelation.map((board) => board.board);
+
+  return { sharedBoards, ownedBoards: Boards, favoriteBoards };
 }
 
 function layout({ loaderData }: Route.ComponentProps) {
-  const { ownedBoards, sharedBoards } = loaderData;
+  const { ownedBoards, sharedBoards, favoriteBoards } = loaderData;
 
   const boards = ownedBoards.concat(sharedBoards)
+  favoriteBoards[0].UserBoardRelation[0]?.isFavorite;
 
   return (
     <SidebarProvider>
-      <AppSidebar ownedBoards={ownedBoards} sharedBoards={sharedBoards} />
+      <AppSidebar ownedBoards={ownedBoards} sharedBoards={sharedBoards} favoriteBoards={favoriteBoards} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
