@@ -35,7 +35,7 @@ export async function getFilterBoards(userId: number, query?: string) {
       lists: true,
       UserBoardRelation: {
         select: {
-          isFavorite: true, 
+          isFavorite: true,
         },
       },
     },
@@ -134,6 +134,20 @@ export async function getUserBoardRelation(userId: number, boardId: number) {
         boardId: boardId,
         userId: userId,
       },
+    },
+  });
+}
+
+export async function shareBoard(
+  userId: number,
+  boardId: number,
+  permission: number
+) {
+  return await prisma.userBoardRelation.create({
+    data: {
+      boardId: boardId,
+      userId: userId,
+      permissions: permission,
     },
   });
 }

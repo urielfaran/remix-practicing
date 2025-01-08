@@ -11,7 +11,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-import { prisma } from "~/db.server";
 import type { Route } from "./+types/layout";
 import {  getUserLayoutBoards } from "~/utils/user.server";
 import { getUserFavoriteBoards } from "~/utils/board.server";
@@ -36,7 +35,7 @@ function layout({ loaderData }: Route.ComponentProps) {
   const { ownedBoards, sharedBoards, favoriteBoards } = loaderData;
 
   const boards = ownedBoards.concat(sharedBoards)
-  favoriteBoards[0].UserBoardRelation[0]?.isFavorite;
+  // favoriteBoards[0].UserBoardRelation[0]?.isFavorite;
 
   return (
     <SidebarProvider>

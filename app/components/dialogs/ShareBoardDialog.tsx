@@ -27,6 +27,7 @@ import {
 } from "~/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Loader2Icon } from "lucide-react";
+import useResponseToast from "~/hooks/useResponseToast";
 
 interface ShareBoardDialogProps extends PropsWithChildren {
   users: User[];
@@ -43,8 +44,10 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
   const fetcher = useFetcher();
   const [userId, setUserId] = useState<number | undefined>(undefined);
 
+  useResponseToast(fetcher.data);
+
   const defaultValues = {
-    type: undefined,
+    permission: undefined,
   };
 
   const form = useRemixForm<permissionTypeType>({
@@ -53,7 +56,6 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
       method: "POST",
     },
     submitData: {
-      _action: "/action/share-board",
       boardId: boardId,
       userId: userId,
     },
@@ -62,6 +64,7 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
   });
 
   const { isSubmitting } = form.formState;
+
 
   return (
     <Dialog>
@@ -73,17 +76,17 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
         <DialogTitle>Share Your Board With Other Users</DialogTitle>
         <UsersCombobox users={users} userId={userId} setUserId={setUserId} />
         <ShadForm {...form}>
-          <Form onSubmit={form.handleSubmit} className="w-2/3 space-y-6">
+          <Form onSubmit={form.handleSubmit} className="w-2/3 space-y-6" action="/action/share-board">
             <FormField
               control={form.control}
-              name="type"
+              name="permission"
               render={({ field }) => (
                 <FormItem className="space-y-3">
                   <FormLabel>Choose Type</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange} 
-                      defaultValue={field.value}
+                      value={field.value}
                       className="flex flex-col space-y-1"
                     >
                       {permissionsArray.map(({ key, value }, index) => (
@@ -92,9 +95,9 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
                           key={index}
                         >
                           <FormControl>
-                            <RadioGroupItem value={key} />
+                            <RadioGroupItem value={value} />
                           </FormControl>
-                          <FormLabel className="font-normal">{value}</FormLabel>
+                          <FormLabel className="font-normal">{key}</FormLabel>
                         </FormItem>
                       ))}
                     </RadioGroup>
@@ -103,8 +106,6 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
                 </FormItem>
               )}
             />
-            <input type="text" name="boardId" hidden readOnly value={boardId} />
-            <input type="text" name="userId" hidden readOnly value={userId} />
             <Button
               variant="default"
               className="m-1 w-full"
