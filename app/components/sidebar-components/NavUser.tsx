@@ -25,18 +25,29 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar";
+import Logout from "../action-buttons/Logout";
+import { Form } from "react-router";
+import { Button } from "../ui/button";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+interface NavUserProps {
+  username: string;
+}
+
+function processuserName(input: string): string {
+  if (input.includes(" ")) {
+    return input
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase())
+      .join("");
+  } else {
+    return input.slice(0, 2).toUpperCase();
+  }
+}
+
+export function NavUser({ username }: NavUserProps) {
   const { isMobile } = useSidebar();
 
+  const userNameCaps = processuserName(username);
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -47,12 +58,14 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={""} alt={userNameCaps} />
+                <AvatarFallback className="rounded-lg">
+                  {userNameCaps}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{username}</span>
+                <span className="truncate text-xs">{"user.email"}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -66,12 +79,12 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src={""} alt={userNameCaps} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">{username}</span>
+                  <span className="truncate text-xs">{"user.email"}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -99,8 +112,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <LogOut />
-              Log out
+              <Logout />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

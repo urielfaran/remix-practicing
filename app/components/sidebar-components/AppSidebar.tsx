@@ -161,9 +161,10 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   ownedBoards: Board[];
   sharedBoards: Board[];
   favoriteBoards: Board[]
+  username: string
 }
 
-export function AppSidebar({ ownedBoards, sharedBoards, favoriteBoards,...props }: AppSidebarProps) {
+export function AppSidebar({ ownedBoards, sharedBoards, favoriteBoards, username,...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
@@ -177,7 +178,7 @@ export function AppSidebar({ ownedBoards, sharedBoards, favoriteBoards,...props 
         <SharedBoards boards={sharedBoards}/>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser username={username} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
