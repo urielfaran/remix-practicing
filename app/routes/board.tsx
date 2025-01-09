@@ -33,7 +33,7 @@ import { createList } from "~/utils/list.server";
 import { Permissions } from "~/utils/permissions";
 import { createTodo, updateTodo } from "~/utils/todo.server";
 import {
-  getAllUsersWithoutPermission,
+  getActiveUsers,
   getUserWithBoardById,
 } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
@@ -56,7 +56,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
   const { board, permissions } = user?.UserBoardRelation[0] ?? {}; // Ensure UserBoardRelation is included here
 
-  const users = await getAllUsersWithoutPermission(board.id);
+  const users = await getActiveUsers();
 
   return { board, permissions, users };
 }

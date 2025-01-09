@@ -35,17 +35,13 @@ export async function getUserWithBoardById(userId: number, boardId: number) {
   });
 }
 
-export async function getAllUsersWithoutPermission(boardId: number) {
+export async function getActiveUsers() {
   return await prisma.user.findMany({
     where: {
       isDisabled: false,
-      UserBoardRelation: {
-        every: {
-          NOT: {
-            boardId: boardId,
-          },
-        },
-      },
+    },
+    include:{
+      UserBoardRelation:true
     },
     take: 10,
   });

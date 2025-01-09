@@ -1,4 +1,4 @@
-import { Prisma, User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Image, UsersRound } from "lucide-react";
 import { usePermission } from "~/hooks/permissionsContext";
 import { Permissions } from "~/utils/permissions";
@@ -19,9 +19,15 @@ export type BoardWithRelations = Prisma.BoardGetPayload<{
   };
 }>;
 
+export type UserWithBoardRelation = Prisma.UserGetPayload<{
+  include: {
+    UserBoardRelation: true;
+  };
+}>;
+
 interface BoardHeaderProps {
   board: BoardWithRelations;
-  users: User[];
+  users: UserWithBoardRelation[];
 }
 function BoardHeader({ board, users }: BoardHeaderProps) {
   const { checkPermission } = usePermission();

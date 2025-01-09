@@ -12,7 +12,7 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar";
 import type { Route } from "./+types/layout";
-import {  getUserLayoutBoards } from "~/utils/user.server";
+import { getUserLayoutBoards } from "~/utils/user.server";
 import { getUserFavoriteBoards } from "~/utils/board.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -20,10 +20,12 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   invariant(userId, "user is not logged in");
 
-  const user = await getUserLayoutBoards(Number(userId))
+  const user = await getUserLayoutBoards(Number(userId));
   invariant(user, "user is not logged in");
   const { Boards, UserBoardRelation } = user;
-  const favoriteBoards = await getUserFavoriteBoards(Number(userId))
+  const favoriteBoards = await getUserFavoriteBoards(Number(userId));
+
+  // const sharedBoards = UserBoardRelation.map((board) => board.board);
 
   const sharedBoards = UserBoardRelation.map((board) => board.board);
 
@@ -33,12 +35,17 @@ export async function loader({ request }: Route.LoaderArgs) {
 function layout({ loaderData }: Route.ComponentProps) {
   const { ownedBoards, sharedBoards, favoriteBoards, user } = loaderData;
 
-  const boards = ownedBoards.concat(sharedBoards)
+  const boards = ownedBoards.concat(sharedBoards);
   // favoriteBoards[0].UserBoardRelation[0]?.isFavorite;
 
   return (
     <SidebarProvider>
-      <AppSidebar ownedBoards={ownedBoards} sharedBoards={sharedBoards} favoriteBoards={favoriteBoards} username={user.username}/>
+      <AppSidebar
+        ownedBoards={ownedBoards}
+        sharedBoards={sharedBoards}
+        favoriteBoards={favoriteBoards}
+        username={user.username}
+      />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
