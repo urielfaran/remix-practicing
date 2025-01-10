@@ -1,14 +1,13 @@
-"use client";
-
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
   CreditCard,
-  LogOut,
+  Settings,
   Sparkles,
 } from "lucide-react";
 
+import { User } from "@prisma/client";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   DropdownMenu,
@@ -26,28 +25,17 @@ import {
   useSidebar,
 } from "~/components/ui/sidebar";
 import Logout from "../action-buttons/Logout";
-import { Form } from "react-router";
-import { Button } from "../ui/button";
+import UserAvatar from "../user-components/UserAvatar";
+import UserSettings from "../user-components/UserSettings";
 
 interface NavUserProps {
-  username: string;
+  user: User;
 }
 
-function processuserName(input: string): string {
-  if (input.includes(" ")) {
-    return input
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase())
-      .join("");
-  } else {
-    return input.slice(0, 2).toUpperCase();
-  }
-}
-
-export function NavUser({ username }: NavUserProps) {
+export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
+  const [open, setOpen] = useState(false);
 
-  const userNameCaps = processuserName(username);
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -57,15 +45,10 @@ export function NavUser({ username }: NavUserProps) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={""} alt={userNameCaps} />
-                <AvatarFallback className="rounded-lg">
-                  {userNameCaps}
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar avatarUrl={user.avatar} username={user.username} />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{username}</span>
-                <span className="truncate text-xs">{"user.email"}</span>
+                <span className="truncate font-semibold">{user.username}</span>
+                <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -78,13 +61,12 @@ export function NavUser({ username }: NavUserProps) {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={""} alt={userNameCaps} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
+                <UserAvatar avatarUrl={user.avatar} username={user.username} />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{username}</span>
-                  <span className="truncate text-xs">{"user.email"}</span>
+                  <span className="truncate font-semibold">
+                    {user.username}
+                  </span>
+                  <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -97,10 +79,17 @@ export function NavUser({ username }: NavUserProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
+              <UserSettings open={open} user={user}>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpen(!open);
+                  }}
+                >
+                  <Settings />
+                  Settings
+                </DropdownMenuItem>
+              </UserSettings>
               <DropdownMenuItem>
                 <CreditCard />
                 Billing

@@ -21,7 +21,7 @@ import { permissionsArray } from "~/schemas/shareBoard.schema";
 import { UserWithBoardRelation } from "../BoardHeader";
 import {
   permissionTypeResolver,
-  permissionTypeType,
+  permissionType,
 } from "../dialogs/ShareBoardDialog";
 import { Button } from "../ui/button";
 import { useState } from "react";
@@ -43,7 +43,7 @@ export default function UserPermissionsForm({
     permission: user.UserBoardRelation[0].permissions.toString(),
   };
 
-  const form = useRemixForm<permissionTypeType>({
+  const form = useRemixForm<permissionType>({
     resolver: permissionTypeResolver,
     submitConfig: {
       method: "POST",

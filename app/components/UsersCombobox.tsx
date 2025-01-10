@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/popover";
 import { cn } from "~/lib/utils";
 import { UserWithBoardRelation } from "./BoardHeader";
+import UserAvatar from "./user-components/UserAvatar";
 
 interface UnrelatedUserComboboxProps {
   usersWithoutBoardRelation: UserWithBoardRelation[];
@@ -63,6 +64,10 @@ export function UsersCombobox({
                       setOpen(false);
                     }}
                   >
+                    <UserAvatar
+                      avatarUrl={user.avatar}
+                      username={user.username}
+                    />
                     {user.username}
                     <Check
                       className={cn(

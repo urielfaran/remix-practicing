@@ -49,7 +49,6 @@ export function AddUserPermission({
   boardId,
 }: AddUserPermissionProps) {
   const fetcher = useFetcher();
-  const [open, setOpen] = useState<boolean>(false);
   useResponseToast(fetcher.data);
 
   const defaultValues = {
@@ -73,11 +72,6 @@ export function AddUserPermission({
 
   return (
     <>
-      {/* <UnrelatedUserCombobox
-        usersWithoutBoardRelation={usersWithoutBoardRelation}
-        userId={userId}
-        setUserId={setUserId}
-      /> */}
       <ShadForm {...form}>
         <Form
           onSubmit={form.handleSubmit}

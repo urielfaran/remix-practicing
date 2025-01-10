@@ -22,7 +22,7 @@ export const shareBoardResolver = zodResolver(shareBoardSchema);
 export type shareBoardType = z.infer<typeof shareBoardSchema>;
 
 export const permissionTypeResolver = zodResolver(permissionType);
-export type permissionTypeType = z.infer<typeof permissionType>;
+export type permissionType = z.infer<typeof permissionType>;
 
 function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
   const usersWithoutBoardRelation = users.filter(

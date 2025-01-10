@@ -32,20 +32,22 @@ model List {
 }
 
 model Board {
-  id                  Int                 @id @default(autoincrement())
-  lists               List[]
-  name                String
-  backgroundColor     String?
+  id                Int                 @id @default(autoincrement())
+  lists             List[]
+  name              String
+  backgroundColor   String?
   UserBoardRelation UserBoardRelation[]
-  creatingUser        User                @relation(fields: [creatingUserid], references: [id])
-  creatingUserid      Int
+  creatingUser      User                @relation(fields: [creatingUserid], references: [id])
+  creatingUserid    Int
 }
 
 model User {
-  id                  Int                 @id @default(autoincrement())
-  username            String              @unique
-  password            String
-  isDisabled          Boolean             @default(false)
+  id                Int                 @id @default(autoincrement())
+  username          String              @unique
+  password          String
+  email             String?
+  avatar            String?
+  isDisabled        Boolean             @default(false)
   UserBoardRelation UserBoardRelation[]
 
   Boards Board[]

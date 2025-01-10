@@ -10,21 +10,23 @@ export const permissionsTypes = {
 export const permissionsArray = Object.entries(permissionsTypes).map(
   ([key, value]) => ({
     key,
-    value
+    value,
   })
 );
 
-export const shareBoardSchema = z.object({
-  boardId: z.number(),
-  userId: z.number(),
+export const permissionType = z.object({
   permission: z.nativeEnum(permissionsTypes).optional(),
 });
 
-export const permissionType = shareBoardSchema.omit({
-  boardId: true,
-  userId: true,
-});
+export const shareBoardSchema = permissionType.merge(
+  z.object({
+    boardId: z.number(),
+    userId: z.number(),
+  })
+);
 
-export const addPermissionsSchema = shareBoardSchema.omit({
-  boardId: true,
-});
+export const addPermissionsSchema = permissionType.merge(
+  z.object({
+    userId: z.number(),
+  })
+);

@@ -61,7 +61,6 @@ function BoardForm({ action, board }: BoardFormProps) {
   });
 
   const { isSubmitting } = form.formState;
-  console.log(form.formState.errors);
   return (
     <ShadForm {...form}>
       <Form

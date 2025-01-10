@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
 
 export async function getUserById(userId: number) {
@@ -90,6 +91,22 @@ export async function getUserFavoriteBoards(userId: number) {
     },
     include: {
       Boards: {},
+    },
+  });
+}
+
+export async function updateUserCredentials({
+  email,
+  avatar,
+  userId,
+}: Prisma.UserUpdateInput & { userId: number }) {
+  return await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      email,
+      avatar,
     },
   });
 }

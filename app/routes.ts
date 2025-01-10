@@ -20,11 +20,11 @@ export default [
       "/update-board-permission",
       "./routes/action/update-board-permission.ts"
     ),
-
     route(
       "/delete-board-permission",
       "./routes/action/delete-board-permission.ts"
     ),
+    route("/update-user-credentials", "./routes/action/update-user-credentials.ts"),
     route("/logout", "./routes/action/logout.ts"),
   ]),
   layout("./routes/layout.tsx", [

@@ -22,11 +22,10 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   try {
-    await updateUserPermission(
-      payload.userId,
-      payload.boardId,
-      Number(payload.permission)
-    );
+    await updateUserPermission({
+      ...payload,
+      permission: Number(payload.permission),
+    });
   } catch (errors) {
     return data(
       {
