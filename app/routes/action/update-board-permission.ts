@@ -4,8 +4,11 @@ import {
   shareBoardResolver,
   shareBoardType,
 } from "~/components/dialogs/ShareBoardDialog";
-import type { Route } from "./+types/share-board";
-import { addUserPermission } from "~/utils/board.server";
+import type { Route } from "./+types/delete-board-permission";
+import {
+  deleteUserPermission,
+  updateUserPermission,
+} from "~/utils/board.server";
 
 export async function action({ request }: Route.ActionArgs) {
   const {
@@ -19,7 +22,7 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   try {
-    await addUserPermission(
+    await updateUserPermission(
       payload.userId,
       payload.boardId,
       Number(payload.permission)
@@ -29,14 +32,14 @@ export async function action({ request }: Route.ActionArgs) {
       {
         errors,
         payload,
-        toastTitle: "Board Sharing Has Been Failed",
-        toastContent: "Could not share board!",
+        toastTitle: "User Permissions Updation Has Been Failed",
+        toastContent: "Could not update permissions!",
       },
       { status: 400 }
     );
   }
   return data({
-    toastTitle: "Board Has Been Shared",
-    toastContent: "Board has been shared successfully!",
+    toastTitle: "User Permissions Have Been Updated",
+    toastContent: "User permissions updated successfully!",
   });
 }

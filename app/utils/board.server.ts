@@ -138,7 +138,7 @@ export async function getUserBoardRelation(userId: number, boardId: number) {
   });
 }
 
-export async function shareBoard(
+export async function addUserPermission(
   userId: number,
   boardId: number,
   permission: number
@@ -147,6 +147,35 @@ export async function shareBoard(
     data: {
       boardId: boardId,
       userId: userId,
+      permissions: permission,
+    },
+  });
+}
+
+export async function deleteUserPermission(userId: number, boardId: number) {
+  return await prisma.userBoardRelation.delete({
+    where: {
+      boardId_userId: {
+        boardId: boardId,
+        userId: userId,
+      },
+    },
+  });
+}
+
+export async function updateUserPermission(
+  userId: number,
+  boardId: number,
+  permission: number
+) {
+  return await prisma.userBoardRelation.update({
+    where: {
+      boardId_userId: {
+        boardId: boardId,
+        userId: userId,
+      },
+    },
+    data: {
       permissions: permission,
     },
   });

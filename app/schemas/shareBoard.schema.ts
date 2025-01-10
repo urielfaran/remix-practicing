@@ -17,12 +17,14 @@ export const permissionsArray = Object.entries(permissionsTypes).map(
 export const shareBoardSchema = z.object({
   boardId: z.number(),
   userId: z.number(),
-  permission: z.nativeEnum(permissionsTypes, {
-    required_error: "You need to select a permission type.",
-  }),
+  permission: z.nativeEnum(permissionsTypes).optional(),
 });
 
 export const permissionType = shareBoardSchema.omit({
   boardId: true,
   userId: true,
+});
+
+export const addPermissionsSchema = shareBoardSchema.omit({
+  boardId: true,
 });

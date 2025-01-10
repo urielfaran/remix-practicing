@@ -19,20 +19,16 @@ import { UserWithBoardRelation } from "./BoardHeader";
 
 interface UnrelatedUserComboboxProps {
   usersWithoutBoardRelation: UserWithBoardRelation[];
-  userId: number | undefined;
-  setUserId: React.Dispatch<React.SetStateAction<number | undefined>>;
+  value: number;
+  form: any;
 }
 
-export function UnrelatedUserCombobox({
+export function UsersCombobox({
   usersWithoutBoardRelation,
-  userId,
-  setUserId,
+  value,
+  form,
 }: UnrelatedUserComboboxProps) {
   const [open, setOpen] = useState<boolean>(false);
-
-  // const usersWithBoardRelation = users.filter((user) =>
-  //   user.UserBoardRelation.some((relation) => relation.boardId === boardId)
-  // );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -43,8 +39,9 @@ export function UnrelatedUserCombobox({
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {userId
-            ? usersWithoutBoardRelation.find((user) => user.id === userId)?.username
+          {value
+            ? usersWithoutBoardRelation.find((user) => user.id === value)
+                ?.username
             : "Select user..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -61,12 +58,8 @@ export function UnrelatedUserCombobox({
                   <CommandItem
                     key={user.id}
                     value={user.id.toString()}
-                    onSelect={(currentValue) => {
-                      setUserId(
-                        Number(currentValue) === userId
-                          ? undefined
-                          : Number(currentValue)
-                      );
+                    onSelect={() => {
+                      form.setValue("userId", user.id);
                       setOpen(false);
                     }}
                   >
@@ -74,7 +67,7 @@ export function UnrelatedUserCombobox({
                     <Check
                       className={cn(
                         "ml-auto",
-                        userId === user.id ? "opacity-100" : "opacity-0"
+                        value === user.id ? "opacity-100" : "opacity-0"
                       )}
                     />
                   </CommandItem>

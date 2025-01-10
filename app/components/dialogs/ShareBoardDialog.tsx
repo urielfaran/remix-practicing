@@ -10,7 +10,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import UpdateUserPermission from "../UpdateUserPermission";
+import UpdateUserPermissionTable from "../UpdateUserPermissionTable";
+import { Separator } from "../ui/separator";
 
 interface ShareBoardDialogProps extends PropsWithChildren {
   users: UserWithBoardRelation[];
@@ -38,14 +39,15 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
-        className="sm:max-w-[425px] min-h-40"
+        className="sm:max-w-[425px] min-h-40 flex flex-col"
       >
         <DialogTitle>Share Your Board With Other Users</DialogTitle>
         <AddUserPermission
           boardId={boardId}
           usersWithoutBoardRelation={usersWithoutBoardRelation}
         />
-        <UpdateUserPermission
+        <Separator/>
+        <UpdateUserPermissionTable
           boardId={boardId}
           usersWithBoardRelation={usersWithBoardRelation}
         />

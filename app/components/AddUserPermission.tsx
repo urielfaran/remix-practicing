@@ -1,10 +1,18 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Check, ChevronsUpDown, Loader2Icon } from "lucide-react";
 import { useState } from "react";
-import { Button } from "~/components/ui/button";
-import { UnrelatedUserCombobox } from "./UnrelatedUserCombobox";
-import { UserWithBoardRelation } from "./BoardHeader";
-import { Loader2Icon } from "lucide-react";
 import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
+import { z } from "zod";
+import { Button } from "~/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "~/components/ui/command";
 import {
   FormControl,
   FormField,
@@ -13,39 +21,49 @@ import {
   FormMessage,
   Form as ShadForm,
 } from "~/components/ui/form";
-import useResponseToast from "~/hooks/useResponseToast";
-import { permissionsArray } from "~/schemas/shareBoard.schema";
 import {
-  permissionTypeResolver,
-  permissionTypeType,
-} from "./dialogs/ShareBoardDialog";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import useResponseToast from "~/hooks/useResponseToast";
+import { cn } from "~/lib/utils";
+import {
+  addPermissionsSchema,
+  permissionsArray,
+} from "~/schemas/shareBoard.schema";
+import { UserWithBoardRelation } from "./BoardHeader";
+import { UsersCombobox } from "./UsersCombobox";
 
 interface AddUserPermissionProps {
   usersWithoutBoardRelation: UserWithBoardRelation[];
   boardId: number;
 }
 
+export const adddPermissionsResolver = zodResolver(addPermissionsSchema);
+export type adddPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
+
 export function AddUserPermission({
   usersWithoutBoardRelation,
   boardId,
 }: AddUserPermissionProps) {
   const fetcher = useFetcher();
-  const [userId, setUserId] = useState<number | undefined>(undefined);
+  const [open, setOpen] = useState<boolean>(false);
   useResponseToast(fetcher.data);
 
   const defaultValues = {
     permission: undefined,
+    userId: undefined,
   };
 
-  const form = useRemixForm<permissionTypeType>({
-    resolver: permissionTypeResolver,
+  const form = useRemixForm<adddPermissionsSchemaType>({
+    resolver: adddPermissionsResolver,
     submitConfig: {
       method: "POST",
     },
     submitData: {
       boardId: boardId,
-      userId: userId,
     },
     fetcher: fetcher,
     defaultValues,
@@ -53,20 +71,34 @@ export function AddUserPermission({
 
   const { isSubmitting } = form.formState;
 
-
   return (
     <>
-      <UnrelatedUserCombobox
+      {/* <UnrelatedUserCombobox
         usersWithoutBoardRelation={usersWithoutBoardRelation}
         userId={userId}
         setUserId={setUserId}
-      />
+      /> */}
       <ShadForm {...form}>
         <Form
           onSubmit={form.handleSubmit}
-          className="w-2/3 space-y-6"
+          className="flex flex-col gap-5"
           action="/action/share-board"
         >
+          <FormField
+            control={form.control}
+            name="userId"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <UsersCombobox
+                  form={form}
+                  usersWithoutBoardRelation={usersWithoutBoardRelation}
+                  value={field.value}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="permission"

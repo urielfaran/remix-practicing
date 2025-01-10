@@ -4,8 +4,8 @@ import {
   shareBoardResolver,
   shareBoardType,
 } from "~/components/dialogs/ShareBoardDialog";
-import type { Route } from "./+types/share-board";
-import { addUserPermission } from "~/utils/board.server";
+import type { Route } from "./+types/delete-board-permission";
+import { deleteUserPermission } from "~/utils/board.server";
 
 export async function action({ request }: Route.ActionArgs) {
   const {
@@ -14,29 +14,25 @@ export async function action({ request }: Route.ActionArgs) {
     receivedValues: defaultValues,
   } = await getValidatedFormData<shareBoardType>(request, shareBoardResolver);
 
-  if (errors || !payload.permission) {
+  if (errors) {
     return data({ errors, defaultValues, payload }, { status: 400 });
   }
 
   try {
-    await addUserPermission(
-      payload.userId,
-      payload.boardId,
-      Number(payload.permission)
-    );
+    await deleteUserPermission(payload.userId, payload.boardId);
   } catch (errors) {
     return data(
       {
         errors,
         payload,
-        toastTitle: "Board Sharing Has Been Failed",
-        toastContent: "Could not share board!",
+        toastTitle: "User Permissions Deletion Has Been Failed",
+        toastContent: "Could not delete permissions!",
       },
       { status: 400 }
     );
   }
   return data({
-    toastTitle: "Board Has Been Shared",
-    toastContent: "Board has been shared successfully!",
+    toastTitle: "User Permissions Have Been Deleted",
+    toastContent: "User permissions deleted successfully!",
   });
 }

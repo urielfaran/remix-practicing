@@ -26,7 +26,7 @@ export async function getUserWithBoardById(userId: number, boardId: number) {
                   todos: true,
                 },
               },
-              UserBoardRelation: true
+              UserBoardRelation: true,
             },
           },
         },
@@ -35,13 +35,16 @@ export async function getUserWithBoardById(userId: number, boardId: number) {
   });
 }
 
-export async function getActiveUsers() {
+export async function getActiveUsers(userId: number) {
   return await prisma.user.findMany({
     where: {
       isDisabled: false,
+      id: {
+        not: userId,
+      },
     },
-    include:{
-      UserBoardRelation:true
+    include: {
+      UserBoardRelation: true,
     },
     take: 10,
   });
@@ -54,9 +57,9 @@ export async function getUserLayoutBoards(userId: number) {
     },
     include: {
       Boards: {
-        include:{
-          UserBoardRelation:true
-        }
+        include: {
+          UserBoardRelation: true,
+        },
       },
       UserBoardRelation: {
         where: {
@@ -68,7 +71,7 @@ export async function getUserLayoutBoards(userId: number) {
         },
         select: {
           board: true,
-          isFavorite: true
+          isFavorite: true,
         },
       },
     },
@@ -86,7 +89,7 @@ export async function getUserFavoriteBoards(userId: number) {
       },
     },
     include: {
-      Boards:{}
-    }
+      Boards: {},
+    },
   });
 }

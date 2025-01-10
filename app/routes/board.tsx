@@ -32,10 +32,7 @@ import { getBackgroundStyle } from "~/utils/backgrounds";
 import { createList } from "~/utils/list.server";
 import { Permissions } from "~/utils/permissions";
 import { createTodo, updateTodo } from "~/utils/todo.server";
-import {
-  getActiveUsers,
-  getUserWithBoardById,
-} from "~/utils/user.server";
+import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
 
@@ -54,9 +51,9 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
   if (!user.UserBoardRelation) redirect("/");
 
-  const { board, permissions } = user?.UserBoardRelation[0] ?? {}; // Ensure UserBoardRelation is included here
+  const { board, permissions } = user?.UserBoardRelation[0] ?? {};
 
-  const users = await getActiveUsers();
+  const users = await getActiveUsers(Number(userId));
 
   return { board, permissions, users };
 }
@@ -92,6 +89,7 @@ function Board({ loaderData }: Route.ComponentProps) {
 export default Board;
 
 export async function action({ request }: ActionFunctionArgs) {
+  // console.log(request);
   const _action = await getRequestField("_action", request);
 
   switch (_action) {

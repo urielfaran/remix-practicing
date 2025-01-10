@@ -16,8 +16,16 @@ export default [
     route("/update-board", "./routes/action/update-board.ts"),
     route("/update-list", "./routes/action/update-list.ts"),
     route("/share-board", "./routes/action/share-board.ts"),
-    route("/logout", "./routes/action/logout.ts"),
+    route(
+      "/update-board-permission",
+      "./routes/action/update-board-permission.ts"
+    ),
 
+    route(
+      "/delete-board-permission",
+      "./routes/action/delete-board-permission.ts"
+    ),
+    route("/logout", "./routes/action/logout.ts"),
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),
