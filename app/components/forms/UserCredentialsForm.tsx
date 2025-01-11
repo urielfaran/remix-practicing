@@ -6,6 +6,7 @@ import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -28,7 +29,8 @@ function UserCredentialsForm({ user }: UserCredentialsFormProps) {
   useResponseToast(fetcher.data);
 
   const defaultValues = {
-    email:  user.email || undefined,  // If email is null, make it undefined
+    email: undefined,
+    avatar: "",
   };
 
   const form = useRemixForm<userCredentialsSchemaType>({
@@ -42,7 +44,7 @@ function UserCredentialsForm({ user }: UserCredentialsFormProps) {
 
   const { isSubmitting } = form.formState;
 
-  console.log(form.getValues("avatar"));
+  const fileRef = form.register("avatar");
 
   return (
     <ShadForm {...form}>
@@ -50,7 +52,7 @@ function UserCredentialsForm({ user }: UserCredentialsFormProps) {
         onSubmit={form.handleSubmit}
         className="flex w-full flex-col space-y-3 p-4"
         action="/action/update-user-credentials"
-        encType="multipart/form-data" // Add this line
+        encType="multipart/form-data"
       >
         <FormField
           control={form.control}
@@ -74,21 +76,9 @@ function UserCredentialsForm({ user }: UserCredentialsFormProps) {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>{"avatar"}</FormLabel>
-              <Input
-                // {...fieldProps}
-                // accept=".jpg, .jpeg, .png, .svg, .gif, .mp4"
-                // placeholder="avatar"
-                // type="file"
-                // onChange={(event) => {
-                //   const file = event.target.files ? event.target.files[0] : undefined;
-                //   console.log('Selected file:', file); // Check the file object here
-                //   onChange(file); // Pass the file object to form
-                // }}
-                {...field}
-                className="flex-grow"
-                value={field.value ?? ""}
-                placeholder={"avatar"}
-              />
+              <FormControl>
+                <Input type="file" placeholder="shadcn" {...fileRef} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

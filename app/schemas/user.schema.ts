@@ -10,7 +10,7 @@ export const userBaseSchema = z.object({
 });
 
 export const userCredentialsSchema = z.object({
-  email: z.string().email().nullable(),
-  avatar: z.string().nullable(),
+  email: z.string().email().nullable().optional(),
+  avatar: typeof window === 'undefined' ? z.any() : z.instanceof(FileList)
 });
 
