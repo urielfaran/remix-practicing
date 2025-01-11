@@ -62,18 +62,22 @@ export class Authenticator {
    * ```
    */
   async register(data: Prisma.UserCreateInput) {
-    const existingUser = await this.db.user.findUnique({
-      where: { username: data.username },
-    });
-    if (existingUser) throw new Error("User already exists");
+    // const existingUser = await this.db.user.findUnique({
+    //   where: { username: data.username },
+    // });
+    // if (existingUser) throw new Error("User already exists");
     const pepper = process.env.PASSWORD_PEPPER;
     invariant(pepper, "Password pepper is not defined");
 
     const pepperedPassword = data.password + pepper;
     const passwordHash = await bcrypt.hash(pepperedPassword, 10);
-    const newUser = await this.db.user.create({
-      data: {
-        // username: data.username,
+    const newUser = await this.db.user.upsert({
+      where: { username: data.username },
+      create: {
+        ...data,
+        password: passwordHash,
+      },
+      update: {
         ...data,
         password: passwordHash,
       },
@@ -292,16 +296,13 @@ export class Authenticator {
    * return createUserSession(userId, redirectTo);
    * ```
    */
-  async createUserSession(
-    userId: number,
-    redirectTo: string,
-  ) {
+  async createUserSession(userId: number, redirectTo: string) {
     const session = await storage.getSession();
-    session.set('userId', userId);
+    session.set("userId", userId);
 
     return redirect(redirectTo, {
       headers: {
-        'Set-Cookie': await storage.commitSession(session),
+        "Set-Cookie": await storage.commitSession(session),
       },
     });
   }
@@ -357,10 +358,10 @@ export class Authenticator {
    */
   async create2faSession(sessionId: string, redirectTo: string) {
     const session = await storage.getSession();
-    session.set('sessionId', sessionId);
+    session.set("sessionId", sessionId);
     return redirect(redirectTo, {
       headers: {
-        'Set-Cookie': await storage.commitSession(session),
+        "Set-Cookie": await storage.commitSession(session),
       },
     });
   }
