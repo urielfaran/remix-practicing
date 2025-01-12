@@ -56,6 +56,8 @@ export async function action({ request }: Route.ActionArgs) {
   const userId = await authenticator.requireUser(request, "/login");
   invariant(userId, "user is not logged in");
 
+  console.log(userId)
+
   try {
     // 1. First handle the file upload
     const clonedRequest = request.clone()

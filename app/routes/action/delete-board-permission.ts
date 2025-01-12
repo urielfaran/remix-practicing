@@ -1,30 +1,25 @@
 import { data } from "react-router";
-import { getValidatedFormData } from "remix-hook-form";
-import {
-  shareBoardResolver,
-  shareBoardType,
-} from "~/components/dialogs/ShareBoardDialog";
-import type { Route } from "./+types/delete-board-permission";
+import invariant from "tiny-invariant";
 import { deleteUserPermission } from "~/utils/board.server";
+import { getRequestField } from "~/utils/utils";
+import type { Route } from "./+types/delete-board-permission";
 
 export async function action({ request }: Route.ActionArgs) {
-  const {
-    errors,
-    data: payload,
-    receivedValues: defaultValues,
-  } = await getValidatedFormData<shareBoardType>(request, shareBoardResolver);
-
-  if (errors) {
-    return data({ errors, defaultValues, payload }, { status: 400 });
-  }
+  const userId = await getRequestField("userId", request, {
+    stringified: false,
+  });
+  invariant(userId);
+  const boardId = await getRequestField("boardId", request, {
+    stringified: false,
+  });
+  invariant(boardId);
 
   try {
-    await deleteUserPermission(payload.userId, payload.boardId);
+    await deleteUserPermission(Number(userId), Number(boardId));
   } catch (errors) {
     return data(
       {
         errors,
-        payload,
         toastTitle: "User Permissions Deletion Has Been Failed",
         toastContent: "Could not delete permissions!",
       },

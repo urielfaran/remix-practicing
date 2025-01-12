@@ -30,6 +30,12 @@ export function UsersCombobox({
   form,
 }: UnrelatedUserComboboxProps) {
   const [open, setOpen] = useState<boolean>(false);
+  const [search, setSearch] = useState("");
+
+  const filteredUsers = usersWithoutBoardRelation.filter((user) =>
+    user.username.toLowerCase().includes(search.toLowerCase())
+  );
+  console.log(search, filteredUsers);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -38,27 +44,33 @@ export function UsersCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="min-w-[180px] justify-between"
         >
           {value
             ? usersWithoutBoardRelation.find((user) => user.id === value)
                 ?.username
-            : "Select user..."}
+            : "Select user"}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="min-w-[180px] p-0">
         <Command>
-          <CommandInput placeholder="Search user..." className="h-9" />
+          <CommandInput
+            placeholder="Search user..."
+            className="h-9"
+            value={search}
+            onChangeCapture={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearch(e.target.value)
+            }
+          />
           <CommandList>
-            {usersWithoutBoardRelation.length === 0 ? (
+            {filteredUsers.length === 0 ? (
               <CommandEmpty>No Users Found</CommandEmpty>
             ) : (
               <CommandGroup>
-                {usersWithoutBoardRelation.map((user) => (
+                {filteredUsers.map((user) => (
                   <CommandItem
                     key={user.id}
-                    value={user.id.toString()}
                     onSelect={() => {
                       form.setValue("userId", user.id);
                       setOpen(false);

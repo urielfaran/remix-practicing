@@ -52,16 +52,21 @@ function BoardHeader({ board, users }: BoardHeaderProps) {
       </div>
       <div className="flex flex-row mr-2 gap-3">
         <ShareBoardDialog users={users} boardId={board.id}>
-          <Button variant={"ghost"} size={"sm"} disabled={!isDeletePermission}>
+          <Button
+            variant={"ghost"}
+            size={"sm"}
+            disabled={!isDeletePermission}
+            className="hover:scale-105 transition delay-100 duration-200 ease-in-out"
+          >
             <UsersRound />
             Share Board
           </Button>
         </ShareBoardDialog>
         <ChangeBoardColor board={board}>
           <Button
-            variant={"default"}
+            variant={"ghost"}
             size={"sm"}
-            className="hover:scale-105 transition delay-150 duration-300 ease-in-out"
+            className="hover:scale-105 transition delay-100 duration-200 ease-in-out"
             disabled={!isEditPermission}
           >
             <Image />

@@ -7,8 +7,9 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { UserWithBoardRelation } from "./BoardHeader";
-import UserPermissionsForm from "./forms/UserPermissionsForm";
+import UpdateUserPermissionsForm from "./forms/UpdateUserPermissionsForm";
 import UserAvatar from "./user-components/UserAvatar";
+import DeleteUserPermissionsForm from "./forms/DeleteUserPermissionsForm";
 
 interface UpdateUserPermissionTableProps {
   usersWithBoardRelation: UserWithBoardRelation[];
@@ -36,8 +37,9 @@ function UpdateUserPermissionTable({
                 <p>{user.username}</p>
               </div>
             </TableCell>
-            <TableCell className="content-right flex flex-col items-center">
-              <UserPermissionsForm boardId={boardId} user={user} />
+            <TableCell className="content-right flex flex-row items-end">
+              <UpdateUserPermissionsForm boardId={boardId} user={user} />
+              <DeleteUserPermissionsForm boardId={boardId} user={user} />
             </TableCell>
           </TableRow>
         ))}

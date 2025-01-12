@@ -1,40 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, Loader2Icon } from "lucide-react";
-import { useState } from "react";
+import { Loader2Icon } from "lucide-react";
 import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "~/components/ui/command";
-import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
   Form as ShadForm,
 } from "~/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import useResponseToast from "~/hooks/useResponseToast";
-import { cn } from "~/lib/utils";
-import {
-  addPermissionsSchema,
-  permissionsArray,
-} from "~/schemas/shareBoard.schema";
+import { addPermissionsSchema } from "~/schemas/shareBoard.schema";
 import { UserWithBoardRelation } from "./BoardHeader";
 import { UsersCombobox } from "./UsersCombobox";
+import { Select } from "./ui/select";
+import SelectUserPermission from "./user-components/SelectUserPermission";
 
 interface AddUserPermissionProps {
   usersWithoutBoardRelation: UserWithBoardRelation[];
@@ -75,7 +57,7 @@ export function AddUserPermission({
       <ShadForm {...form}>
         <Form
           onSubmit={form.handleSubmit}
-          className="flex flex-col gap-5"
+          className="flex flex-row gap-5 justify-between"
           action="/action/share-board"
         >
           <FormField
@@ -92,39 +74,22 @@ export function AddUserPermission({
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="permission"
             render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Choose Type</FormLabel>
+              <FormItem>
                 <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    {permissionsArray.map(({ key, value }, index) => (
-                      <FormItem
-                        className="flex items-center space-x-3 space-y-0"
-                        key={index}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={value} />
-                        </FormControl>
-                        <FormLabel className="font-normal">{key}</FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectUserPermission />
+                  </Select>
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-xs" />
               </FormItem>
             )}
           />
           <Button
-            variant="default"
-            className="m-1 w-full"
+            className="m-auto"
             type="submit"
             disabled={isSubmitting}
           >
@@ -136,7 +101,7 @@ export function AddUserPermission({
                 </span>
               </span>
             ) : (
-              "Share Board"
+              "Share"
             )}
           </Button>
         </Form>

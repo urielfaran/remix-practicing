@@ -89,7 +89,7 @@ function Board({ loaderData }: Route.ComponentProps) {
 export default Board;
 
 export async function action({ request }: ActionFunctionArgs) {
-  // console.log(request);
+  console.log(request);
   const _action = await getRequestField("_action", request);
 
   switch (_action) {
