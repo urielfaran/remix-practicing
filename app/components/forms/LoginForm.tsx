@@ -91,18 +91,20 @@ export function LoginForm() {
               {errors.root?.message ?? null}
             </p>
 
-            <Button disabled={isSubmitting} type="submit">
-              {isSubmitting ? (
-                <span className="flex items-center gap-2">
-                  {"loging in..."}{" "}
-                  <span>
-                    <Loader2Icon className="animate-spin" />
+            <div className="flex justify-center">
+              <Button disabled={isSubmitting} type="submit" className="w-4/6">
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    {"loging in..."}{" "}
+                    <span>
+                      <Loader2Icon className="animate-spin" />
+                    </span>
                   </span>
-                </span>
-              ) : (
-                "log in"
-              )}
-            </Button>
+                ) : (
+                  "log in"
+                )}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </Form>

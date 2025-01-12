@@ -9,11 +9,12 @@ import {
   createBoardResolver,
   createBoardSchemaType,
 } from "~/components/forms/BoardForm";
+import { UserIdContext } from "~/hooks/itemIdContexts";
+import { UserPermissionProvider } from "~/hooks/permissionsContext";
 import { createBoard, getFilterBoards } from "~/utils/board.server";
 import { getUserById } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/_index";
-import { UserIdContext } from "~/hooks/itemIdContexts";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const userId = await authenticator.requireUser(request, "/login");
@@ -39,9 +40,16 @@ export default function Index({ loaderData }: Route.ComponentProps) {
         <UserIdContext.Provider value={user.id}>
           <AddBoardButton />
         </UserIdContext.Provider>
-        {boards.map((board, index) => (
-          <DisplayBoard board={board} key={index} />
-        ))}
+        {boards.map((board, index) => {
+          const permissions = user.UserBoardRelation.filter(
+            (permission) => permission.boardId === board.id
+          )[0].permissions;
+          return (
+            <UserPermissionProvider key={index} value={permissions}>
+              <DisplayBoard board={board} />
+            </UserPermissionProvider>
+          );
+        })}
       </div>
     </div>
   );
