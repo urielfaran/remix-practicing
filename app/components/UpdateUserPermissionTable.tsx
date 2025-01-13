@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { UserWithBoardRelation } from "./BoardHeader";
+import { UserWithBoardRelation } from "./board-components/BoardHeader";
 import UpdateUserPermissionsForm from "./forms/UpdateUserPermissionsForm";
 import UserAvatar from "./user-components/UserAvatar";
 import DeleteUserPermissionsForm from "./forms/DeleteUserPermissionsForm";

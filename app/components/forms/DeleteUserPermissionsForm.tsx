@@ -1,7 +1,7 @@
 import { UserRoundX } from "lucide-react";
 import { useFetcher } from "react-router";
 import useResponseToast from "~/hooks/useResponseToast";
-import { UserWithBoardRelation } from "../BoardHeader";
+import { UserWithBoardRelation } from "../board-components/BoardHeader";
 import { Button } from "../ui/button";
 
 interface UserPermissionsFormProps {

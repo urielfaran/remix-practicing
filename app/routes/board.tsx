@@ -3,7 +3,7 @@ import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
 import AddListButton from "~/components/action-buttons/AddListButton";
-import BoardHeader from "~/components/BoardHeader";
+import BoardHeader from "~/components/board-components/BoardHeader";
 import DisplayList from "~/components/display-data/DisplayList";
 import {
   updateTodoContentResolver,
@@ -23,18 +23,15 @@ import {
 } from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
-import {
-  usePermission,
-  UserPermissionProvider,
-} from "~/hooks/permissionsContext";
+import { UserPermissionProvider } from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
 import { createList } from "~/utils/list.server";
-import { Permissions } from "~/utils/permissions";
 import { createTodo, updateTodo } from "~/utils/todo.server";
 import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
+import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -60,29 +57,25 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
 function Board({ loaderData }: Route.ComponentProps) {
   const { board, permissions, users } = loaderData;
-
   const { className, style } = getBackgroundStyle(board.backgroundColor);
-
-  const { checkPermission } = usePermission();
-  const isEditPermission = checkPermission(Permissions.WRITE);
-
+  
+  const connectedusers = board.UserBoardRelation.map((relation) => relation.user)
   return (
-    <UserPermissionProvider value={permissions}>
-      <ScrollArea
-        className={cn("flex min-w-0 h-full", className)}
-        style={style}
-      >
+    <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
+      <UserPermissionProvider value={permissions}>
         <BoardHeader board={board} users={users} />
         <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
           <BoardIdContext.Provider value={board?.id}>
-            <AddListButton isActive={isEditPermission} />
+            <AddListButton />
           </BoardIdContext.Provider>
-          {board.lists.map((list) => (
-            <DisplayList key={list.id} list={list} />
-          ))}
+          <ConncetedUsersContext.Provider value={connectedusers}>
+            {board.lists.map((list) => (
+              <DisplayList key={list.id} list={list} />
+            ))}
+          </ConncetedUsersContext.Provider>
         </div>
-      </ScrollArea>
-    </UserPermissionProvider>
+      </UserPermissionProvider>
+    </ScrollArea>
   );
 }
 

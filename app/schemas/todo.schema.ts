@@ -28,3 +28,8 @@ export const todoContentSchema = createTodoSchema
   .extend({
     id: z.coerce.number(),
   });
+
+export const assignTodoSchema = z.object({
+  userId: z.number(),
+  todoId: z.number(),
+});

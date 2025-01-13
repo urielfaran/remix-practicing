@@ -24,7 +24,18 @@ export default [
       "/delete-board-permission",
       "./routes/action/delete-board-permission.ts"
     ),
-    route("/update-user-credentials", "./routes/action/update-user-credentials.ts"),
+    route(
+      "/add-todo-assignment",
+      "./routes/action/add-todo-assignment.ts"
+    ),
+    route(
+      "/delete-todo-assignment",
+      "./routes/action/delete-todo-assignment.ts"
+    ),
+    route(
+      "/update-user-credentials",
+      "./routes/action/update-user-credentials.ts"
+    ),
     route("/logout", "./routes/action/logout.ts"),
   ]),
   layout("./routes/layout.tsx", [
@@ -35,3 +46,4 @@ export default [
 
   route("action/set-theme", "./routes/action.set-theme.ts"),
 ] satisfies RouteConfig;
+

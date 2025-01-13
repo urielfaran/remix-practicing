@@ -7,7 +7,6 @@ export const userPermissionContext =
 
 export function usePermission() {
   const userPermissions = useContext(userPermissionContext);
-
   function checkPermission(permissions: number) {
     return hasPermission(userPermissions, permissions);
   }

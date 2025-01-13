@@ -3,7 +3,7 @@ import { PropsWithChildren } from "react";
 import { z } from "zod";
 import { permissionType, shareBoardSchema } from "~/schemas/shareBoard.schema";
 import { AddUserPermission } from "../AddUserPermission";
-import { UserWithBoardRelation } from "../BoardHeader";
+import { UserWithBoardRelation } from "../board-components/BoardHeader";
 import {
   Dialog,
   DialogContent,

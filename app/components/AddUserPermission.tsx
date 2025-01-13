@@ -13,7 +13,7 @@ import {
 } from "~/components/ui/form";
 import useResponseToast from "~/hooks/useResponseToast";
 import { addPermissionsSchema } from "~/schemas/shareBoard.schema";
-import { UserWithBoardRelation } from "./BoardHeader";
+import { UserWithBoardRelation } from "./board-components/BoardHeader";
 import { UsersCombobox } from "./UsersCombobox";
 import { Select } from "./ui/select";
 import SelectUserPermission from "./user-components/SelectUserPermission";

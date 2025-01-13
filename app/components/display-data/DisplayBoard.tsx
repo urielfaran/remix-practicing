@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import { Link } from "react-router";
 import {
   usePermission,
-  UserPermissionProvider,
 } from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
@@ -32,9 +31,7 @@ function DisplayBoard({ board }: DisplayListProps) {
 
   const { checkPermission } = usePermission();
   const isDeletePermission = checkPermission(Permissions.DELETE);
-  const isedit = checkPermission(Permissions.WRITE);
 
-  console.log(isedit);
   const isFavorite = board.UserBoardRelation[0].isFavorite;
 
   return (

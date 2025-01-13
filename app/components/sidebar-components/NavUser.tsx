@@ -8,7 +8,6 @@ import {
 
 import { User } from "@prisma/client";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,

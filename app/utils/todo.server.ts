@@ -85,3 +85,41 @@ export async function completeTodo(id: number, isCompleted: boolean) {
     data: { completeTime: isCompleted ? null : new Date() },
   });
 }
+
+export async function assignTodo({
+  userId,
+  todoId,
+}: {
+  userId: number;
+  todoId: number;
+}) {
+  return await prisma.todo.update({
+    where: { id: todoId },
+    data: {
+      users: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+  });
+}
+
+export async function unassignTodo({
+  userId,
+  todoId,
+}: {
+  userId: number;
+  todoId: number;
+}) {
+  return await prisma.todo.update({
+    where: { id: todoId, },
+    data: {
+      users: {
+        disconnect: {
+          id: userId,
+        },
+      },
+    },
+  });
+}

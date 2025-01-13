@@ -27,7 +27,15 @@ export async function getUserWithBoardById(userId: number, boardId: number) {
                   todos: true,
                 },
               },
-              UserBoardRelation: true,
+              UserBoardRelation: {
+                include:{
+                  user: {
+                    include:{
+                      Todos: true
+                    }
+                  }
+                }
+              },
             },
           },
         },
@@ -50,6 +58,7 @@ export async function getActiveUsers(userId: number) {
     take: 10,
   });
 }
+
 
 export async function getUserLayoutBoards(userId: number) {
   return await prisma.user.findUnique({

@@ -10,7 +10,7 @@ import {
 } from "~/components/ui/form";
 import { Select } from "~/components/ui/select";
 import useResponseToast from "~/hooks/useResponseToast";
-import { UserWithBoardRelation } from "../BoardHeader";
+import { UserWithBoardRelation } from "../board-components/BoardHeader";
 import {
   permissionType,
   permissionTypeResolver,

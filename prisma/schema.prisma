@@ -21,6 +21,7 @@ model Todo {
   completeTime DateTime?
   List         List      @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId       Int
+  users        User[]
 }
 
 model List {
@@ -49,8 +50,8 @@ model User {
   avatar            String?
   isDisabled        Boolean             @default(false)
   UserBoardRelation UserBoardRelation[]
-
   Boards Board[]
+  Todos Todo[]
 }
 
 model UserBoardRelation {

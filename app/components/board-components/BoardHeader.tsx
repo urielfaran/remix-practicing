@@ -2,11 +2,11 @@ import { Prisma } from "@prisma/client";
 import { Image, UsersRound } from "lucide-react";
 import { usePermission } from "~/hooks/permissionsContext";
 import { Permissions } from "~/utils/permissions";
-import FavoriteBoard from "./action-buttons/FavoriteBoard";
-import ChangeBoardColor from "./ChangeBoardColor";
-import ShareBoardDialog from "./dialogs/ShareBoardDialog";
-import EditableText from "./EditableText";
-import { Button } from "./ui/button";
+import FavoriteBoard from "../action-buttons/FavoriteBoard";
+import ChangeBoardColor from "../ChangeBoardColor";
+import ShareBoardDialog from "../dialogs/ShareBoardDialog";
+import EditableText from "../EditableText";
+import { Button } from "../ui/button";
 
 export type BoardWithRelations = Prisma.BoardGetPayload<{
   include: {

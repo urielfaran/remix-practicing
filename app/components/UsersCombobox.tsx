@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { cn } from "~/lib/utils";
-import { UserWithBoardRelation } from "./BoardHeader";
+import { UserWithBoardRelation } from "./board-components/BoardHeader";
 import UserAvatar from "./user-components/UserAvatar";
 
 interface UnrelatedUserComboboxProps {
