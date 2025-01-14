@@ -19,7 +19,7 @@ function FilterTodosForm({ users }: FilterTodosFormProps) {
     <>
       <Form method="GET" className="flex w-full flex-col space-y-4 p-4">
         <h2>Due Time</h2>
-        <div className="flex gap-3 items-center items-center">
+        <div className="flex gap-3 items-center">
           <Checkbox type="submit" name="filter" value={"Due Time:Overdue"} />
           <Clock className="text-red-500 size-5" /> Overdue
         </div>

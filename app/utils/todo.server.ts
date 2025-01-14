@@ -47,6 +47,7 @@ export async function createTodo({
   description,
   dueTime,
   listId,
+  status
 }: Prisma.TodoCreateWithoutListInput & {
   listId: Todo["listId"];
 }) {
@@ -55,7 +56,7 @@ export async function createTodo({
       title: title,
       description: description,
       dueTime: dueTime,
-      // isCompleted: false,
+      status: status,
       listId: listId,
     },
   });

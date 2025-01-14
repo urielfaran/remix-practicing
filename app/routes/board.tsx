@@ -118,6 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
           description: payload.description,
           dueTime: payload.dueTime,
           listId: payload.listId,
+          status: 'NOT_STARTED'
         });
       } catch (err) {
         return data(

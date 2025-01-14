@@ -13,11 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Status {
+  NOT_STARTED
+  IN_PROGGRESS
+  COMPLETED
+}
+
 model Todo {
   id           Int       @id @default(autoincrement())
   title        String
   description  String?
   dueTime      DateTime
+  status       Status
   completeTime DateTime?
   List         List      @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId       Int
@@ -50,8 +57,8 @@ model User {
   avatar            String?
   isDisabled        Boolean             @default(false)
   UserBoardRelation UserBoardRelation[]
-  Boards Board[]
-  Todos Todo[]
+  Boards            Board[]
+  Todos             Todo[]
 }
 
 model UserBoardRelation {
