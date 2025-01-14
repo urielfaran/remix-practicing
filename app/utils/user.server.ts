@@ -10,7 +10,52 @@ export async function getUserById(userId: number) {
   });
 }
 
-export async function getUserWithBoardById(userId: number, boardId: number) {
+export async function getUserWithBoardById(
+  userId: number,
+  boardId: number,
+  filter: { [x: string]: string[] }
+) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Start of today
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
+  const oneWeekForward = new Date();
+  oneWeekForward.setDate(today.getDate() + 7); // 7 days from today
+  oneWeekForward.setHours(23, 59, 59, 999); // End of the last day for comparison
+
+  const userFilter: Prisma.TodoWhereInput["users"] = filter["Members"]
+    ? {
+        some: {
+          id: { in: filter["Members"].map(Number) }, // Cast to number[]
+        },
+      }
+    : {};
+  // const statusFilter: Prisma.TodoWhereInput["completeTime"] = filter["Status"]
+  //   ? null
+  //   : { not: null };
+  const dueTimeFilter: Prisma.TodoWhereInput["dueTime"] = filter[
+    "Due Time"
+  ]
+    ? filter["Due Time"]?.includes("Overdue")
+      ? {
+          lt: today,
+        }
+      : filter["Due Time"]?.includes("Tommorow")
+      ? {
+          gte: today,
+          lte: tomorrow,
+        }
+      : filter["Due Time"]?.includes("Week")
+      ? {
+          gte: today,
+          lte: oneWeekForward,
+        }
+      : {}
+    : {};
+console.log(dueTimeFilter)
   return await prisma.user.findUnique({
     where: { id: userId },
     include: {
@@ -24,17 +69,45 @@ export async function getUserWithBoardById(userId: number, boardId: number) {
             include: {
               lists: {
                 include: {
-                  todos: true,
+                  todos: {
+                    where: {
+                      AND: [
+                        { users: userFilter },
+                        { dueTime: dueTimeFilter },
+                      ],
+                    },
+                    // where: {
+                    //   AND: [
+                    //     filter["Status"]?.includes("0") &&
+                    //     filter["Status"]?.includes("1")
+                    //       ? {}
+                    //       : filter["Status"]?.includes("0")
+                    //       ? { completeTime: null }
+                    //       : filter["Status"]?.includes("1")
+                    //       ? { completeTime: { not: null } }
+                    //       : {},
+                    //     filter["Members"].length > 0
+                    //       ? {
+                    //           users: {
+                    //             some: {
+                    //               id: { in: filter["Members"].map(Number) }, // Cast to number[]
+                    //             },
+                    //           },
+                    //         }
+                    //       : {},
+                    //   ],
+                    // },
+                  },
                 },
               },
               UserBoardRelation: {
-                include:{
+                include: {
                   user: {
-                    include:{
-                      Todos: true
-                    }
-                  }
-                }
+                    include: {
+                      Todos: true,
+                    },
+                  },
+                },
               },
             },
           },
@@ -58,7 +131,6 @@ export async function getActiveUsers(userId: number) {
     take: 10,
   });
 }
-
 
 export async function getUserLayoutBoards(userId: number) {
   return await prisma.user.findUnique({

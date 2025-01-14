@@ -1,4 +1,8 @@
-import { ActionFunctionArgs, data, redirect } from "react-router";
+import {
+  ActionFunctionArgs,
+  data,
+  redirect,
+} from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
@@ -22,6 +26,7 @@ import {
   createTodoSchemaType,
 } from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
 import { UserPermissionProvider } from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
@@ -31,7 +36,7 @@ import { createTodo, updateTodo } from "~/utils/todo.server";
 import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
-import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
+import _ from 'lodash'
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -43,7 +48,13 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
   const userId = await authenticator.requireUser(request, "/login");
 
-  const user = await getUserWithBoardById(Number(userId), boardId);
+  const url = new URL(request.url);
+  const groupedParams = _.groupBy(url.searchParams.getAll('filter'), param => param.split(':')[0]);
+
+  const result = _.mapValues(groupedParams, group => group.map(item => item.split(':')[1]));
+
+  console.log(result['Due Time']);
+  const user = await getUserWithBoardById(Number(userId), boardId, result);
   invariant(user, "board doesnt exist");
 
   if (!user.UserBoardRelation) redirect("/");
@@ -58,8 +69,10 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 function Board({ loaderData }: Route.ComponentProps) {
   const { board, permissions, users } = loaderData;
   const { className, style } = getBackgroundStyle(board.backgroundColor);
-  
-  const connectedusers = board.UserBoardRelation.map((relation) => relation.user)
+
+  const connectedusers = board.UserBoardRelation.map(
+    (relation) => relation.user
+  );
   return (
     <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
       <UserPermissionProvider value={permissions}>
