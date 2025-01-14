@@ -2,17 +2,18 @@ import { Todo } from "@prisma/client";
 import { differenceInDays, format } from "date-fns";
 import { Calendar, Pencil, UserRoundPlus } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
+import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
 import { usePermission } from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
 import { Permissions } from "~/utils/permissions";
-import GenericCompleteButton from "../action-buttons/GenericCompleteButton";
 import AssignTodo from "../AssignTodo";
 import EditTodoDialog, { dialogStyleType } from "../dialogs/EditTodoDialog";
 import TodoActionDropdown from "../dropdowns/TodoActionDropdown";
 import UpdateTodoDueTime from "../dropdowns/UpdateTodoDueTime";
+import TodoStatusIcon from "../TodoStatusIcon";
 import { Button } from "../ui/button";
 import { Card, CardDescription, CardTitle } from "../ui/card";
-import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
+import UpdateTodoStatus from "../UpdateTodoStatus";
 import UserAvatar from "../user-components/UserAvatar";
 
 interface TodoCardProps {
@@ -74,48 +75,48 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
         )}
       </div>
       <CardDescription className="space-y-3">
-        <p>{todo.description}</p>
-        <div className="flex justify-between items-center">
-          {todo.completeTime && (
-            <GenericCompleteButton
-              todoCompleteTime={todo.completeTime ? true : false}
+        <div className="flex justify-between">
+          <p>{todo.description}</p>
+          <UpdateTodoStatus currentStatus={todo.status} todoId={todo.id}>
+            <Button
+              variant={"ghost"}
+              className="hover:bg-inherit focus-visible:ring-0"
+            >
+              <TodoStatusIcon status={todo.status} />
+            </Button>
+          </UpdateTodoStatus>
+        </div>
+        <div className="flex justify-between">
+          <UpdateTodoDueTime todoId={todo.id}>
+            <Button
+              variant={isLate ? "destructive" : "ghost"}
+              className={cn("", {
+                "bg-green-600 hover:bg-green-700 text-white": todo.completeTime,
+              })}
+              size={"sm"}
+              disabled={!isEditPermission}
+            >
+              <Calendar />
+              {format(todo.dueTime, "MMM d, yyyy")}
+            </Button>
+          </UpdateTodoDueTime>
+          {assignUsers.map((user) => (
+            <AssignTodo
+              key={user.id}
               todoId={todo.id}
-              isActive={isEditPermission}
-            />
-          )}
-          <div className="flex justify-start">
-            {assignUsers.map((user) => (
-              <AssignTodo
-                key={user.id}
-                todoId={todo.id}
-                assignUsers={assignUsers}
-                noAssigendUsers={noAssigendUsers}
-              >
-                <Button size={'icon'} variant={'ghost'}>
-                  <UserAvatar
-                    avatarUrl={user.avatar}
-                    username={user.username}
-                  />
-                </Button>
-              </AssignTodo>
-            ))}
-          </div>
-          <div className="flex justify-end">
-            <UpdateTodoDueTime todoId={todo.id}>
+              assignUsers={assignUsers}
+              noAssigendUsers={noAssigendUsers}
+            >
               <Button
-                variant={isLate ? "destructive" : "ghost"}
-                className={cn("", {
-                  "bg-green-600 hover:bg-green-700 text-white":
-                    todo.completeTime,
-                })}
-                size={"sm"}
-                disabled={!isEditPermission}
+                size={"icon"}
+                variant={"ghost"}
+                className="hover:bg-inherit focus-visible:ring-0"
               >
-                <Calendar />
-                {format(todo.dueTime, "MMM d, yyyy")}
+                <UserAvatar avatarUrl={user.avatar} username={user.username} />
               </Button>
-            </UpdateTodoDueTime>
-          </div>
+            </AssignTodo>
+          ))}
+          {/* </div> */}
         </div>
       </CardDescription>
     </>

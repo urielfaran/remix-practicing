@@ -47,7 +47,7 @@ export async function createTodo({
   description,
   dueTime,
   listId,
-  status
+  status,
 }: Prisma.TodoCreateWithoutListInput & {
   listId: Todo["listId"];
 }) {
@@ -87,6 +87,20 @@ export async function completeTodo(id: number, isCompleted: boolean) {
   });
 }
 
+export async function updateTodoStatus({
+  status,
+  id,
+}: Prisma.TodoUpdateInput & { id: number }) {
+  const completeTime = status === "COMPLETED" ? new Date() : null;
+  return await prisma.todo.update({
+    where: { id: id },
+    data: {
+      status: status,
+      completeTime: completeTime,
+    },
+  });
+}
+
 export async function assignTodo({
   userId,
   todoId,
@@ -114,7 +128,7 @@ export async function unassignTodo({
   todoId: number;
 }) {
   return await prisma.todo.update({
-    where: { id: todoId, },
+    where: { id: todoId },
     data: {
       users: {
         disconnect: {

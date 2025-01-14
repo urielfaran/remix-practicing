@@ -35,7 +35,6 @@ export function UsersCombobox({
   const filteredUsers = usersWithoutBoardRelation.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase())
   );
-  console.log(search, filteredUsers);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -53,7 +53,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
   const result = _.mapValues(groupedParams, group => group.map(item => item.split(':')[1]));
 
-  console.log(result['Due Time']);
+  console.log(result['Status']);
   const user = await getUserWithBoardById(Number(userId), boardId, result);
   invariant(user, "board doesnt exist");
 

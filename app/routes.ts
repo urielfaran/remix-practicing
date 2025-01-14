@@ -8,7 +8,6 @@ import {
 
 export default [
   ...prefix("/action", [
-    route("/complete-todo", "./routes/action/complete-todo.ts"),
     route("/favorite-board", "./routes/action/favorite-board.ts"),
     route("/delete-todo", "./routes/action/delete-todo.ts"),
     route("/delete-list", "./routes/action/delete-list.ts"),
@@ -20,14 +19,12 @@ export default [
       "/update-board-permission",
       "./routes/action/update-board-permission.ts"
     ),
+    route("/update-todo-status", "./routes/action/update-todo-status.ts"),
     route(
       "/delete-board-permission",
       "./routes/action/delete-board-permission.ts"
     ),
-    route(
-      "/add-todo-assignment",
-      "./routes/action/add-todo-assignment.ts"
-    ),
+    route("/add-todo-assignment", "./routes/action/add-todo-assignment.ts"),
     route(
       "/delete-todo-assignment",
       "./routes/action/delete-todo-assignment.ts"
@@ -46,4 +43,3 @@ export default [
 
   route("action/set-theme", "./routes/action.set-theme.ts"),
 ] satisfies RouteConfig;
-

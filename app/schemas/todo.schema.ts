@@ -1,3 +1,4 @@
+import { Status } from "@prisma/client";
 import { z } from "zod";
 
 export const createTodoSchema = z.object({
@@ -33,3 +34,11 @@ export const assignTodoSchema = z.object({
   userId: z.number(),
   todoId: z.number(),
 });
+
+
+export const updateTodoStatusSchema = z.object({
+  id: z.number({
+    required_error: "must have a todo to update"
+  }),
+  status: z.nativeEnum(Status)
+})

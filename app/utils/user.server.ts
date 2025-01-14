@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Status } from "@prisma/client";
 import { prisma } from "~/db.server";
 
 export async function getUserById(userId: number) {
@@ -33,12 +33,16 @@ export async function getUserWithBoardById(
         },
       }
     : {};
-  // const statusFilter: Prisma.TodoWhereInput["completeTime"] = filter["Status"]
-  //   ? null
-  //   : { not: null };
-  const dueTimeFilter: Prisma.TodoWhereInput["dueTime"] = filter[
-    "Due Time"
-  ]
+
+  const statusFilter: Prisma.TodoWhereInput["status"] = filter["Status"]
+    ? {
+        in: filter["Status"].filter((status) =>
+          ["NOT_STARTED", "IN_PROGGRESS", "COMPLETED"].includes(status)
+        ) as Status[],
+      }
+    : {};
+
+  const dueTimeFilter: Prisma.TodoWhereInput["dueTime"] = filter["Due Time"]
     ? filter["Due Time"]?.includes("Overdue")
       ? {
           lt: today,
@@ -55,8 +59,8 @@ export async function getUserWithBoardById(
         }
       : {}
     : {};
-console.log(dueTimeFilter)
-  return await prisma.user.findUnique({
+
+    return await prisma.user.findUnique({
     where: { id: userId },
     include: {
       UserBoardRelation: {
@@ -74,6 +78,7 @@ console.log(dueTimeFilter)
                       AND: [
                         { users: userFilter },
                         { dueTime: dueTimeFilter },
+                        { status: statusFilter },
                       ],
                     },
                     // where: {
