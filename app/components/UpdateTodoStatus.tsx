@@ -14,12 +14,18 @@ import useResponseToast from "~/hooks/useResponseToast";
 import TodoStatusIcon from "./TodoStatusIcon";
 import { Button } from "./ui/button";
 import usePlaySound from "~/hooks/usePlaySound";
+
 interface UpdateTodoStatus extends PropsWithChildren {
-  currentStatus: Status;
+  currentStatus: keyof typeof Status;
   todoId: number;
 }
 
-const statusArray = Object.values(Status);
+export const statusArray: (keyof typeof Status)[] = [
+  "NOT_STARTED",
+  "IN_PROGGRESS", 
+  "COMPLETED"
+];
+
 
 function UpdateTodoStatus({
   children,
@@ -33,6 +39,7 @@ function UpdateTodoStatus({
   // const soundUrl = status === "COMPLETED" ? "/sounds/complete-sound.mp3" : "";
 
   // usePlaySound({ url: soundUrl });
+
 
   return (
     <fetcher.Form>

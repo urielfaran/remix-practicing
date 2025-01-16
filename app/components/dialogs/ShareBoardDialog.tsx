@@ -14,7 +14,8 @@ import UpdateUserPermissionTable from "../UpdateUserPermissionTable";
 import { Separator } from "../ui/separator";
 
 interface ShareBoardDialogProps extends PropsWithChildren {
-  users: UserWithBoardRelation[];
+  usersWithRelationToBoard: UserWithBoardRelation[];
+  usersWithoutRelationToBoard: UserWithBoardRelation[];
   boardId: number;
 }
 
@@ -24,16 +25,12 @@ export type shareBoardType = z.infer<typeof shareBoardSchema>;
 export const permissionTypeResolver = zodResolver(permissionType);
 export type permissionType = z.infer<typeof permissionType>;
 
-function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
-  const usersWithoutBoardRelation = users.filter(
-    (user) =>
-      !user.UserBoardRelation.some((relation) => relation.boardId === boardId)
-  );
-  
-  const usersWithBoardRelation = users.filter((user) =>
-    user.UserBoardRelation.some((relation) => relation.boardId === boardId)
-  );
-
+function ShareBoardDialog({
+  children,
+  usersWithRelationToBoard,
+  usersWithoutRelationToBoard,
+  boardId,
+}: ShareBoardDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -44,12 +41,12 @@ function ShareBoardDialog({ children, users, boardId }: ShareBoardDialogProps) {
         <DialogTitle>Share Your Board With Other Users</DialogTitle>
         <AddUserPermission
           boardId={boardId}
-          usersWithoutBoardRelation={usersWithoutBoardRelation}
+          usersWithoutRelationToBoard={usersWithoutRelationToBoard}
         />
-        <Separator/>
+        <Separator />
         <UpdateUserPermissionTable
           boardId={boardId}
-          usersWithBoardRelation={usersWithBoardRelation}
+          usersWithRelationToBoard={usersWithRelationToBoard}
         />
       </DialogContent>
     </Dialog>

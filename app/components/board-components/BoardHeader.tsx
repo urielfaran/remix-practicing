@@ -37,8 +37,13 @@ function BoardHeader({ board, users }: BoardHeaderProps) {
 
   const isFavorite = board.UserBoardRelation[0].isFavorite;
 
-  const usersWithBoardRelation = users.filter((user) =>
+  const usersWithRelationToBoard = users.filter((user) =>
     user.UserBoardRelation.some((relation) => relation.boardId === board.id)
+  );
+
+  const usersWithoutRelationToBoard = users.filter(
+    (user) =>
+      !user.UserBoardRelation.some((relation) => relation.boardId === board.id)
   );
 
   return (
@@ -56,7 +61,11 @@ function BoardHeader({ board, users }: BoardHeaderProps) {
         <FavoriteBoard boardId={board.id} isFavorite={isFavorite} />
       </div>
       <div className="flex flex-row mr-2 gap-3">
-        <ShareBoardDialog users={users} boardId={board.id}>
+        <ShareBoardDialog
+          usersWithoutRelationToBoard={usersWithoutRelationToBoard}
+          usersWithRelationToBoard={usersWithRelationToBoard}
+          boardId={board.id}
+        >
           <Button
             variant={"ghost"}
             size={"sm"}
@@ -78,7 +87,7 @@ function BoardHeader({ board, users }: BoardHeaderProps) {
             Change Background
           </Button>
         </ChangeBoardColor>
-        <FilterTodosSheet users={usersWithBoardRelation}>
+        <FilterTodosSheet users={usersWithRelationToBoard}>
           <Button
             variant={"ghost"}
             size={"sm"}

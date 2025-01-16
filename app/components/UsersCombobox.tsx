@@ -19,20 +19,20 @@ import { UserWithBoardRelation } from "./board-components/BoardHeader";
 import UserAvatar from "./user-components/UserAvatar";
 
 interface UnrelatedUserComboboxProps {
-  usersWithoutBoardRelation: UserWithBoardRelation[];
+  usersWithoutRelationToBoard: UserWithBoardRelation[];
   value: number;
   form: any;
 }
 
 export function UsersCombobox({
-  usersWithoutBoardRelation,
+  usersWithoutRelationToBoard,
   value,
   form,
 }: UnrelatedUserComboboxProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState("");
 
-  const filteredUsers = usersWithoutBoardRelation.filter((user) =>
+  const filteredUsers = usersWithoutRelationToBoard.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -46,7 +46,7 @@ export function UsersCombobox({
           className="min-w-[180px] justify-between"
         >
           {value
-            ? usersWithoutBoardRelation.find((user) => user.id === value)
+            ? usersWithoutRelationToBoard.find((user) => user.id === value)
                 ?.username
             : "Select user"}
           <ChevronsUpDown className="opacity-50" />

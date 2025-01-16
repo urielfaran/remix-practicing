@@ -2,7 +2,7 @@ import { Status } from "@prisma/client";
 import { CheckCircle, Circle, CircleEllipsis, LoaderCircle } from "lucide-react";
 
 interface TodoStatusIconProps {
-  status: Status;
+  status: keyof typeof  Status;
 }
 
 function TodoStatusIcon({ status }: TodoStatusIconProps) {

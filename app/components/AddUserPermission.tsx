@@ -19,7 +19,7 @@ import { Select } from "./ui/select";
 import SelectUserPermission from "./user-components/SelectUserPermission";
 
 interface AddUserPermissionProps {
-  usersWithoutBoardRelation: UserWithBoardRelation[];
+  usersWithoutRelationToBoard: UserWithBoardRelation[];
   boardId: number;
 }
 
@@ -27,7 +27,7 @@ export const adddPermissionsResolver = zodResolver(addPermissionsSchema);
 export type adddPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
 
 export function AddUserPermission({
-  usersWithoutBoardRelation,
+  usersWithoutRelationToBoard,
   boardId,
 }: AddUserPermissionProps) {
   const fetcher = useFetcher();
@@ -67,7 +67,7 @@ export function AddUserPermission({
               <FormItem className="flex flex-col">
                 <UsersCombobox
                   form={form}
-                  usersWithoutBoardRelation={usersWithoutBoardRelation}
+                  usersWithoutRelationToBoard={usersWithoutRelationToBoard}
                   value={field.value}
                 />
                 <FormMessage />

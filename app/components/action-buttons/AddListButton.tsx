@@ -10,7 +10,7 @@ function AddListButton() {
 
   return (
     <CreateListDialog>
-      <Button variant="ghost" size={"icon"} disabled={!isEditPermission}>
+      <Button variant="ghost" size={"icon"} disabled={!isEditPermission} onClick = {() => console.log("first")}>
         <PlusIcon aria-hidden="true" />
       </Button>
     </CreateListDialog>

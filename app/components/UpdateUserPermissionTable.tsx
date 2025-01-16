@@ -12,11 +12,11 @@ import UserAvatar from "./user-components/UserAvatar";
 import DeleteUserPermissionsForm from "./forms/DeleteUserPermissionsForm";
 
 interface UpdateUserPermissionTableProps {
-  usersWithBoardRelation: UserWithBoardRelation[];
+  usersWithRelationToBoard: UserWithBoardRelation[];
   boardId: number;
 }
 function UpdateUserPermissionTable({
-  usersWithBoardRelation,
+  usersWithRelationToBoard,
   boardId,
 }: UpdateUserPermissionTableProps) {
   return (
@@ -29,7 +29,7 @@ function UpdateUserPermissionTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {usersWithBoardRelation.map((user) => (
+        {usersWithRelationToBoard.map((user) => (
           <TableRow key={user.id}>
             <TableCell className="font-medium gap-2">
               <div className="flex gap-2">
