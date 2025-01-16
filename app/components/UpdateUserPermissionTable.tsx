@@ -10,15 +10,25 @@ import { UserWithBoardRelation } from "./board-components/BoardHeader";
 import UpdateUserPermissionsForm from "./forms/UpdateUserPermissionsForm";
 import UserAvatar from "./user-components/UserAvatar";
 import DeleteUserPermissionsForm from "./forms/DeleteUserPermissionsForm";
+import { useContext } from "react";
+import { UserIdContext } from "~/hooks/itemIdContexts";
+import { usersRelations } from "~/hooks/usersContext";
 
 interface UpdateUserPermissionTableProps {
   usersWithRelationToBoard: UserWithBoardRelation[];
   boardId: number;
 }
 function UpdateUserPermissionTable({
-  usersWithRelationToBoard,
+  // usersWithRelationToBoard,
   boardId,
 }: UpdateUserPermissionTableProps) {
+
+    const userId= useContext(UserIdContext)
+  
+    const {getUsersWithRelationToBoard, users} = usersRelations()
+  
+    const usersWithRelationToBoard = getUsersWithRelationToBoard(users, userId, boardId)
+    
   return (
     <Table>
       <TableHeader>

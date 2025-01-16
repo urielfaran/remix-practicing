@@ -8,6 +8,7 @@ import ShareBoardDialog from "../dialogs/ShareBoardDialog";
 import EditableText from "../EditableText";
 import { FilterTodosSheet } from "../filter-components/FilterTodosSheet";
 import { Button } from "../ui/button";
+import { BoardIdContext } from "~/hooks/itemIdContexts";
 
 export type BoardWithRelations = Prisma.BoardGetPayload<{
   include: {
@@ -29,16 +30,20 @@ export type UserWithBoardRelation = Prisma.UserGetPayload<{
 interface BoardHeaderProps {
   board: BoardWithRelations;
   users: UserWithBoardRelation[];
+  userId: number;
 }
-function BoardHeader({ board, users }: BoardHeaderProps) {
+function BoardHeader({ board, users, userId }: BoardHeaderProps) {
   const { checkPermission } = usePermission();
   const isEditPermission = checkPermission(Permissions.WRITE);
   const isDeletePermission = checkPermission(Permissions.DELETE);
 
   const isFavorite = board.UserBoardRelation[0].isFavorite;
 
-  const usersWithRelationToBoard = users.filter((user) =>
-    user.UserBoardRelation.some((relation) => relation.boardId === board.id)
+  const usersWithRelationToBoard = users.filter(
+    (user) =>
+      user.UserBoardRelation.some(
+        (relation) => relation.boardId === board.id
+      ) && user.id !== userId
   );
 
   const usersWithoutRelationToBoard = users.filter(
@@ -87,17 +92,19 @@ function BoardHeader({ board, users }: BoardHeaderProps) {
             Change Background
           </Button>
         </ChangeBoardColor>
-        <FilterTodosSheet users={usersWithRelationToBoard}>
-          <Button
-            variant={"ghost"}
-            size={"sm"}
-            className="hover:scale-105 transition delay-100 duration-200 ease-in-out"
-            disabled={!isEditPermission}
-          >
-            <ListFilter />
-            Filter
-          </Button>
-        </FilterTodosSheet>
+        <BoardIdContext.Provider value={board.id}>
+          <FilterTodosSheet users={usersWithRelationToBoard}>
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              className="hover:scale-105 transition delay-100 duration-200 ease-in-out"
+              disabled={!isEditPermission}
+            >
+              <ListFilter />
+              Filter
+            </Button>
+          </FilterTodosSheet>
+        </BoardIdContext.Provider>
       </div>
     </div>
   );

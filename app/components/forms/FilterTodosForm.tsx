@@ -5,6 +5,9 @@ import TodoStatusIcon from "../TodoStatusIcon";
 import { Checkbox } from "../ui/checkbox";
 import { statusArray } from "../UpdateTodoStatus";
 import UserAvatar from "../user-components/UserAvatar";
+import { useContext } from "react";
+import { BoardIdContext, UserIdContext } from "~/hooks/itemIdContexts";
+import { usersRelations } from "~/hooks/usersContext";
 
 interface FilterTodosFormProps {
   users: UserWithBoardRelation[];
@@ -25,9 +28,23 @@ const dueTimeFilters = [
   },
 ];
 
-function FilterTodosForm({ users }: FilterTodosFormProps) {
+function FilterTodosForm({  }: FilterTodosFormProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchParamArr = searchParams.getAll("filter");
+
+  const userId = useContext(UserIdContext);
+  const boardId = useContext(BoardIdContext);
+  
+  
+  const { getUsersWithRelationToBoard, users } = usersRelations();
+  
+  const usersWithRelationToBoard = getUsersWithRelationToBoard(
+    users,
+    userId,
+    boardId
+  );
+  
+  console.log(userId, users, boardId);
 
   const isChecked = (value: string) => {
     return searchParamArr.includes(value);
@@ -35,20 +52,19 @@ function FilterTodosForm({ users }: FilterTodosFormProps) {
 
   const handleCheckboxChange = (value: string, checked: boolean) => {
     const newParams = new URLSearchParams(searchParams);
-  
+
     if (checked) {
-      newParams.append("filter", value); 
+      newParams.append("filter", value);
     } else {
-      newParams.delete("filter", value); 
+      newParams.delete("filter", value);
     }
-  
+
     setSearchParams(newParams);
   };
-  
 
   return (
-    <Form 
-      method="GET" 
+    <Form
+      method="GET"
       className="flex w-full flex-col space-y-4 p-4"
       onClick={(e) => e.preventDefault()}
     >
@@ -59,8 +75,11 @@ function FilterTodosForm({ users }: FilterTodosFormProps) {
             name="filter"
             value={`Due Time:${filter.value}`}
             checked={isChecked(`Due Time:${filter.value}`)}
-            onCheckedChange={(checked) => 
-              handleCheckboxChange(`Due Time:${filter.value}`, checked as boolean)
+            onCheckedChange={(checked) =>
+              handleCheckboxChange(
+                `Due Time:${filter.value}`,
+                checked as boolean
+              )
             }
           />
           {filter.icon} <span>{filter.value}</span>
@@ -73,7 +92,7 @@ function FilterTodosForm({ users }: FilterTodosFormProps) {
             name="filter"
             value={`Status:${status}`}
             checked={isChecked(`Status:${status}`)}
-            onCheckedChange={(checked) => 
+            onCheckedChange={(checked) =>
               handleCheckboxChange(`Status:${status}`, checked as boolean)
             }
           />
@@ -82,13 +101,13 @@ function FilterTodosForm({ users }: FilterTodosFormProps) {
         </div>
       ))}
       <h2>Members</h2>
-      {users?.map((user, index) => (
+      {usersWithRelationToBoard.map((user, index) => (
         <div key={index} className="flex gap-2">
           <Checkbox
             name="filter"
             value={`Members:${user.id}`}
             checked={isChecked(`Members:${user.id}`)}
-            onCheckedChange={(checked) => 
+            onCheckedChange={(checked) =>
               handleCheckboxChange(`Members:${user.id}`, checked as boolean)
             }
           />

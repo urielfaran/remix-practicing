@@ -17,6 +17,9 @@ import { UserWithBoardRelation } from "./board-components/BoardHeader";
 import { UsersCombobox } from "./UsersCombobox";
 import { Select } from "./ui/select";
 import SelectUserPermission from "./user-components/SelectUserPermission";
+import { usersRelations } from "~/hooks/usersContext";
+import { UserIdContext } from "~/hooks/itemIdContexts";
+import { useContext } from "react";
 
 interface AddUserPermissionProps {
   usersWithoutRelationToBoard: UserWithBoardRelation[];
@@ -27,11 +30,17 @@ export const adddPermissionsResolver = zodResolver(addPermissionsSchema);
 export type adddPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
 
 export function AddUserPermission({
-  usersWithoutRelationToBoard,
+  // usersWithoutRelationToBoard,
   boardId,
 }: AddUserPermissionProps) {
   const fetcher = useFetcher();
   useResponseToast(fetcher.data);
+
+  const userId= useContext(UserIdContext)
+
+  const {getUsersWithoutRelationToBoard, users} = usersRelations()
+
+  const usersWithoutRelationToBoard = getUsersWithoutRelationToBoard(users, boardId)
 
   const defaultValues = {
     permission: undefined,

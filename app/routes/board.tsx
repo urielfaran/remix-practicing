@@ -1,8 +1,4 @@
-import {
-  ActionFunctionArgs,
-  data,
-  redirect,
-} from "react-router";
+import { ActionFunctionArgs, data, redirect } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
@@ -27,7 +23,7 @@ import {
 } from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
-import { BoardIdContext } from "~/hooks/itemIdContexts";
+import { BoardIdContext, UserIdContext } from "~/hooks/itemIdContexts";
 import { UserPermissionProvider } from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
@@ -36,7 +32,8 @@ import { createTodo, updateTodo } from "~/utils/todo.server";
 import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
-import _ from 'lodash'
+import _ from "lodash";
+import { UsersProvider } from "~/hooks/usersContext";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -49,9 +46,14 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   const userId = await authenticator.requireUser(request, "/login");
 
   const url = new URL(request.url);
-  const groupedParams = _.groupBy(url.searchParams.getAll('filter'), param => param.split(':')[0]);
+  const groupedParams = _.groupBy(
+    url.searchParams.getAll("filter"),
+    (param) => param.split(":")[0]
+  );
 
-  const result = _.mapValues(groupedParams, group => group.map(item => item.split(':')[1]));
+  const result = _.mapValues(groupedParams, (group) =>
+    group.map((item) => item.split(":")[1])
+  );
 
   const user = await getUserWithBoardById(Number(userId), boardId, result);
   invariant(user, "board doesnt exist");
@@ -62,11 +64,11 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
   const users = await getActiveUsers(Number(userId));
 
-  return { board, permissions, users };
+  return { board, permissions, users, userId };
 }
 
 function Board({ loaderData }: Route.ComponentProps) {
-  const { board, permissions, users } = loaderData;
+  const { board, permissions, users, userId } = loaderData;
   const { className, style } = getBackgroundStyle(board.backgroundColor);
 
   const connectedusers = board.UserBoardRelation.map(
@@ -75,7 +77,11 @@ function Board({ loaderData }: Route.ComponentProps) {
   return (
     <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
       <UserPermissionProvider value={permissions}>
-        <BoardHeader board={board} users={users} />
+        <UsersProvider value={users}>
+          <UserIdContext.Provider value={Number(userId)}>
+            <BoardHeader board={board} users={users} userId={Number(userId)} />
+          </UserIdContext.Provider>
+        </UsersProvider>
         <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
           <BoardIdContext.Provider value={board?.id}>
             <AddListButton />
@@ -117,7 +123,7 @@ export async function action({ request }: ActionFunctionArgs) {
           description: payload.description,
           dueTime: payload.dueTime,
           listId: payload.listId,
-          status: 'NOT_STARTED'
+          status: "NOT_STARTED",
         });
       } catch (err) {
         return data(

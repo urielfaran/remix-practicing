@@ -126,9 +126,9 @@ export async function getActiveUsers(userId: number) {
   return await prisma.user.findMany({
     where: {
       isDisabled: false,
-      id: {
-        not: userId,
-      },
+      // id: {
+      //   not: userId,
+      // },
     },
     include: {
       UserBoardRelation: true,
