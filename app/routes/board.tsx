@@ -62,11 +62,11 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
   const users = await getActiveUsers(Number(userId));
 
-  return { board, permissions, users };
+  return { board, permissions, users, userId };
 }
 
 function Board({ loaderData }: Route.ComponentProps) {
-  const { board, permissions, users } = loaderData;
+  const { board, permissions, users, userId } = loaderData;
   const { className, style } = getBackgroundStyle(board.backgroundColor);
 
   const connectedusers = board.UserBoardRelation.map(
@@ -75,7 +75,7 @@ function Board({ loaderData }: Route.ComponentProps) {
   return (
     <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
       <UserPermissionProvider value={permissions}>
-        <BoardHeader board={board} users={users} />
+        <BoardHeader board={board} users={users} userId ={Number(userId)}/>
         <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
           <BoardIdContext.Provider value={board?.id}>
             <AddListButton />

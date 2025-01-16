@@ -29,21 +29,26 @@ export type UserWithBoardRelation = Prisma.UserGetPayload<{
 interface BoardHeaderProps {
   board: BoardWithRelations;
   users: UserWithBoardRelation[];
+  userId: number;
 }
-function BoardHeader({ board, users }: BoardHeaderProps) {
+function BoardHeader({ board, users, userId }: BoardHeaderProps) {
   const { checkPermission } = usePermission();
   const isEditPermission = checkPermission(Permissions.WRITE);
   const isDeletePermission = checkPermission(Permissions.DELETE);
 
   const isFavorite = board.UserBoardRelation[0].isFavorite;
 
-  const usersWithRelationToBoard = users.filter((user) =>
-    user.UserBoardRelation.some((relation) => relation.boardId === board.id)
+  const usersWithRelationToBoard = users.filter(
+    (user) =>
+      user.id !== userId &&
+      user.UserBoardRelation.some((relation) => relation.boardId === board.id)
   );
 
   const usersWithoutRelationToBoard = users.filter(
     (user) =>
-      !user.UserBoardRelation.some((relation) => relation.boardId === board.id)
+      !user.UserBoardRelation.some(
+        (relation) => relation.boardId === board.id && user.id !== userId
+      )
   );
 
   return (
