@@ -31,9 +31,7 @@ interface BoardHeaderProps {
   board: BoardWithRelations;
   users: UserWithBoardRelation[];
   userId: number;
-  userId: number;
 }
-function BoardHeader({ board, users, userId }: BoardHeaderProps) {
 function BoardHeader({ board, users, userId }: BoardHeaderProps) {
   const { checkPermission } = usePermission();
   const isEditPermission = checkPermission(Permissions.WRITE);

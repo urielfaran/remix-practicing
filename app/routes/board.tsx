@@ -65,11 +65,9 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   const users = await getActiveUsers(Number(userId));
 
   return { board, permissions, users, userId };
-  return { board, permissions, users, userId };
 }
 
 function Board({ loaderData }: Route.ComponentProps) {
-  const { board, permissions, users, userId } = loaderData;
   const { board, permissions, users, userId } = loaderData;
   const { className, style } = getBackgroundStyle(board.backgroundColor);
 
