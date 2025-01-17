@@ -24,6 +24,22 @@ const users = [
     username: "test4",
     password: "password4",
   },
+  {
+    username: "test5",
+    password: "password5",
+  },
+  {
+    username: "test6",
+    password: "password6",
+  },
+  {
+    username: "test7",
+    password: "password7",
+  },
+  {
+    username: "test8",
+    password: "password8",
+  },
 ];
 
 

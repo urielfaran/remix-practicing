@@ -32,7 +32,7 @@ function ShareBoardDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
-        className="min-w-[425px] min-h-40 flex flex-col space-y-3"
+        className="min-w-[425px] min-h-60 max-h-96 overflow-y-auto flex flex-col space-y-3"
       >
         <DialogTitle>Share Your Board With Other Users</DialogTitle>
         <AddUserPermission

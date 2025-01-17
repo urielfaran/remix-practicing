@@ -24,6 +24,7 @@ type DisplayTodoProps = TodoCardProps & { dialogStyle: dialogStyleType };
 
 function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
   const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
+  const [isHovered, setIsHovered] = useState(false);
 
   const { checkPermission } = usePermission();
   const isEditPermission = checkPermission(Permissions.WRITE);
@@ -80,6 +81,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
           <UpdateTodoStatus currentStatus={todo.status} todoId={todo.id}>
             <Button
               variant={"ghost"}
+              size={'icon'}
               className="hover:bg-inherit focus-visible:ring-0"
             >
               <TodoStatusIcon status={todo.status} />
@@ -100,23 +102,27 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
               {format(todo.dueTime, "MMM d, yyyy")}
             </Button>
           </UpdateTodoDueTime>
-          {assignUsers.map((user) => (
-            <AssignTodo
-              key={user.id}
-              todoId={todo.id}
-              assignUsers={assignUsers}
-              noAssigendUsers={noAssigendUsers}
-            >
-              <Button
-                size={"icon"}
-                variant={"ghost"}
-                className="hover:bg-inherit focus-visible:ring-0"
+          <div className="max-w-28 flex relative">
+            {assignUsers.map((user, index) => (
+              <AssignTodo
+                key={user.id}
+                todoId={todo.id}
+                assignUsers={assignUsers}
+                noAssigendUsers={noAssigendUsers}
               >
-                <UserAvatar avatarUrl={user.avatar} username={user.username} />
-              </Button>
-            </AssignTodo>
-          ))}
-          {/* </div> */}
+                <Button
+                  size={"icon"}
+                  variant={"ghost"}
+                  className="hover:bg-inherit focus-visible:ring-0"
+                >
+                  <UserAvatar
+                    avatarUrl={user.avatar}
+                    username={user.username}
+                  />
+                </Button>
+              </AssignTodo>
+            ))}
+          </div>
         </div>
       </CardDescription>
     </>
@@ -147,7 +153,9 @@ function TodoCard({ todo }: TodoCardProps) {
     <Card
       key={todo.id}
       ref={cardRef}
-      className={cn("relative grid min-w-48 p-2 hover:ring-2")}
+      className={cn(
+        "relative grid min-w-48 p-2 hover:ring-2 overflow-x-hidden"
+      )}
     >
       <TodoDisplay todo={todo} dialogStyle={dialogStyle} />
     </Card>

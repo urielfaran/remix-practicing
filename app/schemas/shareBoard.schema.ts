@@ -15,7 +15,7 @@ export const permissionsArray = Object.entries(permissionsTypes).map(
 );
 
 export const permissionType = z.object({
-  permission: z.nativeEnum(permissionsTypes).optional(),
+  permission: z.nativeEnum(permissionsTypes)
 });
 
 export const shareBoardSchema = permissionType.merge(

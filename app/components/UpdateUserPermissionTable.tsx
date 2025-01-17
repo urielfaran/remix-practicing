@@ -27,29 +27,33 @@ function UpdateUserPermissionTable({
   const usersWithRelationToBoard = getUsersWithRelationToBoard(
     users,
     boardId,
-    userId,
+    userId
   );
 
-
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">User</TableHead>
-          <TableHead className="text-center">Permissions</TableHead>
-          <TableHead className="text-center">Actions</TableHead>
+    <Table className="min-w-full rounded-lg shadow-lg">
+      <TableHeader className="sticky top-0 z-10 bg-muted">
+        <TableRow className="hover:bg-inherit w-full">
+          <TableHead className="px-4 py-2 text-left font-semibold text-sm">
+            User
+          </TableHead>
+          <TableHead className="px-4 py-2 text-right font-semibold text-sm">
+            Permissions
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {usersWithRelationToBoard.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell className="font-medium gap-2">
-              <div className="flex gap-2">
+          <TableRow key={user.id} className="">
+            <TableCell className="px-4 py-3">
+              <div className="flex items-center gap-3">
                 <UserAvatar avatarUrl={user.avatar} username={user.username} />
-                <p>{user.username}</p>
+                <p className="text-gray-800 font-medium text-sm">
+                  {user.username}
+                </p>
               </div>
             </TableCell>
-            <TableCell className="content-right flex flex-row items-end">
+            <TableCell className="text-right flex gap-3 items-end">
               <UpdateUserPermissionsForm boardId={boardId} user={user} />
               <DeleteUserPermissionsForm boardId={boardId} user={user} />
             </TableCell>

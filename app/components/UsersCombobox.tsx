@@ -35,7 +35,9 @@ export function UsersCombobox({
   const filteredUsers = usersWithoutRelationToBoard.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase())
   );
-
+  const selectedUser = usersWithoutRelationToBoard.find(
+    (user) => user.id === value
+  );
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -45,9 +47,8 @@ export function UsersCombobox({
           aria-expanded={open}
           className="min-w-[180px] justify-between"
         >
-          {value
-            ? usersWithoutRelationToBoard.find((user) => user.id === value)
-                ?.username
+          {value && selectedUser?.username
+            ? selectedUser?.username
             : "Select user"}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -57,7 +58,7 @@ export function UsersCombobox({
           <CommandInput
             placeholder="Search user..."
             className="h-9"
-            value={search}
+            value={search ?? null}
             onChangeCapture={(e: React.ChangeEvent<HTMLInputElement>) =>
               setSearch(e.target.value)
             }

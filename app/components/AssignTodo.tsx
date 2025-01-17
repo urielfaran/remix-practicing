@@ -53,7 +53,6 @@ function AssignTodo({
                   value={user.id.toString()}
                   onSelect={(currentValue) => {
                     setValue(currentValue);
-                    setOpen(false);
                   }}
                   className="flex justify-between items-center"
                 >
@@ -81,7 +80,6 @@ function AssignTodo({
                       { userId: currentValue, todoId: todoId.toString() },
                       { method: "post", action: "/action/add-todo-assignment" }
                     );
-                    setOpen(false);
                   }}
                 >
                   <UserAvatar

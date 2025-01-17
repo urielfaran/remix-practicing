@@ -23,7 +23,7 @@ function DisplayList({ list }: DisplayListProps) {
   const isEditPermission = checkPermission(Permissions.WRITE);
 
   return (
-    <Card className="min-w-64 bg-secondary h-fit">
+    <Card className="w-64 overflow-x-visible bg-secondary h-fit">
       <div className="p-4 pb-0 flex-1 flex flex-row justify-between bg-transparent">
         <>
           <EditableText
@@ -33,7 +33,7 @@ function DisplayList({ list }: DisplayListProps) {
             fieldName="title"
             isEditable={isEditPermission}
           />
-          <ListActionDropdown listId={list.id} isActive={isEditPermission}/>
+          <ListActionDropdown listId={list.id} isActive={isEditPermission} />
         </>
       </div>
       <CardDescription className="flex flex-col gap-2 overflow-y-auto p-2">

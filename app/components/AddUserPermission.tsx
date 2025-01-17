@@ -12,14 +12,11 @@ import {
   Form as ShadForm,
 } from "~/components/ui/form";
 import useResponseToast from "~/hooks/useResponseToast";
+import { usersRelations } from "~/hooks/usersContext";
 import { addPermissionsSchema } from "~/schemas/shareBoard.schema";
-import { UserWithBoardRelation } from "./board-components/BoardHeader";
-import { UsersCombobox } from "./UsersCombobox";
 import { Select } from "./ui/select";
 import SelectUserPermission from "./user-components/SelectUserPermission";
-import { usersRelations } from "~/hooks/usersContext";
-import { UserIdContext } from "~/hooks/itemIdContexts";
-import { useContext } from "react";
+import { UsersCombobox } from "./UsersCombobox";
 
 interface AddUserPermissionProps {
   boardId: number;
@@ -28,17 +25,16 @@ interface AddUserPermissionProps {
 export const adddPermissionsResolver = zodResolver(addPermissionsSchema);
 export type adddPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
 
-export function AddUserPermission({
-  boardId,
-}: AddUserPermissionProps) {
+export function AddUserPermission({ boardId }: AddUserPermissionProps) {
   const fetcher = useFetcher();
   useResponseToast(fetcher.data);
 
-  const userId= useContext(UserIdContext)
+  const { getUsersWithoutRelationToBoard, users } = usersRelations();
 
-  const {getUsersWithoutRelationToBoard, users} = usersRelations()
-
-  const usersWithoutRelationToBoard = getUsersWithoutRelationToBoard(users, boardId)
+  const usersWithoutRelationToBoard = getUsersWithoutRelationToBoard(
+    users,
+    boardId
+  );
 
   const defaultValues = {
     permission: undefined,
@@ -95,11 +91,7 @@ export function AddUserPermission({
               </FormItem>
             )}
           />
-          <Button
-            className="m-auto"
-            type="submit"
-            disabled={isSubmitting}
-          >
+          <Button className="m-auto" type="submit" disabled={isSubmitting}>
             {isSubmitting ? (
               <span className="flex items-center gap-2">
                 Loading...
