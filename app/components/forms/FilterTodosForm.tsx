@@ -40,7 +40,6 @@ function FilterTodosForm({  }: FilterTodosFormProps) {
   
   const usersWithRelationToBoard = getUsersWithRelationToBoard(
     users,
-    userId,
     boardId
   );
   

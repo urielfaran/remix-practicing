@@ -22,13 +22,17 @@ function UpdateUserPermissionTable({
   // usersWithRelationToBoard,
   boardId,
 }: UpdateUserPermissionTableProps) {
+  const userId = useContext(UserIdContext);
 
-    const userId= useContext(UserIdContext)
-  
-    const {getUsersWithRelationToBoard, users} = usersRelations()
-  
-    const usersWithRelationToBoard = getUsersWithRelationToBoard(users, userId, boardId)
-    
+  const { getUsersWithRelationToBoard, users } = usersRelations();
+
+  const usersWithRelationToBoard = getUsersWithRelationToBoard(
+    users,
+    boardId,
+    userId,
+  );
+
+
   return (
     <Table>
       <TableHeader>

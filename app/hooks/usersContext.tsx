@@ -9,14 +9,15 @@ export function usersRelations() {
 
   function getUsersWithRelationToBoard(
     users: UserWithBoardRelation[],
-    userId: number,
-    boardId: number
+    boardId: number,
+    userId?: number
   ) {
-    const usersWithRelationToBoard = users.filter((user) => {
-      user.UserBoardRelation.some((relation) => relation.boardId === boardId) &&
-        user.id !== userId;
-    });
-    return usersWithRelationToBoard;
+    return users.filter(
+      (user) =>
+        user.UserBoardRelation.some(
+          (relation) => relation.boardId === boardId
+        ) && (userId ? user.id !== userId : true)
+    );
   }
 
   function getUsersWithoutRelationToBoard(
