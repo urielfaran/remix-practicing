@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { Image, ListFilter, UsersRound } from "lucide-react";
+import { BoardIdContext } from "~/hooks/itemIdContexts";
 import { usePermission } from "~/hooks/permissionsContext";
 import { Permissions } from "~/utils/permissions";
 import FavoriteBoard from "../action-buttons/FavoriteBoard";
@@ -8,7 +9,6 @@ import ShareBoardDialog from "../dialogs/ShareBoardDialog";
 import EditableText from "../EditableText";
 import { FilterTodosSheet } from "../filter-components/FilterTodosSheet";
 import { Button } from "../ui/button";
-import { BoardIdContext } from "~/hooks/itemIdContexts";
 
 export type BoardWithRelations = Prisma.BoardGetPayload<{
   include: {
@@ -29,29 +29,13 @@ export type UserWithBoardRelation = Prisma.UserGetPayload<{
 
 interface BoardHeaderProps {
   board: BoardWithRelations;
-  users: UserWithBoardRelation[];
-  userId: number;
 }
-function BoardHeader({ board, users, userId }: BoardHeaderProps) {
+function BoardHeader({ board }: BoardHeaderProps) {
   const { checkPermission } = usePermission();
   const isEditPermission = checkPermission(Permissions.WRITE);
   const isDeletePermission = checkPermission(Permissions.DELETE);
 
   const isFavorite = board.UserBoardRelation[0].isFavorite;
-
-  const usersWithRelationToBoard = users.filter(
-    (user) =>
-      user.UserBoardRelation.some(
-        (relation) => relation.boardId === board.id
-      ) && user.id !== userId
-  );
-
-  const usersWithoutRelationToBoard = users.filter(
-    (user) =>
-      !user.UserBoardRelation.some(
-        (relation) => relation.boardId === board.id && user.id !== userId
-      )
-  );
 
   return (
     <div className="bg-background/20 backdrop-filter backdrop-blur-sm p-3 flex flex-row justify-between">
@@ -68,11 +52,7 @@ function BoardHeader({ board, users, userId }: BoardHeaderProps) {
         <FavoriteBoard boardId={board.id} isFavorite={isFavorite} />
       </div>
       <div className="flex flex-row mr-2 gap-3">
-        <ShareBoardDialog
-          usersWithoutRelationToBoard={usersWithoutRelationToBoard}
-          usersWithRelationToBoard={usersWithRelationToBoard}
-          boardId={board.id}
-        >
+        <ShareBoardDialog boardId={board.id}>
           <Button
             variant={"ghost"}
             size={"sm"}
@@ -95,7 +75,7 @@ function BoardHeader({ board, users, userId }: BoardHeaderProps) {
           </Button>
         </ChangeBoardColor>
         <BoardIdContext.Provider value={board.id}>
-          <FilterTodosSheet users={usersWithRelationToBoard}>
+          <FilterTodosSheet>
             <Button
               variant={"ghost"}
               size={"sm"}

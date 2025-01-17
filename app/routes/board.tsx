@@ -79,7 +79,7 @@ function Board({ loaderData }: Route.ComponentProps) {
       <UserPermissionProvider value={permissions}>
         <UsersProvider value={users}>
           <UserIdContext.Provider value={Number(userId)}>
-            <BoardHeader board={board} users={users} userId={Number(userId)} />
+            <BoardHeader board={board} />
           </UserIdContext.Provider>
         </UsersProvider>
         <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">

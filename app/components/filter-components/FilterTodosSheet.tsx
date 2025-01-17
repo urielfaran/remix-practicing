@@ -10,9 +10,8 @@ import FilterTodosForm from "../forms/FilterTodosForm";
 import { UserWithBoardRelation } from "../board-components/BoardHeader";
 
 interface FilterTodosSheetProps extends PropsWithChildren {
-  users: UserWithBoardRelation[]
 }
-export function FilterTodosSheet({users, children }: FilterTodosSheetProps) {
+export function FilterTodosSheet({children }: FilterTodosSheetProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
@@ -20,7 +19,7 @@ export function FilterTodosSheet({users, children }: FilterTodosSheetProps) {
         <SheetHeader>
           <SheetTitle>Filter Your Todos</SheetTitle>
         </SheetHeader>
-        <FilterTodosForm users={users}/>
+        <FilterTodosForm />
       </SheetContent>
     </Sheet>
   );

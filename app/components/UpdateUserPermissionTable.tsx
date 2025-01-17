@@ -15,11 +15,9 @@ import { UserIdContext } from "~/hooks/itemIdContexts";
 import { usersRelations } from "~/hooks/usersContext";
 
 interface UpdateUserPermissionTableProps {
-  usersWithRelationToBoard: UserWithBoardRelation[];
   boardId: number;
 }
 function UpdateUserPermissionTable({
-  // usersWithRelationToBoard,
   boardId,
 }: UpdateUserPermissionTableProps) {
   const userId = useContext(UserIdContext);

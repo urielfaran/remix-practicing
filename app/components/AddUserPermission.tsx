@@ -22,7 +22,6 @@ import { UserIdContext } from "~/hooks/itemIdContexts";
 import { useContext } from "react";
 
 interface AddUserPermissionProps {
-  usersWithoutRelationToBoard: UserWithBoardRelation[];
   boardId: number;
 }
 
@@ -30,7 +29,6 @@ export const adddPermissionsResolver = zodResolver(addPermissionsSchema);
 export type adddPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
 
 export function AddUserPermission({
-  // usersWithoutRelationToBoard,
   boardId,
 }: AddUserPermissionProps) {
   const fetcher = useFetcher();

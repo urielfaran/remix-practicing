@@ -1,17 +1,12 @@
 import { CalendarDays, Clock, ClockAlert } from "lucide-react";
+import { useContext } from "react";
 import { Form, useSearchParams } from "react-router";
-import { UserWithBoardRelation } from "../board-components/BoardHeader";
+import { BoardIdContext } from "~/hooks/itemIdContexts";
+import { usersRelations } from "~/hooks/usersContext";
 import TodoStatusIcon from "../TodoStatusIcon";
 import { Checkbox } from "../ui/checkbox";
 import { statusArray } from "../UpdateTodoStatus";
 import UserAvatar from "../user-components/UserAvatar";
-import { useContext } from "react";
-import { BoardIdContext, UserIdContext } from "~/hooks/itemIdContexts";
-import { usersRelations } from "~/hooks/usersContext";
-
-interface FilterTodosFormProps {
-  users: UserWithBoardRelation[];
-}
 
 const dueTimeFilters = [
   {
@@ -28,22 +23,15 @@ const dueTimeFilters = [
   },
 ];
 
-function FilterTodosForm({  }: FilterTodosFormProps) {
+function FilterTodosForm() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchParamArr = searchParams.getAll("filter");
 
-  const userId = useContext(UserIdContext);
   const boardId = useContext(BoardIdContext);
-  
-  
+
   const { getUsersWithRelationToBoard, users } = usersRelations();
-  
-  const usersWithRelationToBoard = getUsersWithRelationToBoard(
-    users,
-    boardId
-  );
-  
-  console.log(userId, users, boardId);
+
+  const usersWithRelationToBoard = getUsersWithRelationToBoard(users, boardId);
 
   const isChecked = (value: string) => {
     return searchParamArr.includes(value);
