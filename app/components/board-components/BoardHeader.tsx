@@ -31,7 +31,9 @@ interface BoardHeaderProps {
   board: BoardWithRelations;
   users: UserWithBoardRelation[];
   userId: number;
+  userId: number;
 }
+function BoardHeader({ board, users, userId }: BoardHeaderProps) {
 function BoardHeader({ board, users, userId }: BoardHeaderProps) {
   const { checkPermission } = usePermission();
   const isEditPermission = checkPermission(Permissions.WRITE);
@@ -48,7 +50,9 @@ function BoardHeader({ board, users, userId }: BoardHeaderProps) {
 
   const usersWithoutRelationToBoard = users.filter(
     (user) =>
-      !user.UserBoardRelation.some((relation) => relation.boardId === board.id)
+      !user.UserBoardRelation.some(
+        (relation) => relation.boardId === board.id && user.id !== userId
+      )
   );
 
   return (
