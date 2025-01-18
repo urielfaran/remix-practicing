@@ -20,15 +20,16 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import { cn } from "~/lib/utils";
+import { BoardWithRelations } from "./AppSidebar";
 
 interface GenericNavItemsProps extends PropsWithChildren {
-  boards: Board[];
+  boards: BoardWithRelations[];
   title: string;
   icon: JSX.Element;
 }
 
 function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
-  const { id } = useParams(); 
+  const { id } = useParams();
 
   return (
     <SidebarGroup>
@@ -46,9 +47,7 @@ function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
             <CollapsibleContent>
               <SidebarMenuSub>
                 {boards.map((board) => {
-                  const isFavorite = true
-                    // board.UserBoardRelation[0]?.isFavorite;
-
+                  const isFavorite = board.UserBoardRelation[0]?.isFavorite;
                   return (
                     <SidebarMenuSubItem
                       key={board.id}

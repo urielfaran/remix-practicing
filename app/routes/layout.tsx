@@ -25,8 +25,6 @@ export async function loader({ request }: Route.LoaderArgs) {
   const { Boards, UserBoardRelation } = user;
   const favoriteBoards = await getUserFavoriteBoards(Number(userId));
 
-  // const sharedBoards = UserBoardRelation.map((board) => board.board);
-
   const sharedBoards = UserBoardRelation.map((board) => board.board);
 
   return { sharedBoards, ownedBoards: Boards, favoriteBoards, user };
@@ -36,7 +34,6 @@ function layout({ loaderData }: Route.ComponentProps) {
   const { ownedBoards, sharedBoards, favoriteBoards, user } = loaderData;
 
   const boards = ownedBoards.concat(sharedBoards);
-  // favoriteBoards[0].UserBoardRelation[0]?.isFavorite;
 
   return (
     <SidebarProvider>

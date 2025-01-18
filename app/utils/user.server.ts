@@ -60,7 +60,7 @@ export async function getUserWithBoardById(
       : {}
     : {};
 
-    return await prisma.user.findUnique({
+  return await prisma.user.findUnique({
     where: { id: userId },
     include: {
       UserBoardRelation: {
@@ -157,8 +157,11 @@ export async function getUserLayoutBoards(userId: number) {
           },
         },
         select: {
-          board: true,
-          isFavorite: true,
+          board: {
+            include: {
+              UserBoardRelation: true,
+            },
+          },
         },
       },
     },

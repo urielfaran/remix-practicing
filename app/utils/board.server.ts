@@ -118,10 +118,10 @@ export async function getUserFavoriteBoards(userId: number) {
         where: {
           userId: userId,
         },
-        select: {
-          isFavorite: true,
-          permissions: true,
-        },
+        // select: {
+        //   isFavorite: true,
+        //   permissions: true,
+        // },
       },
     },
   });

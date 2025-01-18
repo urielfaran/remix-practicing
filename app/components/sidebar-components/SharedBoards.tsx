@@ -1,9 +1,10 @@
 import { Board } from "@prisma/client";
 import { Share2 } from "lucide-react";
 import GenericNavItems from "./GenericNavItems";
+import { BoardWithRelations } from "./AppSidebar";
 
 interface SharedBoardsProps {
-  boards: Board[];
+  boards: BoardWithRelations[];
 }
 
 export function SharedBoards({ boards }: SharedBoardsProps) {
