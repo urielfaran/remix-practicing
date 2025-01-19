@@ -12,7 +12,7 @@ import {
   Form as ShadForm,
 } from "~/components/ui/form";
 import useResponseToast from "~/hooks/useResponseToast";
-import { usersRelations } from "~/hooks/usersContext";
+import { useUsersRelations } from "~/hooks/usersContext";
 import { addPermissionsSchema } from "~/schemas/shareBoard.schema";
 import { Select } from "./ui/select";
 import SelectUserPermission from "./user-components/SelectUserPermission";
@@ -29,7 +29,7 @@ export function AddUserPermission({ boardId }: AddUserPermissionProps) {
   const fetcher = useFetcher();
   useResponseToast(fetcher.data);
 
-  const { getUsersWithoutRelationToBoard, users } = usersRelations();
+  const { getUsersWithoutRelationToBoard, users } = useUsersRelations();
 
   const usersWithoutRelationToBoard = getUsersWithoutRelationToBoard(
     users,

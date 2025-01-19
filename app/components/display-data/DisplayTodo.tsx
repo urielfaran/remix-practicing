@@ -24,7 +24,6 @@ type DisplayTodoProps = TodoCardProps & { dialogStyle: dialogStyleType };
 
 function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
   const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
-  const [isHovered, setIsHovered] = useState(false);
 
   const { checkPermission } = usePermission();
   const isEditPermission = checkPermission(Permissions.WRITE);
@@ -81,7 +80,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
           <UpdateTodoStatus currentStatus={todo.status} todoId={todo.id}>
             <Button
               variant={"ghost"}
-              size={'icon'}
+              size={"icon"}
               className="hover:bg-inherit focus-visible:ring-0"
             >
               <TodoStatusIcon status={todo.status} />
@@ -102,8 +101,8 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
               {format(todo.dueTime, "MMM d, yyyy")}
             </Button>
           </UpdateTodoDueTime>
-          <div className="max-w-28 flex relative">
-            {assignUsers.map((user, index) => (
+          <div className="max-w-28 flex relative -space-x-4">
+            {assignUsers.map((user) => (
               <AssignTodo
                 key={user.id}
                 todoId={todo.id}

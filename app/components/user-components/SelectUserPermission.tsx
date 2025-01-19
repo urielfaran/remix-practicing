@@ -16,8 +16,13 @@ function SelectUserPermission() {
       <SelectContent>
         <SelectGroup>
           {permissionsArray.map((permission, index) => (
-            <SelectItem key={index} value={permission.value}>
-              {permission.key}
+            <SelectItem
+              className="capitalize"
+              key={index}
+              value={permission.value}
+            >
+              <span               className="capitalize"
+              >{permission.key}</span>
             </SelectItem>
           ))}
         </SelectGroup>

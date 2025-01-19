@@ -2,7 +2,7 @@ import { CalendarDays, Clock, ClockAlert } from "lucide-react";
 import { useContext } from "react";
 import { Form, useSearchParams } from "react-router";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
-import { usersRelations } from "~/hooks/usersContext";
+import { useUsersRelations } from "~/hooks/usersContext";
 import TodoStatusIcon from "../TodoStatusIcon";
 import { Checkbox } from "../ui/checkbox";
 import { statusArray } from "../UpdateTodoStatus";
@@ -29,7 +29,7 @@ function FilterTodosForm() {
 
   const boardId = useContext(BoardIdContext);
 
-  const { getUsersWithRelationToBoard, users } = usersRelations();
+  const { getUsersWithRelationToBoard, users } = useUsersRelations();
 
   const usersWithRelationToBoard = getUsersWithRelationToBoard(users, boardId);
 

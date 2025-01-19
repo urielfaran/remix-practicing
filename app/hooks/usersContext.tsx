@@ -4,7 +4,7 @@ import { UserWithBoardRelation } from "~/components/board-components/BoardHeader
 type userContextType = UserWithBoardRelation[];
 export const usersContext = createContext<userContextType>([]);
 
-export function usersRelations() {
+export function useUsersRelations() {
   const users = useContext(usersContext); // Get users from context
 
   function getUsersWithRelationToBoard(
