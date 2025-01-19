@@ -92,16 +92,32 @@ function BoardForm({ action, board }: BoardFormProps) {
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger
-                    style={{
-                      background: field.value || "transparent", // Display background or transparent
-                    }}
-                    className={`border rounded-md ${
-                      field.value
-                        ? "text-white border-transparent"
-                        : "border-gray-300 text-inherit"
-                    }`}
+                    className={`
+            relative min-h-24 border rounded-md overflow-hidden items-center
+            ${
+              field.value
+                ? "text-white border-transparent p-0"
+                : "border-gray-300 text-inherit"
+            }
+          `}
                   >
-                    <SelectValue placeholder="Select Your Board Color" />
+                    {field.value && (
+                      <div
+                        className="absolute inset-0 w-full h-full"
+                        style={{
+                          ...(field.value.startsWith("url")
+                            ? {
+                                backgroundImage: field.value,
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                              }
+                            : { background: field.value }),
+                        }}
+                      />
+                    )}
+                    <div className="relative z-10">
+                      <SelectValue placeholder="Select Your Board Color" />
+                    </div>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>

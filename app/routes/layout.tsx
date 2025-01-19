@@ -48,7 +48,6 @@ function layout({ loaderData }: Route.ComponentProps) {
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <ModeToggle />
-            <Logout />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumbs boards={boards} />
           </div>
