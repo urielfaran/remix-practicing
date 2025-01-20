@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { Image, ListFilter, UsersRound } from "lucide-react";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
 import { usePermission } from "~/hooks/permissionsContext";
-import { Permissions } from "~/utils/permissions";
+import { Permissions, usePermissionStore } from "~/utils/permissions";
 import FavoriteBoard from "../action-buttons/FavoriteBoard";
 import ChangeBoardColor from "../ChangeBoardColor";
 import ShareBoardDialog from "../dialogs/ShareBoardDialog";
@@ -32,10 +32,25 @@ interface BoardHeaderProps {
 }
 function BoardHeader({ board }: BoardHeaderProps) {
   const { checkPermission } = usePermission();
-  const isEditPermission = checkPermission(Permissions.WRITE);
-  const isDeletePermission = checkPermission(Permissions.DELETE);
+  // const isEditPermission = checkPermission(Permissions.WRITE);
+  // const isDeletePermission = checkPermission(Permissions.DELETE);
 
   const isFavorite = board.UserBoardRelation[0].isFavorite;
+
+
+
+  const isEditPermission = usePermissionStore((state) =>
+    state.hasPermission(Permissions.WRITE)
+  );
+  const isDeletePermission = usePermissionStore((state) =>
+    state.hasPermission(Permissions.DELETE)
+  );
+  console.log(
+    isEditPermission,
+    // isEditPermission2,
+    isDeletePermission,
+    // isDeletePermission2
+  );
 
   return (
     <div className="bg-background/20 backdrop-filter backdrop-blur-sm p-3 flex flex-row justify-between">

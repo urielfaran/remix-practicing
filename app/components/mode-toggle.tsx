@@ -10,6 +10,7 @@ export function ModeToggle() {
       <Sun className="h-[1rem] w-[1rem] rotate-0 scale-100 transition-all dark:-rotate-90" />
       <Switch
         id="theme"
+        checked ={ theme === Theme.DARK}
         onCheckedChange={() =>
           setTheme(theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT)
         }

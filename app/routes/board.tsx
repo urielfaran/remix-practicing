@@ -34,6 +34,8 @@ import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
 import _ from "lodash";
 import { UsersProvider } from "~/hooks/usersContext";
+import { useEffect } from "react";
+import { usePermissionStore } from "~/utils/permissions";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -70,6 +72,11 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 function Board({ loaderData }: Route.ComponentProps) {
   const { board, permissions, users, userId } = loaderData;
   const { className, style } = getBackgroundStyle(board.backgroundColor);
+  const setPermissions = usePermissionStore((state) => state.setPermissions);
+
+  useEffect(() => {
+    setPermissions(permissions);
+  }, [permissions]);
 
   const connectedusers = board.UserBoardRelation.map(
     (relation) => relation.user

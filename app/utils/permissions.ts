@@ -24,3 +24,20 @@ export const hasPermission = (
 ): boolean => {
   return (userPermissions & permission) === permission;
 };
+interface PermissionState {
+  permissions: number;
+  setPermissions: (permissions: number) => void;
+  hasPermission: (requiredPermission: number) => boolean;
+}
+
+import { create } from "zustand";
+
+export const usePermissionStore = create<PermissionState>((set, get) => ({
+  permissions: 0,
+  setPermissions: (permissions) => set({ permissions }),
+  hasPermission: (requiredPermission) => {
+    const { permissions } = get();
+    console.log(permissions)
+    return (permissions & requiredPermission) === requiredPermission;
+  },
+}));
