@@ -22,7 +22,7 @@ interface UpdateTodoStatus extends PropsWithChildren {
 
 export const statusArray: (keyof typeof Status)[] = [
   "NOT_STARTED",
-  "IN_PROGGRESS", 
+  "IN_PROGRESS", 
   "COMPLETED"
 ];
 

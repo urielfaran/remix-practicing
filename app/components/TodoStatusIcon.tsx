@@ -10,7 +10,7 @@ function TodoStatusIcon({ status }: TodoStatusIconProps) {
     case "COMPLETED": {
       return <CheckCircle size={"20px"} className="text-green-400" />;
     }
-    case "IN_PROGGRESS": {
+    case "IN_PROGRESS": {
       return <LoaderCircle size={"20px"} className="text-blue-500" />;
     }
     case "NOT_STARTED": {

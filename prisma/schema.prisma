@@ -15,7 +15,7 @@ datasource db {
 
 enum Status {
   NOT_STARTED
-  IN_PROGGRESS
+  IN_PROGRESS
   COMPLETED
 }
 

@@ -1,4 +1,5 @@
 import { Prisma, Status } from "@prisma/client";
+import { statusArray } from "~/components/UpdateTodoStatus";
 import { prisma } from "~/db.server";
 
 export async function getUserById(userId: number) {
@@ -37,7 +38,7 @@ export async function getUserWithBoardById(
   const statusFilter: Prisma.TodoWhereInput["status"] = filter["Status"]
     ? {
         in: filter["Status"].filter((status) =>
-          ["NOT_STARTED", "IN_PROGGRESS", "COMPLETED"].includes(status)
+          statusArray.includes(status as keyof typeof Status)
         ) as Status[],
       }
     : {};
