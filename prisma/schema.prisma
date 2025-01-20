@@ -59,6 +59,10 @@ model User {
   UserBoardRelation UserBoardRelation[]
   Boards            Board[]
   Todos             Todo[]
+
+  SentNotification Notification[] @relation("SentNotifications")
+
+  ReceivedNotifications Notification[] @relation("ReceivedNotifications")
 }
 
 model UserBoardRelation {
@@ -70,4 +74,15 @@ model UserBoardRelation {
   isFavorite  Boolean @default(false)
 
   @@unique([boardId, userId])
+}
+
+model Notification {
+  id            Int      @id @default(autoincrement())
+  message       String
+  creationTime  DateTime @default(now())
+  user          User     @relation("ReceivedNotifications", fields: [userId], references: [id])
+  userId        Int
+  sendingUser   User     @relation("SentNotifications", fields: [sendingUserId], references: [id])
+  sendingUserId Int
+  isRead        Boolean  @default(false)
 }
