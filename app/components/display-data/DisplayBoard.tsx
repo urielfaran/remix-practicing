@@ -1,8 +1,5 @@
 import { Prisma } from "@prisma/client";
 import { Link } from "react-router";
-import {
-  usePermission,
-} from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
 import { Permissions } from "~/utils/permissions";
@@ -24,14 +21,14 @@ export type BoardWithLists = Prisma.BoardGetPayload<{
 
 interface DisplayListProps {
   board: BoardWithLists;
+  permissions: number;
 }
 
-function DisplayBoard({ board }: DisplayListProps) {
+function DisplayBoard({ board, permissions }: DisplayListProps) {
   const { className, style } = getBackgroundStyle(board.backgroundColor);
 
-  const { checkPermission } = usePermission();
-  const isDeletePermission = checkPermission(Permissions.DELETE);
-
+  const isDeletePermission =
+    (permissions & Permissions.DELETE) === Permissions.DELETE;
   const isFavorite = board.UserBoardRelation[0].isFavorite;
 
   return (

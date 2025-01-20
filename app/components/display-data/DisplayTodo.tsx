@@ -3,9 +3,8 @@ import { differenceInDays, format } from "date-fns";
 import { Calendar, Pencil, UserRoundPlus } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
-import { usePermission } from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
-import { Permissions } from "~/utils/permissions";
+import { Permissions, usePermissionStore } from "~/utils/permissions";
 import AssignTodo from "../AssignTodo";
 import EditTodoDialog, { dialogStyleType } from "../dialogs/EditTodoDialog";
 import TodoActionDropdown from "../dropdowns/TodoActionDropdown";
@@ -25,9 +24,9 @@ type DisplayTodoProps = TodoCardProps & { dialogStyle: dialogStyleType };
 function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
   const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
 
-  const { checkPermission } = usePermission();
-  const isEditPermission = checkPermission(Permissions.WRITE);
-
+  const isEditPermission = usePermissionStore((state) =>
+    state.hasPermission(Permissions.WRITE)
+  );
   const connectedUsers = useContext(ConncetedUsersContext);
 
   const assignUsers = connectedUsers.filter((user) =>

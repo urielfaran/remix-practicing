@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { usePermission } from "~/hooks/permissionsContext";
-import { Permissions } from "~/utils/permissions";
+import { Permissions, usePermissionStore } from "~/utils/permissions";
 import { ListIdContext } from "../../hooks/itemIdContexts";
 import AddTodoButton from "../action-buttons/AddTodoButton";
 import ListActionDropdown from "../dropdowns/ListActionDropdown";
@@ -19,9 +18,10 @@ interface DisplayListProps {
 }
 
 function DisplayList({ list }: DisplayListProps) {
-  const { checkPermission } = usePermission();
-  const isEditPermission = checkPermission(Permissions.WRITE);
-
+  
+  const isEditPermission = usePermissionStore((state) =>
+    state.hasPermission(Permissions.WRITE)
+  );
   return (
     <Card className="w-64 overflow-x-visible bg-secondary h-fit">
       <div className="p-4 pb-0 flex-1 flex flex-row justify-between bg-transparent">

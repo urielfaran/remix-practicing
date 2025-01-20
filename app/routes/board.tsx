@@ -24,7 +24,6 @@ import {
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
 import { BoardIdContext, UserIdContext } from "~/hooks/itemIdContexts";
-import { UserPermissionProvider } from "~/hooks/permissionsContext";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
 import { createList } from "~/utils/list.server";
@@ -83,7 +82,7 @@ function Board({ loaderData }: Route.ComponentProps) {
   );
   return (
     <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
-      <UserPermissionProvider value={permissions}>
+      {/* <UserPermissionProvider value={permissions}> */}
         <UsersProvider value={users}>
           <UserIdContext.Provider value={Number(userId)}>
             <BoardHeader board={board} />
@@ -99,7 +98,7 @@ function Board({ loaderData }: Route.ComponentProps) {
             ))}
           </ConncetedUsersContext.Provider>
         </div>
-      </UserPermissionProvider>
+      {/* </UserPermissionProvider> */}
     </ScrollArea>
   );
 }
