@@ -5,12 +5,18 @@ import {
   shareBoardType,
 } from "~/components/dialogs/ShareBoardDialog";
 import type { Route } from "./+types/delete-board-permission";
-import {
-  deleteUserPermission,
-  updateUserPermission,
-} from "~/utils/board.server";
+import { getBoard, updateUserPermission } from "~/utils/board.server";
+import { authenticator } from "~/auth/authenticator";
+import invariant from "tiny-invariant";
+import { getUserById } from "~/utils/user.server";
+import { createNotification } from "~/utils/notofications.server";
 
 export async function action({ request }: Route.ActionArgs) {
+  const sendindUserId = await authenticator.requireUser(request, "/login");
+  invariant(sendindUserId, "user is not logged in");
+
+  const user = await getUserById(Number(sendindUserId));
+
   const {
     errors,
     data: payload,
@@ -21,11 +27,18 @@ export async function action({ request }: Route.ActionArgs) {
     return data({ errors, defaultValues, payload }, { status: 400 });
   }
 
+  const board = await getBoard(Number(payload.boardId));
+
   try {
     await updateUserPermission({
       ...payload,
       permission: Number(payload.permission),
     });
+    await createNotification(
+      Number(sendindUserId),
+      Number(payload.userId),
+      `${user?.username} has changed your permissions in board ${board?.name}`
+    );
   } catch (errors) {
     return data(
       {

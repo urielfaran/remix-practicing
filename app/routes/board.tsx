@@ -1,3 +1,5 @@
+import _ from "lodash";
+import { useEffect } from "react";
 import { ActionFunctionArgs, data, redirect } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
@@ -24,17 +26,15 @@ import {
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
 import { BoardIdContext, UserIdContext } from "~/hooks/itemIdContexts";
+import { UsersProvider } from "~/hooks/usersContext";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
 import { createList } from "~/utils/list.server";
+import { usePermissionStore } from "~/utils/permissions";
 import { createTodo, updateTodo } from "~/utils/todo.server";
 import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
-import _ from "lodash";
-import { UsersProvider } from "~/hooks/usersContext";
-import { useEffect } from "react";
-import { usePermissionStore } from "~/utils/permissions";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -83,21 +83,21 @@ function Board({ loaderData }: Route.ComponentProps) {
   return (
     <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
       {/* <UserPermissionProvider value={permissions}> */}
-        <UsersProvider value={users}>
-          <UserIdContext.Provider value={Number(userId)}>
-            <BoardHeader board={board} />
-          </UserIdContext.Provider>
-        </UsersProvider>
-        <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
-          <BoardIdContext.Provider value={board?.id}>
-            <AddListButton />
-          </BoardIdContext.Provider>
-          <ConncetedUsersContext.Provider value={connectedusers}>
-            {board.lists.map((list) => (
-              <DisplayList key={list.id} list={list} />
-            ))}
-          </ConncetedUsersContext.Provider>
-        </div>
+      <UsersProvider value={users}>
+        <UserIdContext.Provider value={Number(userId)}>
+          <BoardHeader board={board} />
+        </UserIdContext.Provider>
+      </UsersProvider>
+      <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
+        <BoardIdContext.Provider value={board?.id}>
+          <AddListButton />
+        </BoardIdContext.Provider>
+        <ConncetedUsersContext.Provider value={connectedusers}>
+          {board.lists.map((list) => (
+            <DisplayList key={list.id} list={list} />
+          ))}
+        </ConncetedUsersContext.Provider>
+      </div>
       {/* </UserPermissionProvider> */}
     </ScrollArea>
   );
@@ -106,7 +106,6 @@ function Board({ loaderData }: Route.ComponentProps) {
 export default Board;
 
 export async function action({ request }: ActionFunctionArgs) {
-  console.log(request);
   const _action = await getRequestField("_action", request);
 
   switch (_action) {

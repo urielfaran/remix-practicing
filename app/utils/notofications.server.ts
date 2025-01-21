@@ -14,11 +14,14 @@ export async function createNotification(
   });
 }
 
-export async function getNotifications(userId: number) {
+export async function getNotifications(userId: number, page: number) {
   return await prisma.notification.findMany({
     where: {
       userId: userId,
+      isRead: false,
     },
+    skip: 5 * page,
+    take: 5,
   });
 }
 

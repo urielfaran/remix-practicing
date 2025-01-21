@@ -1,10 +1,4 @@
-import {
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  Settings,
-  Sparkles,
-} from "lucide-react";
+import { ChevronsUpDown, Settings, Sparkles } from "lucide-react";
 
 import { User } from "@prisma/client";
 import { useState } from "react";
@@ -33,7 +27,7 @@ interface NavUserProps {
 
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
-  const [open, setOpen] = useState(false);
+  const [openUserCredentials, setOpenUserCredentials] = useState(false);
 
   return (
     <SidebarMenu>
@@ -78,25 +72,17 @@ export function NavUser({ user }: NavUserProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <UserSettings open={open} user={user}>
+              <UserSettings open={openUserCredentials} user={user}>
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.preventDefault();
-                    setOpen(!open);
+                    setOpenUserCredentials(!openUserCredentials);
                   }}
                 >
                   <Settings />
                   Settings
                 </DropdownMenuItem>
               </UserSettings>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>

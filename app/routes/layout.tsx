@@ -1,19 +1,23 @@
+import { Bell } from "lucide-react";
 import { Outlet } from "react-router";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import Logout from "~/components/action-buttons/Logout";
 import { ModeToggle } from "~/components/mode-toggle";
+import NotificationsPopover from "~/components/NotificationsPopover";
 import { AppSidebar } from "~/components/sidebar-components/AppSidebar";
+import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-import type { Route } from "./+types/layout";
-import { getUserLayoutBoards } from "~/utils/user.server";
+import { cn } from "~/lib/utils";
 import { getUserFavoriteBoards } from "~/utils/board.server";
+import { getNotifications } from "~/utils/notofications.server";
+import { getUserLayoutBoards } from "~/utils/user.server";
+import type { Route } from "./+types/layout";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const userId = await authenticator.requireUser(request, "/login");
@@ -27,13 +31,36 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const sharedBoards = UserBoardRelation.map((board) => board.board);
 
-  return { sharedBoards, ownedBoards: Boards, favoriteBoards, user };
+  const url = new URL(request.url);
+  const page = Number(url.searchParams.get("page") || 0);
+
+  const notifications = await getNotifications(Number(userId), page);
+  console.log(notifications);
+
+  return {
+    sharedBoards,
+    ownedBoards: Boards,
+    favoriteBoards,
+    user,
+    notifications,
+    page,
+  };
 }
 
 function layout({ loaderData }: Route.ComponentProps) {
-  const { ownedBoards, sharedBoards, favoriteBoards, user } = loaderData;
+  const {
+    ownedBoards,
+    sharedBoards,
+    favoriteBoards,
+    user,
+    notifications,
+    page,
+  } = loaderData;
 
   const boards = ownedBoards.concat(sharedBoards);
+  console.log(notifications);
+
+  const notificationsExist = notifications.length > 0;
 
   return (
     <SidebarProvider>
@@ -47,9 +74,24 @@ function layout({ loaderData }: Route.ComponentProps) {
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            <ModeToggle />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumbs boards={boards} />
+          </div>
+          <div className="flex ml-auto items-center justify-end gap-4 mx-4">
+            <NotificationsPopover
+              notifications={notifications}
+              currentPage={page}
+            >
+              <Button size={"icon"} variant={"ghost"}>
+                <Bell
+                  className={cn("text-blue-500", {
+                    "text-red-500": notificationsExist,
+                  })}
+                />
+                {notificationsExist ? notifications.length : null}
+              </Button>
+            </NotificationsPopover>
+            <ModeToggle />
           </div>
         </header>
         <Outlet />

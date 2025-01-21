@@ -138,3 +138,12 @@ export async function unassignTodo({
     },
   });
 }
+
+export async function getTodoTitleById(todoId: number) {
+  return await prisma.todo.findUnique({
+    where: { id: todoId },
+    select: {
+      title: true,
+    },
+  });
+}

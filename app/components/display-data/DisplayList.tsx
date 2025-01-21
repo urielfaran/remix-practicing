@@ -23,16 +23,15 @@ function DisplayList({ list }: DisplayListProps) {
     state.hasPermission(Permissions.WRITE)
   );
   return (
-    <Card className="w-64 overflow-x-visible bg-secondary h-fit">
+    <Card className="min-w-64 bg-primary-foreground h-fit">
       <div className="p-4 pb-0 flex-1 flex flex-row justify-between bg-transparent">
-        <>
+      <>
           <EditableText
             actionName="/action/update-list"
             id={list.id}
             text={list.title}
             fieldName="title"
-            isEditable={isEditPermission}
-          />
+            isEditable={isEditPermission} />
           <ListActionDropdown listId={list.id} isActive={isEditPermission} />
         </>
       </div>

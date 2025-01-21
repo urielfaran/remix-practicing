@@ -1,4 +1,4 @@
-import { Board, Prisma, User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { Link } from "react-router";
 import {
   Sidebar,
@@ -12,7 +12,6 @@ import { FavoriteBoards } from "./NavFavorites";
 import { NavMain } from "./NavMain";
 import { NavUser } from "./NavUser";
 import { SharedBoards } from "./SharedBoards";
-
 
 export type BoardWithRelations = Prisma.BoardGetPayload<{
   include: {
