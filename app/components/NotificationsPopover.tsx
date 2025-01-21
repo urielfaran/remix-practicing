@@ -25,7 +25,7 @@ function NotificationsPopover({
     }
     if (fetcher.data) {
       const newItems = fetcher.data.data;
-        console.log(newItems)
+      console.log(newItems);
       setItems((prevAssets) => [...prevAssets, ...newItems]);
     }
   }, [fetcher.data]);
@@ -33,8 +33,8 @@ function NotificationsPopover({
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="max-w-60 m-1" side="bottom">
-        <h4 className="font-medium leading-none">Notifications</h4>
+      <PopoverContent className="w-80 max-w-md m-1" side="bottom">
+        <h4 className="font-medium leading-none mb-4">Notifications</h4>
         <div
           ref={scrollRefContainer}
           className="space-y-2 min-h-0 max-h-52 overflow-y-scroll"
@@ -51,12 +51,20 @@ function NotificationsPopover({
             }}
             loading={fetcher.state === "loading"}
           >
-            <div>
-              <div className="flex flex-col space-y-2">
-                {items.map((notification) => (
-                  <p key={notification.id}>{notification.message}</p>
-                ))}
-              </div>
+            <div className="flex flex-col space-y-2">
+              {items.map((notification) => (
+                <div
+                  key={notification.id}
+                  className="p-3 bg-gray-50 rounded-lg"
+                >
+                  <p className="text-sm">{notification.message}</p>
+                </div>
+              ))}
+              {fetcher.state === "loading" && (
+                <div className="p-2 text-center text-gray-500">
+                  Loading more...
+                </div>
+              )}
             </div>
           </InfiniteScroller>
         </div>
