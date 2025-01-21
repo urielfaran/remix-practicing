@@ -1,22 +1,17 @@
-import { z } from "zod";
-import type { Route } from "./+types/add-todo-assignment";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { assignTodoSchema } from "~/schemas/todo.schema";
-import { getValidatedFormData } from "remix-hook-form";
 import { data } from "react-router";
-import { assignTodo, getTodoTitleById } from "~/utils/todo.server";
-import { authenticator } from "~/auth/authenticator";
-import invariant from "tiny-invariant";
-import { getUserById } from "~/utils/user.server";
+import { getValidatedFormData } from "remix-hook-form";
+import { z } from "zod";
+import { assignTodoSchema } from "~/schemas/todo.schema";
 import { createNotification } from "~/utils/notofications.server";
+import { assignTodo, getTodoTitleById } from "~/utils/todo.server";
+import { getUserDateForNotification } from "~/utils/utils";
+import type { Route } from "./+types/add-todo-assignment";
 
 type assignTodoSchemaType = z.infer<typeof assignTodoSchema>;
 const assignTodoSchemaResolver = zodResolver(assignTodoSchema);
 export async function action({ request }: Route.ActionArgs) {
-  const sendindUserId = await authenticator.requireUser(request, "/login");
-  invariant(sendindUserId, "user is not logged in");
-
-  const user = await getUserById(Number(sendindUserId));
+  const { username, sendindUserId } = await getUserDateForNotification(request);
 
   const {
     errors,
@@ -34,14 +29,10 @@ export async function action({ request }: Route.ActionArgs) {
   const message =
     Number(sendindUserId) === payload.userId
       ? `you have assigned yourself to todo ${todo?.title}`
-      : `${user?.username} has assigned you to todo ${todo?.title}`;
+      : `${username} has assigned you to todo ${todo?.title}`;
   try {
     await assignTodo({ ...payload });
-    await createNotification(
-      Number(sendindUserId),
-      (payload.userId),
-      message
-    );
+    await createNotification(Number(sendindUserId), payload.userId, message);
   } catch (errors) {
     return data(
       {

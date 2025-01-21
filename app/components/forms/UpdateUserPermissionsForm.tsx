@@ -30,8 +30,12 @@ export default function UpdateUserPermissionsForm({
   const fetcher = useFetcher();
   useResponseToast(fetcher.data);
 
+  const userCurrentPermission = user.UserBoardRelation.find((relation) => {
+    return relation.boardId === boardId;
+  })?.permissions.toString();
+
   const defaultValues = {
-    permission: user.UserBoardRelation[0].permissions.toString(),
+    permission: userCurrentPermission,
   };
 
   const form = useRemixForm<permissionType>({
@@ -64,7 +68,7 @@ export default function UpdateUserPermissionsForm({
                 <Select
                   onValueChange={field.onChange}
                   value={field.value}
-                  defaultValue={user.UserBoardRelation[0].permissions.toString()}
+                  defaultValue={userCurrentPermission}
                 >
                   <SelectUserPermission />
                 </Select>

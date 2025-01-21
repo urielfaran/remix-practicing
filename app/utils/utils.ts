@@ -1,4 +1,7 @@
 import moment from "moment";
+import invariant from "tiny-invariant";
+import { authenticator } from "~/auth/authenticator";
+import { getUserById } from "./user.server";
 
 export async function getRequestField(
   name: string,
@@ -32,4 +35,17 @@ export function formatUtc(initialDateStr: Date) {
   // Adjust the date based on the local timezone offset
   date.add(-offsetHours, "hours");
   return date.startOf("day").toDate();
+}
+
+export async function getUserDateForNotification(request: Request) {
+  const sendindUserId = await authenticator.requireUser(request, "/login");
+  invariant(sendindUserId, "user is not logged in");
+
+  const numberSendingUserId = Number(sendindUserId);
+
+  const user = await getUserById(numberSendingUserId);
+
+  const username = user?.username;
+
+  return { sendindUserId: numberSendingUserId, username };
 }

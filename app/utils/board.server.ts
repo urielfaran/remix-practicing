@@ -152,7 +152,7 @@ export async function addUserPermission(
   });
 }
 
-export async function deleteUserPermission(userId: number, boardId: number) {
+export async function deleteUserPermission({userId, boardId}:{userId: number, boardId: number}) {
   return await prisma.userBoardRelation.delete({
     where: {
       boardId_userId: {

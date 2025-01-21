@@ -4,28 +4,38 @@ import invariant from "tiny-invariant";
 import { favoriteBoard } from "~/utils/board.server";
 import { data } from "react-router";
 import { authenticator } from "~/auth/authenticator";
+import {
+  favoriteBoardResolver,
+  favoriteBoardSchemaType,
+} from "~/components/action-buttons/FavoriteBoard";
+import { getValidatedFormData } from "remix-hook-form";
 
 export async function action({ request }: Route.ActionArgs) {
-  const id = await getRequestField("id", request, {
-    stringified: false,
-  });
-  invariant(id);
-  const favoriteStatus = await getRequestField("favorite-status", request, {
-    stringified: false,
-  });
-  invariant(favoriteStatus);
-  const isFavorite = favoriteStatus === "false" ? false : true;
-
-  const userId = await authenticator.requireUser(request, "/login")
+  const userId = await authenticator.requireUser(request, "/login");
   invariant(userId, "user is not logged in");
 
+  const {
+    errors,
+    data: payload,
+    receivedValues: defaultValues,
+  } = await getValidatedFormData<favoriteBoardSchemaType>(
+    request,
+    favoriteBoardResolver
+  );
+
+  if (errors) {
+    return data({ errors, defaultValues, payload }, { status: 400 });
+  }
+
+  const { isFavorite } = payload;
+
   try {
-    await favoriteBoard(Number(id), isFavorite, Number(userId));
+    await favoriteBoard(payload.id, isFavorite, Number(userId));
   } catch (errors) {
     return data(
       {
         errors,
-        id,
+        payload,
         toastTitle: `Board ${
           isFavorite && "Remove From"
         } Favorites Toggle Has Been Failed`,

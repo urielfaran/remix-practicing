@@ -15,15 +15,15 @@ export const permissionsArray = Object.entries(permissionsTypes).map(
 );
 
 export const permissionType = z.object({
-  permission: z.nativeEnum(permissionsTypes)
+  permission: z.nativeEnum(permissionsTypes),
 });
 
-export const shareBoardSchema = permissionType.merge(
-  z.object({
-    boardId: z.number(),
-    userId: z.number(),
-  })
-);
+export const userBoardSchema = z.object({
+  boardId: z.number(),
+  userId: z.number(),
+});
+
+export const shareBoardSchema = permissionType.merge(userBoardSchema);
 
 export const addPermissionsSchema = permissionType.merge(
   z.object({

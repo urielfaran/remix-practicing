@@ -1,35 +1,40 @@
 import { data } from "react-router";
 import invariant from "tiny-invariant";
 import { deleteUserPermission, getBoard } from "~/utils/board.server";
-import { getRequestField } from "~/utils/utils";
+import { getRequestField, getUserDateForNotification } from "~/utils/utils";
 import type { Route } from "./+types/delete-board-permission";
 import { createNotification } from "~/utils/notofications.server";
 import { authenticator } from "~/auth/authenticator";
 import { getUserById } from "~/utils/user.server";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { userBoardSchema } from "~/schemas/shareBoard.schema";
+import { z } from "zod";
+import { getValidatedFormData } from "remix-hook-form";
+
+const userBoardResolver = zodResolver(userBoardSchema);
+type userBoardType = z.infer<typeof userBoardSchema>;
 
 export async function action({ request }: Route.ActionArgs) {
-  const sendindUserId = await authenticator.requireUser(request, "/login");
-  invariant(sendindUserId, "user is not logged in");
+  const {username, sendindUserId} = await getUserDateForNotification(request)
 
-  const user = await getUserById(Number(sendindUserId));
+  const {
+    errors,
+    data: payload,
+    receivedValues: defaultValues,
+  } = await getValidatedFormData<userBoardType>(request, userBoardResolver);
 
-  const userId = await getRequestField("userId", request, {
-    stringified: false,
-  });
-  invariant(userId);
-  const boardId = await getRequestField("boardId", request, {
-    stringified: false,
-  });
-  invariant(boardId);
+  if (errors) {
+    return data({ errors, defaultValues, payload }, { status: 400 });
+  }
 
-  const board = await getBoard(Number(boardId));
+  const board = await getBoard(payload.boardId);
 
   try {
-    await deleteUserPermission(Number(userId), Number(boardId));
+    await deleteUserPermission({ ...payload });
     await createNotification(
       Number(sendindUserId),
-      Number(userId),
-      `${user?.username} has removed you from board ${board?.name}`
+      payload.userId,
+      `${username} has removed you from board ${board?.name}`
     );
   } catch (errors) {
     return data(

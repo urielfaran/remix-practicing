@@ -34,7 +34,7 @@ function FavoriteBoard({ boardId, isFavorite }: FavoriteBoardProps) {
       <input
         type="hidden"
         value={isFavorite ? "true" : "false"}
-        name="favorite-status"
+        name="isFavorite"
       />
     </fetcher.Form>
   );
