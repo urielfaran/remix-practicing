@@ -35,6 +35,10 @@ import { createTodo, updateTodo } from "~/utils/todo.server";
 import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
 import { getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
+import { getNotifications } from "~/utils/notofications.server";
+import NotificationsPopover from "~/components/NotificationsPopover";
+import { Button } from "~/components/ui/button";
+import { Bell } from "lucide-react";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -65,11 +69,15 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
   const users = await getActiveUsers(Number(userId));
 
-  return { board, permissions, users, userId };
+  const page = Number(url.searchParams.get("page") || 0);
+
+  const notifications = await getNotifications(Number(userId), page);
+
+  return { board, permissions, users, userId, notifications, page };
 }
 
 function Board({ loaderData }: Route.ComponentProps) {
-  const { board, permissions, users, userId } = loaderData;
+  const { board, permissions, users, userId, notifications, page } = loaderData;
   const { className, style } = getBackgroundStyle(board.backgroundColor);
   const setPermissions = usePermissionStore((state) => state.setPermissions);
 
@@ -80,6 +88,8 @@ function Board({ loaderData }: Route.ComponentProps) {
   const connectedusers = board.UserBoardRelation.map(
     (relation) => relation.user
   );
+  const notificationsExist = notifications.length > 0;
+
   return (
     <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
       {/* <UserPermissionProvider value={permissions}> */}
@@ -88,6 +98,16 @@ function Board({ loaderData }: Route.ComponentProps) {
           <BoardHeader board={board} />
         </UserIdContext.Provider>
       </UsersProvider>
+      {/* <NotificationsPopover notifications={notifications} currentPage={page}>
+        <Button size={"icon"} variant={"ghost"}>
+          <Bell
+            className={cn("text-blue-500", {
+              "text-red-500": notificationsExist,
+            })}
+          />
+          {notificationsExist ? notifications.length : null}
+        </Button>
+      </NotificationsPopover> */}
       <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
         <BoardIdContext.Provider value={board?.id}>
           <AddListButton />

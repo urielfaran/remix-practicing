@@ -8,7 +8,10 @@ interface NotificationsPopoverProps extends PropsWithChildren {
   notifications: Notification[];
   currentPage: number;
 }
-export type ItemsResponse = { data: Notification[]; page: number };
+export type ItemsResponse = {
+  notifications: Notification[];
+  page: number;
+};
 
 function NotificationsPopover({
   notifications,
@@ -16,16 +19,18 @@ function NotificationsPopover({
   children,
 }: NotificationsPopoverProps) {
   const [items, setItems] = useState<Notification[]>(notifications);
-  console.log(items);
+  // console.log(items);
   const fetcher = useFetcher<ItemsResponse>();
+
   const scrollRefContainer = useRef<HTMLDivElement>(null);
+  console.log(fetcher.data)
   useEffect(() => {
     if (!fetcher.data || fetcher.state === "loading") {
       return;
     }
     if (fetcher.data) {
-      const newItems = fetcher.data.data;
-      console.log(newItems);
+      const newItems = fetcher.data.notifications;
+      console.log("newItems", newItems);
       setItems((prevAssets) => [...prevAssets, ...newItems]);
     }
   }, [fetcher.data]);
@@ -55,15 +60,13 @@ function NotificationsPopover({
               {items.map((notification) => (
                 <div
                   key={notification.id}
-                  className="p-3 bg-gray-50 rounded-lg"
+                  className="p-3 bg-secondary rounded-lg"
                 >
                   <p className="text-sm">{notification.message}</p>
                 </div>
               ))}
               {fetcher.state === "loading" && (
-                <div className="p-2 text-center text-gray-500">
-                  Loading more...
-                </div>
+                <div className="p-2 text-center">Loading more...</div>
               )}
             </div>
           </InfiniteScroller>

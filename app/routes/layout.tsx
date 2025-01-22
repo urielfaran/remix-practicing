@@ -35,7 +35,6 @@ export async function loader({ request }: Route.LoaderArgs) {
   const page = Number(url.searchParams.get("page") || 0);
 
   const notifications = await getNotifications(Number(userId), page);
-  console.log(notifications);
 
   return {
     sharedBoards,
@@ -58,7 +57,6 @@ function layout({ loaderData }: Route.ComponentProps) {
   } = loaderData;
 
   const boards = ownedBoards.concat(sharedBoards);
-  console.log(notifications);
 
   const notificationsExist = notifications.length > 0;
 
