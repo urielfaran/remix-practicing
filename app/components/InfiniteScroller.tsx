@@ -5,6 +5,7 @@ interface InfiniteScrollerProps extends PropsWithChildren {
   loadNext: () => void;
   scrollRefContainer: React.RefObject<HTMLDivElement>;
 }
+
 function InfiniteScroller({
   loadNext,
   loading,
@@ -19,16 +20,12 @@ function InfiniteScroller({
 
   const onScroll = () => {
     if (scrollRefContainer.current) {
-      // const documentHeight = scrollRefContainer.current?.scrollHeight;
-      // const scrollDifference = Math.floor(scrollRefContainer.current?.clientHeight + window.scrollY);
-      // const scrollEnded = documentHeight == scrollDifference;
       const scrollEnded =
         scrollRefContainer.current.scrollHeight -
           scrollRefContainer.current.scrollTop ===
         scrollRefContainer.current.clientHeight;
 
       if (scrollEnded && !loading) {
-        console.log("first");
         scrollListener.current();
       }
     }

@@ -15,7 +15,7 @@ import {
 } from "~/components/ui/sidebar";
 import { cn } from "~/lib/utils";
 import { getUserFavoriteBoards } from "~/utils/board.server";
-import { getNotifications } from "~/utils/notofications.server";
+import { getNotifications, getNotificationsLength } from "~/utils/notofications.server";
 import { getUserLayoutBoards } from "~/utils/user.server";
 import type { Route } from "./+types/layout";
 
@@ -35,6 +35,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const page = Number(url.searchParams.get("page") || 0);
 
   const notifications = await getNotifications(Number(userId), page);
+  const notificationsLength = await getNotificationsLength(Number(userId));
 
   return {
     sharedBoards,
@@ -43,6 +44,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     user,
     notifications,
     page,
+    notificationsLength
   };
 }
 
@@ -54,11 +56,10 @@ function layout({ loaderData }: Route.ComponentProps) {
     user,
     notifications,
     page,
+    notificationsLength
   } = loaderData;
 
   const boards = ownedBoards.concat(sharedBoards);
-
-  const notificationsExist = notifications.length > 0;
 
   return (
     <SidebarProvider>
@@ -83,10 +84,10 @@ function layout({ loaderData }: Route.ComponentProps) {
               <Button size={"icon"} variant={"ghost"}>
                 <Bell
                   className={cn("text-blue-500", {
-                    "text-red-500": notificationsExist,
+                    "text-red-500": notificationsLength > 0,
                   })}
                 />
-                {notificationsExist ? notifications.length : null}
+                {notificationsLength > 0 ? notificationsLength : null}
               </Button>
             </NotificationsPopover>
             <ModeToggle />

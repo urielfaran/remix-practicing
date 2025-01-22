@@ -8,6 +8,7 @@ interface NotificationsPopoverProps extends PropsWithChildren {
   notifications: Notification[];
   currentPage: number;
 }
+
 export type ItemsResponse = {
   notifications: Notification[];
   page: number;
@@ -19,19 +20,21 @@ function NotificationsPopover({
   children,
 }: NotificationsPopoverProps) {
   const [items, setItems] = useState<Notification[]>(notifications);
-  // console.log(items);
   const fetcher = useFetcher<ItemsResponse>();
-
   const scrollRefContainer = useRef<HTMLDivElement>(null);
-  console.log(fetcher.data)
+
+  useEffect(() =>{}, [])
+
   useEffect(() => {
-    if (!fetcher.data || fetcher.state === "loading") {
-      return;
-    }
+    if (!fetcher.data || fetcher.state === "loading") return;
+    
     if (fetcher.data) {
       const newItems = fetcher.data.notifications;
-      console.log("newItems", newItems);
-      setItems((prevAssets) => [...prevAssets, ...newItems]);
+      setItems((prevItems) => {
+        const existingIds = new Set(prevItems.map(item => item.id));
+        const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+        return [...prevItems, ...uniqueNewItems];
+      });
     }
   }, [fetcher.data]);
 
@@ -50,9 +53,7 @@ function NotificationsPopover({
               const page = fetcher.data
                 ? fetcher.data.page + 1
                 : currentPage + 1;
-              const query = `?index&page=${page}`;
-
-              fetcher.load(query);
+              fetcher.load(`/action/notifications?page=${page}`);
             }}
             loading={fetcher.state === "loading"}
           >

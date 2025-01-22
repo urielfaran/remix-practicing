@@ -25,11 +25,20 @@ export async function getNotifications(userId: number, page: number) {
   });
 }
 
-export async function setNotificationsStatus(userId: number) {
-  return await prisma.notification.updateMany({
+export async function getNotificationsLength(userId: number) {
+  return await prisma.notification.count({
     where: {
       userId: userId,
       isRead: false,
+    },
+  });
+}
+
+export async function setNotificationsStatus(userId: number, page: number, notificationIds: number[]) {
+  console.log(notificationIds)
+  return await prisma.notification.updateMany({
+    where: {
+      id: { in: notificationIds },
     },
     data: {
       isRead: true,

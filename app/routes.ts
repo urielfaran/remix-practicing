@@ -34,6 +34,7 @@ export default [
       "./routes/action/update-user-credentials.ts"
     ),
     route("/logout", "./routes/action/logout.ts"),
+    route("/notifications", "./routes/action/notifications.ts"),
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),
