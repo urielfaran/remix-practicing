@@ -5,7 +5,7 @@ import InfiniteScroller from "./InfiniteScroller";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 interface NotificationsPopoverProps extends PropsWithChildren {
-  notifications: Notification[];
+  // notifications: Notification[];
   currentPage: number;
 }
 
@@ -15,24 +15,26 @@ export type ItemsResponse = {
 };
 
 function NotificationsPopover({
-  notifications,
+  // notifications,
   currentPage,
   children,
 }: NotificationsPopoverProps) {
-  const [items, setItems] = useState<Notification[]>(notifications);
+  const [items, setItems] = useState<Notification[]>([]);
   const fetcher = useFetcher<ItemsResponse>();
   const scrollRefContainer = useRef<HTMLDivElement>(null);
 
-  useEffect(() =>{}, [])
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (!fetcher.data || fetcher.state === "loading") return;
-    
+
     if (fetcher.data) {
       const newItems = fetcher.data.notifications;
       setItems((prevItems) => {
-        const existingIds = new Set(prevItems.map(item => item.id));
-        const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+        const existingIds = new Set(prevItems.map((item) => item.id));
+        const uniqueNewItems = newItems.filter(
+          (item) => !existingIds.has(item.id)
+        );
         return [...prevItems, ...uniqueNewItems];
       });
     }
@@ -58,14 +60,18 @@ function NotificationsPopover({
             loading={fetcher.state === "loading"}
           >
             <div className="flex flex-col space-y-2">
-              {items.map((notification) => (
-                <div
-                  key={notification.id}
-                  className="p-3 bg-secondary rounded-lg"
-                >
-                  <p className="text-sm">{notification.message}</p>
-                </div>
-              ))}
+              {items.length > 0 ? (
+                items.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="p-3 bg-secondary rounded-lg"
+                  >
+                    <p className="text-sm">{notification.message}</p>
+                  </div>
+                ))
+              ) : (
+                <span>No notifications found</span>
+              )}
               {fetcher.state === "loading" && (
                 <div className="p-2 text-center">Loading more...</div>
               )}

@@ -78,7 +78,7 @@ function layout({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="flex ml-auto items-center justify-end gap-4 mx-4">
             <NotificationsPopover
-              notifications={notifications}
+              // notifications={notifications}
               currentPage={page}
             >
               <Button size={"icon"} variant={"ghost"}>
