@@ -14,13 +14,12 @@ export async function createNotification(
   });
 }
 
-export async function getNotifications(userId: number, page: number) {
+export async function getNotifications(userId: number) {
   return await prisma.notification.findMany({
     where: {
       userId: userId,
       isRead: false,
     },
-    skip: 5 * page,
     take: 5,
   });
 }
@@ -34,14 +33,37 @@ export async function getNotificationsLength(userId: number) {
   });
 }
 
-export async function setNotificationsStatus(userId: number, page: number, notificationIds: number[]) {
-  console.log(notificationIds)
+export async function setNotificationsStatus(
+  notificationIds: number[]
+) {
   return await prisma.notification.updateMany({
     where: {
       id: { in: notificationIds },
     },
     data: {
       isRead: true,
+    },
+  });
+}
+
+export async function getNotificationsStatus(
+  notificationIds: number[]
+) {
+  return await prisma.notification.findMany({
+    where: {
+      id: { in: notificationIds },
+    },
+  });
+}
+
+export async function resetStatus(userId: number) {
+  return await prisma.notification.updateMany({
+    where: {
+      userId: userId,
+      isRead: true,
+    },
+    data: {
+      isRead: false,
     },
   });
 }

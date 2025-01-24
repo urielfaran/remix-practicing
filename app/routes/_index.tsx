@@ -40,11 +40,21 @@ export default function Index({ loaderData }: Route.ComponentProps) {
           <AddBoardButton />
         </UserIdContext.Provider>
         {boards.map((board, index) => {
-          const permissions = user.UserBoardRelation.filter(
-            (permission) => permission.boardId === board.id
-          )[0].permissions;
+          const isFavorite =
+            user.UserBoardRelation.find(
+              (relation) => relation.boardId === board.id
+            )?.isFavorite || false;
+          const permissions =
+            user.UserBoardRelation.find(
+              (permission) => permission.boardId === board.id
+            )?.permissions || 0;
           return (
-            <DisplayBoard board={board} key={index} permissions={permissions} />
+            <DisplayBoard
+              board={board}
+              key={index}
+              permissions={permissions}
+              isFavorite={isFavorite}
+            />
           );
         })}
       </div>

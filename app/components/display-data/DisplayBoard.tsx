@@ -22,14 +22,19 @@ export type BoardWithLists = Prisma.BoardGetPayload<{
 interface DisplayListProps {
   board: BoardWithLists;
   permissions: number;
+  isFavorite: boolean
 }
 
-function DisplayBoard({ board, permissions }: DisplayListProps) {
-  const { className, style } = getBackgroundStyle(board.backgroundColor);
+function DisplayBoard({ board, permissions, isFavorite }: DisplayListProps) {
+  const { className, style, } = getBackgroundStyle(board.backgroundColor);
 
   const isDeletePermission =
     (permissions & Permissions.DELETE) === Permissions.DELETE;
-  const isFavorite = board.UserBoardRelation[0].isFavorite;
+  // const isFavorite = board.UserBoardRelation[0].isFavorite;
+  // console.log(isFavorite, "f", board.id);
+  // const userRelation = board.UserBoardRelation.find((relation) => relation.userId == userId);
+  // console.log(userRelation);
+  // const isFavorite= userRelation!.isFavorite
 
   return (
     <Card

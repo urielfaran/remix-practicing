@@ -1,6 +1,5 @@
-import { Board } from "@prisma/client";
 import { ChevronRight } from "lucide-react";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useContext } from "react";
 import { useParams } from "react-router";
 import {
   SidebarGroup,
@@ -12,6 +11,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "~/components/ui/sidebar";
+import { UserIdContext } from "~/hooks/itemIdContexts";
+import { cn } from "~/lib/utils";
 import FavoriteBoard from "../action-buttons/FavoriteBoard";
 import BoardActionDropdown from "../dropdowns/BoardActionDropdown";
 import {
@@ -19,7 +20,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
-import { cn } from "~/lib/utils";
 import { BoardWithRelations } from "./AppSidebar";
 
 interface GenericNavItemsProps extends PropsWithChildren {
@@ -30,6 +30,7 @@ interface GenericNavItemsProps extends PropsWithChildren {
 
 function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
   const { id } = useParams();
+  const userId = useContext(UserIdContext);
 
   return (
     <SidebarGroup>
@@ -47,7 +48,8 @@ function GenericNavItems({ boards, title, icon }: GenericNavItemsProps) {
             <CollapsibleContent>
               <SidebarMenuSub>
                 {boards.map((board) => {
-                  const isFavorite = board.UserBoardRelation[0]?.isFavorite;
+                  const userRelation = board.UserBoardRelation.find((relation) => relation.userId == userId);
+                  const isFavorite= userRelation!.isFavorite
                   return (
                     <SidebarMenuSubItem
                       key={board.id}

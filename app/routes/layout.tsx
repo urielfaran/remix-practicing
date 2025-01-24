@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import { Outlet } from "react-router";
+import { Outlet, useFetcher } from "react-router";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -15,9 +15,10 @@ import {
 } from "~/components/ui/sidebar";
 import { cn } from "~/lib/utils";
 import { getUserFavoriteBoards } from "~/utils/board.server";
-import { getNotifications, getNotificationsLength } from "~/utils/notofications.server";
+import { getNotificationsLength } from "~/utils/notofications.server";
 import { getUserLayoutBoards } from "~/utils/user.server";
 import type { Route } from "./+types/layout";
+import { UserIdContext } from "~/hooks/itemIdContexts";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const userId = await authenticator.requireUser(request, "/login");
@@ -31,10 +32,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const sharedBoards = UserBoardRelation.map((board) => board.board);
 
-  const url = new URL(request.url);
-  const page = Number(url.searchParams.get("page") || 0);
-
-  const notifications = await getNotifications(Number(userId), page);
   const notificationsLength = await getNotificationsLength(Number(userId));
 
   return {
@@ -42,9 +39,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     ownedBoards: Boards,
     favoriteBoards,
     user,
-    notifications,
-    page,
-    notificationsLength
+    notificationsLength,
   };
 }
 
@@ -54,21 +49,21 @@ function layout({ loaderData }: Route.ComponentProps) {
     sharedBoards,
     favoriteBoards,
     user,
-    notifications,
-    page,
-    notificationsLength
+    notificationsLength,
   } = loaderData;
 
   const boards = ownedBoards.concat(sharedBoards);
-
+  const fetcher = useFetcher();
   return (
     <SidebarProvider>
-      <AppSidebar
-        ownedBoards={ownedBoards}
-        sharedBoards={sharedBoards}
-        favoriteBoards={favoriteBoards}
-        user={user}
-      />
+      <UserIdContext.Provider value={user.id}>
+        <AppSidebar
+          ownedBoards={ownedBoards}
+          sharedBoards={sharedBoards}
+          favoriteBoards={favoriteBoards}
+          user={user}
+        />
+      </UserIdContext.Provider>
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -77,10 +72,7 @@ function layout({ loaderData }: Route.ComponentProps) {
             <Breadcrumbs boards={boards} />
           </div>
           <div className="flex ml-auto items-center justify-end gap-4 mx-4">
-            <NotificationsPopover
-              // notifications={notifications}
-              currentPage={page}
-            >
+            <NotificationsPopover>
               <Button size={"icon"} variant={"ghost"}>
                 <Bell
                   className={cn("text-blue-500", {
@@ -90,6 +82,9 @@ function layout({ loaderData }: Route.ComponentProps) {
                 {notificationsLength > 0 ? notificationsLength : null}
               </Button>
             </NotificationsPopover>
+            <fetcher.Form action="/action/notifications-test" method="POST">
+              <Button type="submit">reset</Button>
+            </fetcher.Form>
             <ModeToggle />
           </div>
         </header>
