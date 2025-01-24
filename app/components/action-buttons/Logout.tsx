@@ -5,9 +5,13 @@ import { Button } from "~/components/ui/button";
 function Logout() {
   return (
     <Form method="post" action="/action/logout">
-      <Button type="submit" variant={'ghost'} className="px-0.5">
+      <Button
+        type="submit"
+        variant="ghost"
+        className="w-full flex items-center justify-start p-0.5"
+      >
         <LogOut />
-        {"log out"}
+        <span>log out</span>
       </Button>
     </Form>
   );

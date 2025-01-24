@@ -86,7 +86,9 @@ export function NavUser({ user }: NavUserProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Logout />
+              <div className="w-full flex-1">
+                <Logout />
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

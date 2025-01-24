@@ -82,9 +82,9 @@ function layout({ loaderData }: Route.ComponentProps) {
                 {notificationsLength > 0 ? notificationsLength : null}
               </Button>
             </NotificationsPopover>
-            <fetcher.Form action="/action/notifications-test" method="POST">
+            {/* <fetcher.Form action="/action/notifications-test" method="POST">
               <Button type="submit">reset</Button>
-            </fetcher.Form>
+            </fetcher.Form> */}
             <ModeToggle />
           </div>
         </header>
