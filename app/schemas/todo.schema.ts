@@ -9,7 +9,7 @@ export const createTodoSchema = z.object({
   dueTime: z.preprocess(
     (v) => (v === "undefined" ? new Date() : v),
     z.coerce.date()
-  ),
+  ).optional().nullable(),
   listId: z.coerce.number(),
 });
 

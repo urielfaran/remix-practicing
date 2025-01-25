@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
+import { Eraser, Loader2Icon, Save } from "lucide-react";
 import { PropsWithChildren } from "react";
 import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
@@ -34,7 +34,6 @@ function UpdateTodoDueTime({ children, todoId }: UpdateTodoDueTimeProps) {
   const defaultValues = {
     dueTime: undefined,
     id: todoId,
-
   };
   const form = useRemixForm<updateTodoDueTimeSchemaType>({
     resolver: updateTodoDueTimeResolver,
@@ -67,7 +66,7 @@ function UpdateTodoDueTime({ children, todoId }: UpdateTodoDueTimeProps) {
                 <FormItem className="flex flex-col">
                   <Calendar
                     mode="single"
-                    selected={field.value}
+                    selected={field.value || undefined}
                     onSelect={field.onChange}
                     initialFocus={true}
                   />
@@ -75,24 +74,41 @@ function UpdateTodoDueTime({ children, todoId }: UpdateTodoDueTimeProps) {
                 </FormItem>
               )}
             />
-            <Button
-              variant="default"
-              className="m-1 w-full"
-              type="submit"
-              name="_action"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center gap-2">
-                  {"updating todo..."}{" "}
-                  <span>
-                    <Loader2Icon className="animate-spin" />
+            <div className="flex flex-row gap-2 w-full">
+              <Button
+                variant="default"
+                className="w-full"
+                type="submit"
+                name="_action"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    {"updating todo..."}{" "}
+                    <span>
+                      <Loader2Icon className="animate-spin" />
+                    </span>
                   </span>
-                </span>
-              ) : (
-                "Update"
-              )}
-            </Button>
+                ) : (
+                  <>
+                    Update
+                    <Save />
+                  </>
+                )}
+              </Button>
+              <Button
+                type="reset"
+                onClick={() => {
+                  form.reset(defaultValues);
+                  form.handleSubmit();
+                }}
+                variant={"destructive"}
+                className="w-full"
+              >
+                Reset
+                <Eraser />
+              </Button>
+            </div>
           </Form>
         </ShadForm>
       </PopoverContent>

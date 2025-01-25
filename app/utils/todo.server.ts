@@ -72,7 +72,11 @@ export async function updateTodo({
 }) {
   return prisma.todo.update({
     where: { id: id },
-    data: { title: title, description: description, dueTime: dueTime },
+    data: {
+      title: title,
+      description: description,
+      dueTime: dueTime,
+    },
   });
 }
 

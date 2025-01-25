@@ -108,10 +108,10 @@ function TodoForm({ action, todo }: TodoFormProps) {
             <FormItem className="flex flex-col">
               <FormLabel>{"End Date"}</FormLabel>
               <DatePicker
-                value={field.value}
+                value={field.value ?? undefined}
                 calendarProps={{
                   mode: "single",
-                  selected: field.value,
+                  selected: field.value || undefined,
                   onSelect: field.onChange,
                   initialFocus: true,
                 }}

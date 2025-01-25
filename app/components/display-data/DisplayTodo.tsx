@@ -22,7 +22,7 @@ interface TodoCardProps {
 type DisplayTodoProps = TodoCardProps & { dialogStyle: dialogStyleType };
 
 function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
-  const isLate = differenceInDays(todo.dueTime, new Date()) < 0;
+  const isLate = todo.dueTime && differenceInDays(todo.dueTime, new Date()) < 0;
 
   const isEditPermission = usePermissionStore((state) =>
     state.hasPermission(Permissions.WRITE)
@@ -97,7 +97,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
               disabled={!isEditPermission}
             >
               <Calendar />
-              {format(todo.dueTime, "MMM d, yyyy")}
+              {todo.dueTime && format(todo.dueTime, "MMM d, yyyy")}
             </Button>
           </UpdateTodoDueTime>
           <div className="max-w-28 flex relative -space-x-4">

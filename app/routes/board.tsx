@@ -195,11 +195,10 @@ export async function action({ request }: ActionFunctionArgs) {
       if (errors) {
         return data({ errors, defaultValues, payload }, { status: 400 });
       }
-
       try {
         await updateTodo({
           id: payload.id,
-          dueTime: payload.dueTime,
+          dueTime: payload.dueTime || null,
         });
       } catch (err) {
         return Response.json(
