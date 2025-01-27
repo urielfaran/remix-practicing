@@ -48,6 +48,10 @@ export async function getUserWithBoardById(
       ? {
           lt: today,
         }
+      : filter["Due Time"]?.includes("No_Time")
+      ? {
+          equals: null,
+        }
       : filter["Due Time"]?.includes("Tommorow")
       ? {
           gte: today,

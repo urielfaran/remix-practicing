@@ -1,4 +1,4 @@
-import { CalendarDays, Clock, ClockAlert } from "lucide-react";
+import { CalendarDays, Clock, ClockAlert, TimerOff } from "lucide-react";
 import { useContext } from "react";
 import { Form, useSearchParams } from "react-router";
 import { BoardIdContext } from "~/hooks/itemIdContexts";
@@ -12,6 +12,10 @@ const dueTimeFilters = [
   {
     value: "Overdue",
     icon: <Clock className="text-red-500 size-5" />,
+  },
+  {
+    value: "No_Time",
+    icon: <TimerOff className="text-blue-500 size-5" />,
   },
   {
     value: "Tommorow",

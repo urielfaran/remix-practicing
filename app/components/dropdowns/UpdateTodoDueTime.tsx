@@ -102,6 +102,7 @@ function UpdateTodoDueTime({ children, todoId }: UpdateTodoDueTimeProps) {
                   form.reset(defaultValues);
                   form.handleSubmit();
                 }}
+                disabled={!form.getValues()["dueTime"]}
                 variant={"destructive"}
                 className="w-full"
               >
