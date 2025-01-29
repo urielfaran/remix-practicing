@@ -204,3 +204,85 @@ export async function updateUserCredentials({
     },
   });
 }
+
+import { usersStatusOptions } from "../schemas/user.schema";
+
+export async function getUsers({
+  boardId,
+  currentUserId,
+  page,
+  usersStatus,
+  todoId,
+}: {
+  currentUserId: number;
+  page: number;
+  usersStatus: keyof typeof usersStatusOptions;
+  todoId?: number;
+  boardId?: number;
+}) {
+  let where: Prisma.UserWhereInput = {};
+  switch (usersStatus) {
+    case "board_related": {
+      where = {
+        UserBoardRelation: {
+          some: {
+            boardId,
+            userId: {
+              not: currentUserId,
+            },
+          },
+        },
+      };
+      break;
+    }
+
+    case "unrelated": {
+      where = {
+        NOT: {
+          UserBoardRelation: {
+            some: {
+              boardId: boardId,
+            },
+          },
+        },
+        id: {
+          not: currentUserId,
+        },
+      };
+      break;
+    }
+
+    case "related_with_current": {
+      where = {
+        UserBoardRelation: {
+          some: {
+            boardId,
+          },
+        },
+      };
+      break;
+    }
+
+    case "todo_related": {
+      where = {
+        Todos: {
+          some: {
+            id: todoId,
+          },
+        },
+      };
+      break;
+    }
+    default:
+      return {};
+  }
+  console.log("where", where);
+  return await prisma.user.findMany({
+    where : {...where},
+    include: {
+      Boards: true,
+    },
+    take: 5,
+    skip: 5 * page,
+  });
+}

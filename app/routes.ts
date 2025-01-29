@@ -34,6 +34,7 @@ export default [
       "./routes/action/update-user-credentials.ts"
     ),
     route("/logout", "./routes/action/logout.ts"),
+    route("/users", "./routes/action/users.ts"),
     route("/notifications", "./routes/action/notifications.ts"),
     route("/notifications-test", "./routes/action/notifications-test.ts"),
     route("/set-notifications-status", "./routes/action/set-notifications-status.ts"),
