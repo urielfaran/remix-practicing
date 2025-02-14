@@ -13,7 +13,6 @@ function AddListButton() {
         variant="ghost"
         size={"icon"}
         disabled={!isEditPermission}
-        onClick={() => console.log("first")}
       >
         <PlusIcon aria-hidden="true" />
       </Button>

@@ -1,4 +1,4 @@
-import { Todo } from "@prisma/client";
+import { Prisma, Todo } from "@prisma/client";
 import { differenceInDays, format } from "date-fns";
 import { Calendar, Pencil, UserRoundPlus } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -14,9 +14,16 @@ import { Button } from "../ui/button";
 import { Card, CardDescription, CardTitle } from "../ui/card";
 import UpdateTodoStatus from "../UpdateTodoStatus";
 import UserAvatar from "../user-components/UserAvatar";
+import { Badge } from "../ui/badge";
+
+export type todoWithLables = Prisma.TodoGetPayload<{
+  include: {
+    Label: true;
+  };
+}>;
 
 interface TodoCardProps {
-  todo: Todo;
+  todo: todoWithLables;
 }
 
 type DisplayTodoProps = TodoCardProps & { dialogStyle: dialogStyleType };
@@ -39,6 +46,15 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
 
   return (
     <>
+      <div className="flex flex-row gap-1">
+        {todo.Label.map((label, index) => (
+          <Badge
+            key={index}
+            className="min-h-2 min-w-8"
+            style={{ backgroundColor: label.backgroundColor || "grey" }}
+          />
+        ))}
+      </div>
       <div className="flex flex-row justify-between items-center group relative z-10">
         <CardTitle className="flex-1 outline-none">{todo.title}</CardTitle>
         <AssignTodo
@@ -66,11 +82,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
           </Button>
         </EditTodoDialog>
         {!todo.completeTime && (
-          <TodoActionDropdown
-            todoId={todo.id}
-            todoCompleteTime={todo.completeTime ? true : false}
-            isActive={isEditPermission}
-          />
+          <TodoActionDropdown todoId={todo.id} isActive={isEditPermission} />
         )}
       </div>
       <CardDescription className="space-y-3">

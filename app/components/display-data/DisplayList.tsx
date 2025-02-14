@@ -9,7 +9,11 @@ import TodoCard from "./DisplayTodo";
 
 export type ListWithTodos = Prisma.ListGetPayload<{
   include: {
-    todos: true;
+    todos: {
+      include: {
+        Label: true;
+      };
+    };
   };
 }>;
 
@@ -18,20 +22,20 @@ interface DisplayListProps {
 }
 
 function DisplayList({ list }: DisplayListProps) {
-  
   const isEditPermission = usePermissionStore((state) =>
     state.hasPermission(Permissions.WRITE)
   );
   return (
     <Card className="min-w-64 bg-primary-foreground h-fit">
       <div className="p-4 pb-0 flex-1 flex flex-row justify-between bg-transparent">
-      <>
+        <>
           <EditableText
             actionName="/action/update-list"
             id={list.id}
             text={list.title}
             fieldName="title"
-            isEditable={isEditPermission} />
+            isEditable={isEditPermission}
+          />
           <ListActionDropdown listId={list.id} isActive={isEditPermission} />
         </>
       </div>

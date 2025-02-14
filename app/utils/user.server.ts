@@ -86,6 +86,9 @@ export async function getUserWithBoardById(
                         { status: statusFilter },
                       ],
                     },
+                    include: {
+                      Label: true,
+                    },
                     // where: {
                     //   AND: [
                     //     filter["Status"]?.includes("0") &&

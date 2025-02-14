@@ -37,6 +37,7 @@ export default [
     route("/notifications", "./routes/action/notifications.ts"),
     route("/notifications-test", "./routes/action/notifications-test.ts"),
     route("/set-notifications-status", "./routes/action/set-notifications-status.ts"),
+    route("/add-label", "./routes/action/add-label.ts"),
 
     
   ]),
