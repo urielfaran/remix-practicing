@@ -56,14 +56,3 @@ export async function getNotificationsStatus(
   });
 }
 
-export async function resetStatus(userId: number) {
-  return await prisma.notification.updateMany({
-    where: {
-      userId: userId,
-      isRead: true,
-    },
-    data: {
-      isRead: false,
-    },
-  });
-}

@@ -15,6 +15,7 @@ import { Card, CardDescription, CardTitle } from "../ui/card";
 import UpdateTodoStatus from "../UpdateTodoStatus";
 import UserAvatar from "../user-components/UserAvatar";
 import { Badge } from "../ui/badge";
+import DisplayLabels from "./DisplayLabels";
 
 export type todoWithLables = Prisma.TodoGetPayload<{
   include: {
@@ -46,15 +47,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
 
   return (
     <>
-      <div className="flex flex-row gap-1">
-        {todo.Label.map((label, index) => (
-          <Badge
-            key={index}
-            className="min-h-2 min-w-8"
-            style={{ backgroundColor: label.backgroundColor || "grey" }}
-          />
-        ))}
-      </div>
+      <DisplayLabels labels={todo.Label} />
       <div className="flex flex-row justify-between items-center group relative z-10">
         <CardTitle className="flex-1 outline-none">{todo.title}</CardTitle>
         <AssignTodo
