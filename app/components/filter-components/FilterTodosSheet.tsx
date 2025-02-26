@@ -7,7 +7,6 @@ import {
   SheetTrigger,
 } from "~/components/ui/sheet";
 import FilterTodosForm from "../forms/FilterTodosForm";
-import { UserWithBoardRelation } from "../board-components/BoardHeader";
 
 interface FilterTodosSheetProps extends PropsWithChildren {
 }

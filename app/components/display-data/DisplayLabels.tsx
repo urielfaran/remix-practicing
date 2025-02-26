@@ -1,37 +1,41 @@
 import { Label } from "@prisma/client";
-import { Badge } from "../ui/badge";
-import DeleteButton from "../action-buttons/DeleteButton";
 import { useFetcher } from "react-router";
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { Button } from "../ui/button";
-import { X } from "lucide-react";
+import EditLabelDialog from "../dialogs/EditLabelDialog";
+import { Badge } from "../ui/badge";
+import { dialogStyleType } from "../dialogs/EditTodoDialog";
 
 interface DisplayLabelsProps {
   labels: Label[];
+  todoId: number;
+  dialogStyle: dialogStyleType;
 }
-function DisplayLabels({ labels }: DisplayLabelsProps) {
+
+function DisplayLabels({ labels, todoId, dialogStyle }: DisplayLabelsProps) {
   const fetcher = useFetcher<ToastProps>();
   useResponseToast(fetcher.data);
 
   return (
-    <div className="flex flex-row gap-1">
-      {labels.map((label, index) => (
-        <fetcher.Form method="POST" action={`/action/delete-label`}>
-          <Badge
-            key={index}
-            className="min-h-3 min-w-10 relative group"
-            style={{ backgroundColor: label.backgroundColor || "grey" }}
+    <div className="flex flex-row gap-1 max-w-full overflow-x-auto whitespace-nowrap scrollbar-none">
+      {labels.map((label) => (
+        <fetcher.Form
+          method="POST"
+          action={`/action/delete-label`}
+          key={label.id}
+          className="flex-shrink-0"
+        >
+          <EditLabelDialog
+            todoId={todoId}
+            label={label}
+            dialogStyle={dialogStyle}
           >
-            <input name="id" hidden readOnly value={label.id} />
-
-            <Button
-              type="submit"
-              variant={"ghost"}
-              className="absolute top-[-6px] right-[-6px] p-1 opacity-0 group-hover:opacity-100 transition-opacity bg-transparent w-1 h-1"
-              >
-              <X className="text-red-500" />
-            </Button>
-          </Badge>
+            <Badge
+              className="h-[20px] w-[52px] relative group cursor-pointer"
+              style={{ backgroundColor: label.backgroundColor || "grey" }}
+            >
+              {label.text}         
+            </Badge>
+          </EditLabelDialog>
         </fetcher.Form>
       ))}
     </div>

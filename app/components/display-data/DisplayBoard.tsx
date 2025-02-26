@@ -30,11 +30,6 @@ function DisplayBoard({ board, permissions, isFavorite }: DisplayListProps) {
 
   const isDeletePermission =
     (permissions & Permissions.DELETE) === Permissions.DELETE;
-  // const isFavorite = board.UserBoardRelation[0].isFavorite;
-  // console.log(isFavorite, "f", board.id);
-  // const userRelation = board.UserBoardRelation.find((relation) => relation.userId == userId);
-  // console.log(userRelation);
-  // const isFavorite= userRelation!.isFavorite
 
   return (
     <Card

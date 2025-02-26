@@ -1,10 +1,11 @@
 import { CalendarDays, Clock, ClockAlert, TimerOff } from "lucide-react";
-import { useContext } from "react";
-import { Form, useSearchParams } from "react-router";
-import { BoardIdContext } from "~/hooks/itemIdContexts";
+import { Form } from "react-router";
 import { useUsersRelations } from "~/hooks/usersContext";
+import { getUniqueColors, useBoardStore } from "~/utils/board-store";
+import { BoardWithData } from "../board-components/BoardHeader";
+import CheckboxFilter from "../filter-components/CheckboxFilter";
 import TodoStatusIcon from "../TodoStatusIcon";
-import { Checkbox } from "../ui/checkbox";
+import { Badge } from "../ui/badge";
 import { statusArray } from "../UpdateTodoStatus";
 import UserAvatar from "../user-components/UserAvatar";
 
@@ -14,7 +15,7 @@ const dueTimeFilters = [
     icon: <Clock className="text-red-500 size-5" />,
   },
   {
-    value: "No_Time",
+    value: "No Duetime",
     icon: <TimerOff className="text-blue-500 size-5" />,
   },
   {
@@ -28,30 +29,15 @@ const dueTimeFilters = [
 ];
 
 function FilterTodosForm() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchParamArr = searchParams.getAll("filter");
-
-  const boardId = useContext(BoardIdContext);
+  const board = useBoardStore((state) => state.board);
+  if (!board) return null;
+  const { id } = board;
 
   const { getUsersWithRelationToBoard, users } = useUsersRelations();
 
-  const usersWithRelationToBoard = getUsersWithRelationToBoard(users, boardId);
+  const usersWithRelationToBoard = getUsersWithRelationToBoard(users, id);
 
-  const isChecked = (value: string) => {
-    return searchParamArr.includes(value);
-  };
-
-  const handleCheckboxChange = (value: string, checked: boolean) => {
-    const newParams = new URLSearchParams(searchParams);
-
-    if (checked) {
-      newParams.append("filter", value);
-    } else {
-      newParams.delete("filter", value);
-    }
-
-    setSearchParams(newParams);
-  };
+  const uniqueColors = getUniqueColors(board || ({} as BoardWithData));
 
   return (
     <Form
@@ -62,48 +48,34 @@ function FilterTodosForm() {
       <h2>Due Time</h2>
       {dueTimeFilters.map((filter) => (
         <div className="flex gap-3 items-center" key={filter.value}>
-          <Checkbox
-            name="filter"
-            value={`Due Time:${filter.value}`}
-            checked={isChecked(`Due Time:${filter.value}`)}
-            onCheckedChange={(checked) =>
-              handleCheckboxChange(
-                `Due Time:${filter.value}`,
-                checked as boolean
-              )
-            }
-          />
+          <CheckboxFilter filterName="Due Time" value={filter.value} />
           {filter.icon} <span>{filter.value}</span>
         </div>
       ))}
       <h2>Status</h2>
       {statusArray.map((status) => (
-        <div className="flex gap-3 items-center" key={status}>
-          <Checkbox
-            name="filter"
-            value={`Status:${status}`}
-            checked={isChecked(`Status:${status}`)}
-            onCheckedChange={(checked) =>
-              handleCheckboxChange(`Status:${status}`, checked as boolean)
-            }
-          />
+        <div className="flex gap-4 items-center" key={status}>
+          <CheckboxFilter filterName="Status" value={status} />
           <TodoStatusIcon status={status} />
           <span> {status}</span>
         </div>
       ))}
       <h2>Members</h2>
       {usersWithRelationToBoard.map((user, index) => (
-        <div key={index} className="flex gap-2">
-          <Checkbox
-            name="filter"
-            value={`Members:${user.id}`}
-            checked={isChecked(`Members:${user.id}`)}
-            onCheckedChange={(checked) =>
-              handleCheckboxChange(`Members:${user.id}`, checked as boolean)
-            }
-          />
+        <div key={index} className="flex gap-4">
+          <CheckboxFilter filterName="Members" value={user.id} />
           <UserAvatar avatarUrl={user.avatar} username={user.username} />
           {user.username}
+        </div>
+      ))}
+      <h2>Labels</h2>
+      {uniqueColors.map((color) => (
+        <div key={color} className="flex gap-4">
+          <CheckboxFilter filterName="Label" value={color} />
+          <Badge
+            className="min-h-3 min-w-16 relative group"
+            style={{ backgroundColor: color || "grey" }}
+          ></Badge>
         </div>
       ))}
     </Form>

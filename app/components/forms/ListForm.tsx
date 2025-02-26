@@ -1,12 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { List } from "@prisma/client";
-import { Form, useFetcher } from "react-router";
 import { Loader2Icon } from "lucide-react";
+import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
-import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
-import { createListSchema, updateListSchema } from "~/schemas/list.schema";
-import { FormActions } from "./TodoForm";
 import { Button } from "~/components/ui/button";
 import {
   FormField,
@@ -16,8 +13,10 @@ import {
   Form as ShadForm,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { useContext } from "react";
-import { BoardIdContext } from "~/hooks/itemIdContexts";
+import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
+import { createListSchema, updateListSchema } from "~/schemas/list.schema";
+import { useBoardStore } from "~/utils/board-store";
+import { FormActions } from "./TodoForm";
 
 interface ListFormProps {
   list?: List;
@@ -32,14 +31,17 @@ export const updateListResolver = zodResolver(updateListSchema);
 
 function ListForm({ action, list }: ListFormProps) {
   const fetcher = useFetcher<ToastProps>();
-  const schema = list ? updateListSchema : createListSchema;
   useResponseToast(fetcher.data);
 
-  const boardId = useContext(BoardIdContext);
+  const board = useBoardStore((state) => state.board);
+  if (!board) return null;
+  const { id } = board;
+
+  const schema = list ? updateListSchema : createListSchema;
 
   const defaultValues = {
     title: undefined,
-    boardId: boardId,
+    boardId: id,
   };
 
   const form = useRemixForm<z.infer<typeof schema>>({
@@ -50,7 +52,7 @@ function ListForm({ action, list }: ListFormProps) {
     defaultValues: list ?? defaultValues,
     submitData: {
       _action: list ? "update-list" : "create-list",
-      boardId: boardId,
+      boardId: id,
     },
     fetcher: fetcher,
   });

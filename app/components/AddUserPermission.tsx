@@ -17,23 +17,22 @@ import { addPermissionsSchema } from "~/schemas/shareBoard.schema";
 import { Select } from "./ui/select";
 import SelectUserPermission from "./user-components/SelectUserPermission";
 import { UsersCombobox } from "./UsersCombobox";
-
-interface AddUserPermissionProps {
-  boardId: number;
-}
+import { useBoardStore } from "~/utils/board-store";
 
 export const adddPermissionsResolver = zodResolver(addPermissionsSchema);
 export type adddPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
 
-export function AddUserPermission({ boardId }: AddUserPermissionProps) {
+export function AddUserPermission() {
   const fetcher = useFetcher();
   useResponseToast(fetcher.data);
+
+  const board = useBoardStore((state) => state.board);
 
   const { getUsersWithoutRelationToBoard, users } = useUsersRelations();
 
   const usersWithoutRelationToBoard = getUsersWithoutRelationToBoard(
     users,
-    boardId
+    board!.id
   );
 
   const defaultValues = {
@@ -47,7 +46,7 @@ export function AddUserPermission({ boardId }: AddUserPermissionProps) {
       method: "POST",
     },
     submitData: {
-      boardId: boardId,
+      boardId: board!.id,
     },
     fetcher: fetcher,
     defaultValues,

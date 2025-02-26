@@ -1,6 +1,6 @@
 import { Notification } from "@prisma/client";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { useFetcher, useNavigate } from "react-router";
+import { useFetcher, useLocation, useNavigate } from "react-router";
 import InfiniteScroller from "./InfiniteScroller";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
@@ -49,7 +49,6 @@ function NotificationsPopover({
       onOpenChange={(isOpen) => {
         setOpen(isOpen);
         if (!isOpen) {
-          navigate(".", { replace: true });
           setItems([]);
           setIsFirstOpen(true)
         }

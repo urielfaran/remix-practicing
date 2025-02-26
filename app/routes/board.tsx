@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { useEffect } from "react";
 import { ActionFunctionArgs, data, redirect } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
@@ -25,15 +24,16 @@ import {
 } from "~/components/forms/TodoForm";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
-import { BoardIdContext, UserIdContext } from "~/hooks/itemIdContexts";
+import { UserIdContext } from "~/hooks/itemIdContexts";
 import { UsersProvider } from "~/hooks/usersContext";
 import { cn } from "~/lib/utils";
 import { getBackgroundStyle } from "~/utils/backgrounds";
+import { useBoardStore } from "~/utils/board-store";
 import { createList } from "~/utils/list.server";
 import { usePermissionStore } from "~/utils/permissions";
 import { createTodo, updateTodo } from "~/utils/todo.server";
 import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
-import { getRequestField } from "~/utils/utils";
+import { getGroupedParamsByType, getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
 
 export function meta({ params }: Route.MetaArgs) {
@@ -44,26 +44,23 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   const boardId = Number(params.id);
   invariant(boardId, "Invalid boardId");
 
-  const userId = await authenticator.requireUser(request, "/login");
+  const stringlifiedUserId = await authenticator.requireUser(request, "/login");
+
+  const userId = Number(stringlifiedUserId);
 
   const url = new URL(request.url);
-  const groupedParams = _.groupBy(
-    url.searchParams.getAll("filter"),
-    (param) => param.split(":")[0]
-  );
 
-  const result = _.mapValues(groupedParams, (group) =>
-    group.map((item) => item.split(":")[1])
-  );
+  const paramsByType = getGroupedParamsByType(url);
 
-  const user = await getUserWithBoardById(Number(userId), boardId, result);
+  const user = await getUserWithBoardById(userId, boardId, paramsByType);
+
   invariant(user, "board doesnt exist");
 
   if (!user.UserBoardRelation) redirect("/");
 
   const { board, permissions } = user?.UserBoardRelation[0] ?? {};
 
-  const users = await getActiveUsers(Number(userId));
+  const users = await getActiveUsers(userId);
 
   return { board, permissions, users, userId };
 }
@@ -72,10 +69,12 @@ function Board({ loaderData }: Route.ComponentProps) {
   const { board, permissions, users, userId } = loaderData;
   const { className, style } = getBackgroundStyle(board.backgroundColor);
   const setPermissions = usePermissionStore((state) => state.setPermissions);
-
+  const setBoard = useBoardStore((state) => state.setBoard);
+  
   useEffect(() => {
     setPermissions(permissions);
-  }, [permissions]);
+    setBoard(board);
+  }, [board, permissions, setBoard, setPermissions]);
 
   const connectedusers = board.UserBoardRelation.map(
     (relation) => relation.user
@@ -84,14 +83,12 @@ function Board({ loaderData }: Route.ComponentProps) {
   return (
     <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
       <UsersProvider value={users}>
-        <UserIdContext.Provider value={Number(userId)}>
-          <BoardHeader board={board} />
+        <UserIdContext.Provider value={userId}>
+          <BoardHeader />
         </UserIdContext.Provider>
       </UsersProvider>
       <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
-        <BoardIdContext.Provider value={board?.id}>
-          <AddListButton />
-        </BoardIdContext.Provider>
+        <AddListButton />
         <ConncetedUsersContext.Provider value={connectedusers}>
           {board.lists.map((list) => (
             <DisplayList key={list.id} list={list} />

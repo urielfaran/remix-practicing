@@ -1,4 +1,3 @@
-import { Board } from "@prisma/client";
 import { PropsWithChildren, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/ui/button";
@@ -15,14 +14,19 @@ import {
 import useResponseToast, { ToastProps } from "~/hooks/useResponseToast";
 import { cn } from "~/lib/utils";
 import { backgrounds } from "~/utils/backgrounds";
-interface ChangeBoardColorProps extends PropsWithChildren {
-  board: Board;
-}
-function ChangeBoardColor({ children, board }: ChangeBoardColorProps) {
-  const [chosenBackground, setChosenBackground] = useState("");
+import { useBoardStore } from "~/utils/board-store";
 
+interface ChangeBoardColorProps extends PropsWithChildren {}
+
+function ChangeBoardColor({ children }: ChangeBoardColorProps) {
   const fetcher = useFetcher<ToastProps>();
   useResponseToast(fetcher.data);
+
+  const board = useBoardStore((state) => state.board);
+  if (!board) return null;
+  const { id, backgroundColor } = board;
+
+  const [chosenBackground, setChosenBackground] = useState(backgroundColor);
 
   return (
     <Sheet>
@@ -60,12 +64,12 @@ function ChangeBoardColor({ children, board }: ChangeBoardColorProps) {
           <SheetClose asChild>
             <fetcher.Form method="POST" action="/action/update-board">
               <Button type="submit">Save changes</Button>
-              <input type="text" hidden readOnly value={board.id} name="id" />
+              <input type="text" hidden readOnly value={id} name="id" />
               <input
                 type="text"
                 hidden
                 readOnly
-                value={chosenBackground}
+                value={chosenBackground || ""}
                 name="backgroundColor"
               />
             </fetcher.Form>

@@ -37,7 +37,6 @@ export const usePermissionStore = create<PermissionState>((set, get) => ({
   setPermissions: (permissions) => set({ permissions }),
   hasPermission: (requiredPermission) => {
     const { permissions } = get();
-    // console.log(permissions, requiredPermission)
     return (permissions & requiredPermission) === requiredPermission;
   },
 }));

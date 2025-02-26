@@ -19,7 +19,7 @@ import DisplayLabels from "./DisplayLabels";
 
 export type todoWithLables = Prisma.TodoGetPayload<{
   include: {
-    Label: true;
+    labels: true;
   };
 }>;
 
@@ -47,7 +47,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
 
   return (
     <>
-      <DisplayLabels labels={todo.Label} />
+      <DisplayLabels labels={todo.labels} todoId={todo.id} dialogStyle={dialogStyle}/>
       <div className="flex flex-row justify-between items-center group relative z-10">
         <CardTitle className="flex-1 outline-none">{todo.title}</CardTitle>
         <AssignTodo
@@ -157,7 +157,7 @@ function TodoCard({ todo }: TodoCardProps) {
       key={todo.id}
       ref={cardRef}
       className={cn(
-        "relative grid min-w-48 p-2 hover:ring-2 overflow-x-hidden"
+        "relative grid min-w-48 max-w-60 p-2 hover:ring-2 overflow-x-hidden"
       )}
     >
       <TodoDisplay todo={todo} dialogStyle={dialogStyle} />

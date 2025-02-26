@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   Table,
   TableBody,
@@ -6,26 +7,23 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import UpdateUserPermissionsForm from "./forms/UpdateUserPermissionsForm";
-import UserAvatar from "./user-components/UserAvatar";
-import DeleteUserPermissionsForm from "./forms/DeleteUserPermissionsForm";
-import { useContext } from "react";
 import { UserIdContext } from "~/hooks/itemIdContexts";
 import { useUsersRelations } from "~/hooks/usersContext";
+import { useBoardStore } from "~/utils/board-store";
+import DeleteUserPermissionsForm from "./forms/DeleteUserPermissionsForm";
+import UpdateUserPermissionsForm from "./forms/UpdateUserPermissionsForm";
+import UserAvatar from "./user-components/UserAvatar";
 
-interface UpdateUserPermissionTableProps {
-  boardId: number;
-}
-function UpdateUserPermissionTable({
-  boardId,
-}: UpdateUserPermissionTableProps) {
+function UpdateUserPermissionTable() {
   const userId = useContext(UserIdContext);
+
+  const board = useBoardStore((state) => state.board);
 
   const { getUsersWithRelationToBoard, users } = useUsersRelations();
 
   const usersWithRelationToBoard = getUsersWithRelationToBoard(
     users,
-    boardId,
+    board!.id,
     userId
   );
 
@@ -53,8 +51,8 @@ function UpdateUserPermissionTable({
               </div>
             </TableCell>
             <TableCell className="text-right flex gap-3 items-end">
-              <UpdateUserPermissionsForm boardId={boardId} user={user} />
-              <DeleteUserPermissionsForm boardId={boardId} user={user} />
+              <UpdateUserPermissionsForm boardId={board!.id} user={user} />
+              <DeleteUserPermissionsForm boardId={board!.id} user={user} />
             </TableCell>
           </TableRow>
         ))}

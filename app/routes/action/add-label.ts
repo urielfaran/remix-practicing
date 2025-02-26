@@ -3,10 +3,9 @@ import { getValidatedFormData } from "remix-hook-form";
 import {
   baseLabelReslover,
   baseLabelSchemaType,
-} from "~/components/forms/AddLabelForm";
-import { assignTodo } from "~/utils/todo.server";
-import { Route } from "./+types/add-label";
+} from "~/components/forms/LabelForm";
 import { createLabel } from "~/utils/label.server";
+import { Route } from "./+types/add-label";
 
 export async function action({ request }: Route.ActionArgs) {
   const {

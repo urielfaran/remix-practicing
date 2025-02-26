@@ -48,7 +48,7 @@ export async function getUserWithBoardById(
       ? {
           lt: today,
         }
-      : filter["Due Time"]?.includes("No_Time")
+      : filter["Due Time"]?.includes("No Duetime")
       ? {
           equals: null,
         }
@@ -63,6 +63,16 @@ export async function getUserWithBoardById(
           lte: oneWeekForward,
         }
       : {}
+    : {};
+
+  const labelsFilter: Prisma.TodoWhereInput["labels"] = filter["Label"]
+    ? {
+        some: {
+          backgroundColor: {
+            in: filter["Label"],
+          },
+        },
+      }
     : {};
 
   return await prisma.user.findUnique({
@@ -84,32 +94,14 @@ export async function getUserWithBoardById(
                         { users: userFilter },
                         { dueTime: dueTimeFilter },
                         { status: statusFilter },
+                        {
+                          labels: labelsFilter,
+                        },
                       ],
                     },
                     include: {
-                      Label: true,
+                      labels: true,
                     },
-                    // where: {
-                    //   AND: [
-                    //     filter["Status"]?.includes("0") &&
-                    //     filter["Status"]?.includes("1")
-                    //       ? {}
-                    //       : filter["Status"]?.includes("0")
-                    //       ? { completeTime: null }
-                    //       : filter["Status"]?.includes("1")
-                    //       ? { completeTime: { not: null } }
-                    //       : {},
-                    //     filter["Members"].length > 0
-                    //       ? {
-                    //           users: {
-                    //             some: {
-                    //               id: { in: filter["Members"].map(Number) }, // Cast to number[]
-                    //             },
-                    //           },
-                    //         }
-                    //       : {},
-                    //   ],
-                    // },
                   },
                 },
               },

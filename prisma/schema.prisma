@@ -29,8 +29,7 @@ model Todo {
   List         List      @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId       Int
   users        User[]
-
-  Label Label[]
+  labels       Label[]
 }
 
 model List {
@@ -94,4 +93,5 @@ model Label {
   todoId          Int
   todo            Todo    @relation(fields: [todoId], references: [id])
   backgroundColor String?
+  text            String?
 }

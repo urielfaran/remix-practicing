@@ -2,6 +2,7 @@ import moment from "moment";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
 import { getUserById } from "./user.server";
+import _ from "lodash";
 
 export async function getRequestField(
   name: string,
@@ -48,4 +49,16 @@ export async function getUserDateForNotification(request: Request) {
   const username = user?.username;
 
   return { sendindUserId: numberSendingUserId, username };
+}
+
+export function getGroupedParamsByType(url: URL) {
+  const groupedParams = _.groupBy(
+    url.searchParams.getAll("filter"),
+    (param) => param.split(":")[0]
+  );
+
+  const paramsByType = _.mapValues(groupedParams, (group) =>
+    group.map((item) => item.split(":")[1])
+  );
+  return paramsByType;
 }

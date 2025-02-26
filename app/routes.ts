@@ -35,11 +35,10 @@ export default [
     ),
     route("/logout", "./routes/action/logout.ts"),
     route("/notifications", "./routes/action/notifications.ts"),
-    route("/set-notifications-status", "./routes/action/set-notifications-status.ts"),
     route("/add-label", "./routes/action/add-label.ts"),
-    route("/delete-label", "./routes/action/delete-label.ts"),
+    route("/update-label", "./routes/action/update-label.ts"),
 
-    
+    route("/delete-label", "./routes/action/delete-label.ts"),
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),
