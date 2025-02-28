@@ -30,6 +30,7 @@ model Todo {
   listId       Int
   users        User[]
   labels       Label[]
+  order        Float
 }
 
 model List {
@@ -38,6 +39,7 @@ model List {
   title   String
   Board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId Int
+  order   Float  @default(0)
 }
 
 model Board {

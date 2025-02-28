@@ -31,10 +31,11 @@ import { getBackgroundStyle } from "~/utils/backgrounds";
 import { useBoardStore } from "~/utils/board-store";
 import { createList } from "~/utils/list.server";
 import { usePermissionStore } from "~/utils/permissions";
-import { createTodo, updateTodo } from "~/utils/todo.server";
+import { createTodo, getLastOrder, updateTodo } from "~/utils/todo.server";
 import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
 import { getGroupedParamsByType, getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
+import { prisma } from "~/db.server";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
@@ -70,7 +71,7 @@ function Board({ loaderData }: Route.ComponentProps) {
   const { className, style } = getBackgroundStyle(board.backgroundColor);
   const setPermissions = usePermissionStore((state) => state.setPermissions);
   const setBoard = useBoardStore((state) => state.setBoard);
-  
+
   useEffect(() => {
     setPermissions(permissions);
     setBoard(board);
@@ -119,14 +120,15 @@ export async function action({ request }: ActionFunctionArgs) {
         return data({ errors, defaultValues, payload }, { status: 400 });
       }
       try {
+        const newOrder = await getLastOrder(payload.listId);
+
         await createTodo({
-          title: payload.title,
-          description: payload.description,
-          dueTime: payload.dueTime,
-          listId: payload.listId,
+          ...payload,
+          order: newOrder,
           status: "NOT_STARTED",
         });
       } catch (err) {
+        console.log(err);
         return data(
           {
             err,

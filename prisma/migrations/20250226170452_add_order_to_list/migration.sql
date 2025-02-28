@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `list` ADD COLUMN `order` DOUBLE NOT NULL DEFAULT 0;

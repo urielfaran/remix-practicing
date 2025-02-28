@@ -6,10 +6,10 @@ export const createTodoSchema = z.object({
     required_error: "enter title",
   }),
   description: z.string().nullable().optional(),
-  dueTime: z.preprocess(
-    (v) => (v === "undefined" ? new Date() : v),
-    z.coerce.date()
-  ).optional().nullable(),
+  dueTime: z
+    .preprocess((v) => (v === "undefined" ? new Date() : v), z.coerce.date())
+    .optional()
+    .nullable(),
   listId: z.coerce.number(),
 });
 
@@ -35,10 +35,15 @@ export const assignTodoSchema = z.object({
   todoId: z.number(),
 });
 
-
 export const updateTodoStatusSchema = z.object({
   id: z.number({
-    required_error: "must have a todo to update"
+    required_error: "must have a todo to update",
   }),
-  status: z.nativeEnum(Status)
-})
+  status: z.nativeEnum(Status),
+});
+
+export const changeTodoistSchema = z.object({
+  id: z.number(),
+  listId: z.number(),
+  order: z.number(),
+});

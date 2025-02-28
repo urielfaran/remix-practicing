@@ -1,21 +1,18 @@
-import { data } from "react-router";
-import invariant from "tiny-invariant";
-import { deleteUserPermission, getBoard } from "~/utils/board.server";
-import { getRequestField, getUserDateForNotification } from "~/utils/utils";
-import type { Route } from "./+types/delete-board-permission";
-import { createNotification } from "~/utils/notofications.server";
-import { authenticator } from "~/auth/authenticator";
-import { getUserById } from "~/utils/user.server";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userBoardSchema } from "~/schemas/shareBoard.schema";
-import { z } from "zod";
+import { data } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
+import { z } from "zod";
+import { userBoardSchema } from "~/schemas/shareBoard.schema";
+import { deleteUserPermission, getBoard } from "~/utils/board.server";
+import { createNotification } from "~/utils/notofications.server";
+import { getUserDateForNotification } from "~/utils/utils";
+import type { Route } from "./+types/delete-board-permission";
 
 const userBoardResolver = zodResolver(userBoardSchema);
 type userBoardType = z.infer<typeof userBoardSchema>;
 
 export async function action({ request }: Route.ActionArgs) {
-  const {username, sendindUserId} = await getUserDateForNotification(request)
+  const { username, sendindUserId } = await getUserDateForNotification(request);
 
   const {
     errors,

@@ -39,6 +39,8 @@ export default [
     route("/update-label", "./routes/action/update-label.ts"),
 
     route("/delete-label", "./routes/action/delete-label.ts"),
+    route("/change-todo-list", "./routes/action/change-todo-list.ts"),
+
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),

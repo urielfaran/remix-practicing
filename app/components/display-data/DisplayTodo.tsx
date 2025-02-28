@@ -1,4 +1,4 @@
-import { Prisma, Todo } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { differenceInDays, format } from "date-fns";
 import { Calendar, Pencil, UserRoundPlus } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -7,29 +7,34 @@ import { cn } from "~/lib/utils";
 import { Permissions, usePermissionStore } from "~/utils/permissions";
 import AssignTodo from "../AssignTodo";
 import EditTodoDialog, { dialogStyleType } from "../dialogs/EditTodoDialog";
+import { DraggableCard } from "../DraggableCard";
 import TodoActionDropdown from "../dropdowns/TodoActionDropdown";
 import UpdateTodoDueTime from "../dropdowns/UpdateTodoDueTime";
 import TodoStatusIcon from "../TodoStatusIcon";
 import { Button } from "../ui/button";
-import { Card, CardDescription, CardTitle } from "../ui/card";
+import { CardDescription, CardTitle } from "../ui/card";
 import UpdateTodoStatus from "../UpdateTodoStatus";
 import UserAvatar from "../user-components/UserAvatar";
-import { Badge } from "../ui/badge";
 import DisplayLabels from "./DisplayLabels";
 
-export type todoWithLables = Prisma.TodoGetPayload<{
+export type todoWithLabels = Prisma.TodoGetPayload<{
   include: {
     labels: true;
   };
 }>;
 
-interface TodoCardProps {
-  todo: todoWithLables;
+interface DisplayTodoProps {
+  todo: todoWithLabels;
+  dialogStyle: dialogStyleType;
 }
 
-type DisplayTodoProps = TodoCardProps & { dialogStyle: dialogStyleType };
+interface TodoCardProps {
+  todo: todoWithLabels;
+  todos: todoWithLabels[];
+  index: number;
+}
 
-function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
+export function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
   const isLate = todo.dueTime && differenceInDays(todo.dueTime, new Date()) < 0;
 
   const isEditPermission = usePermissionStore((state) =>
@@ -47,7 +52,11 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
 
   return (
     <>
-      <DisplayLabels labels={todo.labels} todoId={todo.id} dialogStyle={dialogStyle}/>
+      <DisplayLabels
+        labels={todo.labels}
+        todoId={todo.id}
+        dialogStyle={dialogStyle}
+      />
       <div className="flex flex-row justify-between items-center group relative z-10">
         <CardTitle className="flex-1 outline-none">{todo.title}</CardTitle>
         <AssignTodo
@@ -132,7 +141,7 @@ function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
   );
 }
 
-function TodoCard({ todo }: TodoCardProps) {
+function TodoCard({ todo, todos, index }: TodoCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const [dialogStyle, setDialogStyle] = useState({
@@ -153,15 +162,18 @@ function TodoCard({ todo }: TodoCardProps) {
   }, [cardRef.current]);
 
   return (
-    <Card
+    <DraggableCard
       key={todo.id}
-      ref={cardRef}
-      className={cn(
-        "relative grid min-w-48 max-w-60 p-2 hover:ring-2 overflow-x-hidden"
-      )}
+      title={todo.title}
+      id={todo.id}
+      order={todo.order}
+      columnId={todo.listId}
+      previousOrder={todos[index - 1] ? todos[index - 1].order : 0}
+      nextOrder={todos[index + 1] ? todos[index + 1].order : todo.order + 1}
+      actionUrl="/action/change-todo-list"
     >
       <TodoDisplay todo={todo} dialogStyle={dialogStyle} />
-    </Card>
+    </DraggableCard>
   );
 }
 
