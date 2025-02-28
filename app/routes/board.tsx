@@ -82,10 +82,15 @@ function Board({ loaderData }: Route.ComponentProps) {
   );
 
   return (
-    <ScrollArea className={cn("flex min-w-0 h-full", className)} style={style}>
+    <ScrollArea
+      className={cn("flex min-w-0 h-screen overflow-y-hidden", className)}
+      style={style}
+    >
       <UsersProvider value={users}>
         <UserIdContext.Provider value={userId}>
-          <BoardHeader />
+          <div className="sticky top-0">
+            <BoardHeader />
+          </div>
         </UserIdContext.Provider>
       </UsersProvider>
       <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">

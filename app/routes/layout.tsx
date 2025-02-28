@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import { Outlet, useFetcher } from "react-router";
+import { Outlet } from "react-router";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -13,12 +13,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
+import { UserIdContext } from "~/hooks/itemIdContexts";
 import { cn } from "~/lib/utils";
 import { getUserFavoriteBoards } from "~/utils/board.server";
 import { getNotificationsLength } from "~/utils/notofications.server";
 import { getUserLayoutBoards } from "~/utils/user.server";
 import type { Route } from "./+types/layout";
-import { UserIdContext } from "~/hooks/itemIdContexts";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const userId = await authenticator.requireUser(request, "/login");
@@ -53,7 +53,6 @@ function layout({ loaderData }: Route.ComponentProps) {
   } = loaderData;
 
   const boards = ownedBoards.concat(sharedBoards);
-  const fetcher = useFetcher();
   return (
     <SidebarProvider>
       <UserIdContext.Provider value={user.id}>
@@ -81,7 +80,7 @@ function layout({ loaderData }: Route.ComponentProps) {
                 />
                 {notificationsLength > 0 ? notificationsLength : null}
               </Button>
-            </NotificationsPopover>           
+            </NotificationsPopover>
             <ModeToggle />
           </div>
         </header>
