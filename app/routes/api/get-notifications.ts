@@ -4,7 +4,7 @@ import {
   getNotifications,
   setNotificationsStatus,
 } from "~/utils/notofications.server";
-import type { Route } from "./+types/notifications";
+import type { Route } from "../api/+types/get-notifications";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const userId = await authenticator.requireUser(request, "/login");

@@ -1,6 +1,7 @@
 import { Prisma, Status } from "@prisma/client";
 import { statusArray } from "~/components/UpdateTodoStatus";
 import { prisma } from "~/db.server";
+import { USER_STATUS } from "~/routes/api/get-users";
 
 export async function getUserById(userId: number) {
   return await prisma.user.findUnique({
@@ -197,5 +198,98 @@ export async function updateUserCredentials({
       email,
       avatar,
     },
+  });
+}
+
+export async function getUsers({
+  boardId,
+  userId,
+  userStatus,
+  usersInPage = 5,
+  page,
+  todoId,
+  search,
+}: {
+  userId: number;
+  boardId: number;
+  userStatus: keyof typeof USER_STATUS;
+  page: number;
+  usersInPage?: number;
+  todoId?: number;
+  search?: string;
+}) {
+  let where: Prisma.UserWhereInput = {
+    username: {
+      contains: search,
+    },
+  };
+
+  switch (userStatus) {
+    case "NOT_ASSIGNED_TO_BOARD": {
+      where = {
+        ...where,
+        UserBoardRelation: {
+          every: {
+            boardId: {
+              not: boardId,
+            },
+          },
+        },
+      };
+    }
+    case "ASSIGNED_TO_BOARD_WITH_CURRENT": {
+      where = {
+        ...where,
+        UserBoardRelation: {
+          some: {
+            boardId: boardId,
+          },
+        },
+      };
+    }
+    case "ASSIGNED_TO_BOARD_WITHOUT_CURRENT": {
+      where = {
+        ...where,
+        UserBoardRelation: {
+          some: {
+            boardId: boardId,
+          },
+        },
+        id: {
+          not: userId,
+        },
+      };
+    }
+    case "ASSIGNED_TO_TODO": {
+      where = {
+        ...where,
+        Todos: {
+          some: {
+            id: todoId,
+          },
+        },
+      };
+    }
+    case "NOT_ASSIGNED_TO_TODO": {
+      where = {
+        ...where,
+        UserBoardRelation: {
+          some: {
+            boardId: boardId,
+          },
+        },
+        Todos: {
+          none: {
+            id: todoId,
+          },
+        },
+      };
+    }
+  }
+
+  return await prisma.user.findMany({
+    where: { ...where },
+    skip: usersInPage * page,
+    take: usersInPage,
   });
 }

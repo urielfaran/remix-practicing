@@ -94,7 +94,7 @@ function Board({ loaderData }: Route.ComponentProps) {
         </UserIdContext.Provider>
       </UsersProvider>
       <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
-        <AddListButton />
+          <AddListButton />
         <ConncetedUsersContext.Provider value={connectedusers}>
           {board.lists.map((list) => (
             <DisplayList key={list.id} list={list} />

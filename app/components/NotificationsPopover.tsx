@@ -1,30 +1,27 @@
 import { Notification } from "@prisma/client";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { useFetcher, useLocation, useNavigate } from "react-router";
+import { useFetcher, useNavigate } from "react-router";
 import InfiniteScroller from "./InfiniteScroller";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-interface NotificationsPopoverProps extends PropsWithChildren {
-}
+interface NotificationsPopoverProps extends PropsWithChildren {}
 
 export type ItemsResponse = {
   notifications: Notification[];
 };
 
-function NotificationsPopover({
-  children,
-}: NotificationsPopoverProps) {
+function NotificationsPopover({ children }: NotificationsPopoverProps) {
   const [items, setItems] = useState<Notification[]>([]);
   const fetcher = useFetcher<ItemsResponse>();
   const scrollRefContainer = useRef<HTMLDivElement>(null);
   const [isFirstOpen, setIsFirstOpen] = useState(true);
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (open && isFirstOpen) {
       setIsFirstOpen(false);
-      fetcher.load(`/action/notifications`);
+      fetcher.load(`/api/get-notifications`);
     }
   }, [open, isFirstOpen, fetcher]);
 
@@ -50,7 +47,7 @@ function NotificationsPopover({
         setOpen(isOpen);
         if (!isOpen) {
           setItems([]);
-          setIsFirstOpen(true)
+          setIsFirstOpen(true);
         }
       }}
     >
@@ -64,7 +61,7 @@ function NotificationsPopover({
           <InfiniteScroller
             scrollRefContainer={scrollRefContainer}
             loadNext={() => {
-              fetcher.load(`/action/notifications`);
+              fetcher.load(`/api/get-notifications`);
             }}
             loading={fetcher.state === "loading"}
           >

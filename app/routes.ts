@@ -34,13 +34,14 @@ export default [
       "./routes/action/update-user-credentials.ts"
     ),
     route("/logout", "./routes/action/logout.ts"),
-    route("/notifications", "./routes/action/notifications.ts"),
     route("/add-label", "./routes/action/add-label.ts"),
     route("/update-label", "./routes/action/update-label.ts"),
-
     route("/delete-label", "./routes/action/delete-label.ts"),
     route("/change-todo-list", "./routes/action/change-todo-list.ts"),
-
+  ]),
+  ...prefix("/api", [
+    route("/get-notifications", "./routes/api/get-notifications.ts"),
+    route("/get-users", "./routes/api/get-users.ts"),
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),

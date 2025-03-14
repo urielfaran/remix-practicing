@@ -72,13 +72,22 @@ function layout({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="flex ml-auto items-center justify-end gap-4 mx-4">
             <NotificationsPopover>
-              <Button size={"icon"} variant={"ghost"}>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="relative flex items-center justify-center"
+              >
                 <Bell
-                  className={cn("text-blue-500", {
-                    "text-red-500": notificationsLength > 0,
-                  })}
+                  className={cn(
+                    "h-5 w-5 transition-colors duration-200",
+                    notificationsLength > 0 ? "text-red-500" : "text-blue-500"
+                  )}
                 />
-                {notificationsLength > 0 ? notificationsLength : null}
+                {notificationsLength > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
+                    {notificationsLength <= 99 ? notificationsLength : "99+"}
+                  </span>
+                )}
               </Button>
             </NotificationsPopover>
             <ModeToggle />
