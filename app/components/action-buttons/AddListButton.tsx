@@ -9,12 +9,14 @@ function AddListButton() {
   );
   return (
     <CreateListDialog>
-      <Button
-        variant="ghost"
-        size={"icon"}
-        disabled={!isEditPermission}
-      >
-        <PlusIcon aria-hidden="true" />
+      <Button variant="ghost" disabled={!isEditPermission}>
+        <div className="flex flex-row gap-2 items-center">
+          <PlusIcon
+            aria-hidden="true"
+            className="text-muted-foreground"
+          />
+          <p className="text-muted-foreground">Add List</p>
+        </div>
       </Button>
     </CreateListDialog>
   );

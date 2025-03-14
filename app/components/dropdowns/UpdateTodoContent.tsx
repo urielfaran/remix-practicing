@@ -45,7 +45,7 @@ function UpdateTodoContent({ todo }: UpdateTodoDueTimeProps) {
     <ShadForm {...form}>
       <Form
         onSubmit={form.handleSubmit}
-        className="flex w-full flex-col space-y-3 p-4"
+        className="flex w-full flex-col space-y-2 p-4"
       >
         <FormField
           control={form.control}

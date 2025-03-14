@@ -25,7 +25,6 @@ export type todoWithLabels = Prisma.TodoGetPayload<{
 
 interface DisplayTodoProps {
   todo: todoWithLabels;
-  dialogStyle: dialogStyleType;
 }
 
 interface TodoCardProps {
@@ -34,7 +33,27 @@ interface TodoCardProps {
   index: number;
 }
 
-export function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
+export function TodoDisplay({ todo }: DisplayTodoProps) {
+
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const [dialogStyle, setDialogStyle] = useState({
+    top: 0,
+    left: 0,
+    width: "auto",
+  });
+
+  useEffect(() => {
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      setDialogStyle({
+        top: rect.top + window.scrollY, // Position below the card
+        left: rect.left ,
+        width: `${rect.width}px`, // Match the card's width
+      });
+    }
+  }, [cardRef.current]);
+
   const isLate = todo.dueTime && differenceInDays(todo.dueTime, new Date()) < 0;
 
   const isEditPermission = usePermissionStore((state) =>
@@ -51,7 +70,7 @@ export function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
   );
 
   return (
-    <>
+    <div ref={cardRef}>
       <DisplayLabels
         labels={todo.labels}
         todoId={todo.id}
@@ -137,30 +156,11 @@ export function TodoDisplay({ todo, dialogStyle }: DisplayTodoProps) {
           </div>
         </div>
       </CardDescription>
-    </>
+    </div>
   );
 }
 
 function TodoCard({ todo, todos, index }: TodoCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const [dialogStyle, setDialogStyle] = useState({
-    top: 0,
-    left: 0,
-    width: "auto",
-  });
-
-  useEffect(() => {
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      setDialogStyle({
-        top: rect.top + window.scrollY, // Position below the card
-        left: rect.left,
-        width: `${rect.width}px`, // Match the card's width
-      });
-    }
-  }, [cardRef.current]);
-
   return (
     <DraggableCard
       key={todo.id}
@@ -172,7 +172,7 @@ function TodoCard({ todo, todos, index }: TodoCardProps) {
       nextOrder={todos[index + 1] ? todos[index + 1].order : todo.order + 1}
       actionUrl="/action/change-todo-list"
     >
-      <TodoDisplay todo={todo} dialogStyle={dialogStyle} />
+      <TodoDisplay todo={todo}  />
     </DraggableCard>
   );
 }
