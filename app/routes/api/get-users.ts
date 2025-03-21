@@ -1,30 +1,28 @@
-import { userParamsSchema } from "~/schemas/params.schema";
-import { Route } from "./+types/get-users";
 import { data } from "react-router";
-import { getUsers } from "~/utils/user.server";
-import { authenticator } from "~/auth/authenticator";
 import invariant from "tiny-invariant";
-
-export enum USER_STATUS {
-  NOT_ASSIGNED_TO_BOARD = "NOT_ASSIGNED_TO_BOARD",
-  ASSIGNED_TO_BOARD_WITH_CURRENT = "ASSIGNED_TO_BOARD_WITH_CURRENT",
-  ASSIGNED_TO_BOARD_WITHOUT_CURRENT = "ASSIGNED_TO_BOARD_WITHOUT_CURRENT",
-  ASSIGNED_TO_TODO = "ASSIGNED_TO_TODO",
-  NOT_ASSIGNED_TO_TODO = "NOT_ASSIGNED_TO_TODO",
-}
+import { authenticator } from "~/auth/authenticator";
+import { userParamsSchema } from "~/schemas/params.schema";
+import { getUsers } from "~/utils/user.server";
+import { Route } from "./+types/get-users";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const userId = await authenticator.requireUser(request, "/login");
   invariant(userId, "user is not logged in");
 
   const url = new URL(request.url);
-  const result = userParamsSchema.safeParse(url.searchParams);
-
-  const boardId = params.boardId; // This will be "3"
+  const urlParams = Object.fromEntries(url.searchParams);
+  const result = userParamsSchema.safeParse(urlParams);
 
   if (!result.success) {
+    console.log(result.error.errors, result.data);
     return data(result.error);
   }
+
+  const referer = request.headers.get("Referer");
+  invariant(referer, "referer must exist");
+
+  const pathSegments = referer.split("/");
+  const boardId = pathSegments[pathSegments.indexOf("board") + 1];
 
   const { page, userStatus, todoId, search } = result.data;
 
@@ -34,8 +32,9 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     userStatus,
     page,
     todoId,
-    search
+    search,
   });
+  // console.log(users);
 
-  return { users, page };
+  return { items: users, page };
 }

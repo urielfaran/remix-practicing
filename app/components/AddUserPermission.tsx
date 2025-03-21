@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
+import { Loader2, Loader2Icon } from "lucide-react";
 import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
@@ -14,13 +14,25 @@ import {
 import useResponseToast from "~/hooks/useResponseToast";
 import { useUsersRelations } from "~/hooks/usersContext";
 import { addPermissionsSchema } from "~/schemas/shareBoard.schema";
-import { Select } from "./ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import SelectUserPermission from "./user-components/SelectUserPermission";
 import { UsersCombobox } from "./UsersCombobox";
 import { useBoardStore } from "~/utils/board-store";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useInfiniteUserScroller } from "~/hooks/useInfiniteUserScroller";
+import { User } from "@prisma/client";
+import UserAvatar from "./user-components/UserAvatar";
+import { Input } from "./ui/input";
 
-export const adddPermissionsResolver = zodResolver(addPermissionsSchema);
-export type adddPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
+export const addPermissionsResolver = zodResolver(addPermissionsSchema);
+export type addPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
 
 export function AddUserPermission() {
   const fetcher = useFetcher();
@@ -40,8 +52,8 @@ export function AddUserPermission() {
     userId: undefined,
   };
 
-  const form = useRemixForm<adddPermissionsSchemaType>({
-    resolver: adddPermissionsResolver,
+  const form = useRemixForm<addPermissionsSchemaType>({
+    resolver: addPermissionsResolver,
     submitConfig: {
       method: "POST",
     },
@@ -53,6 +65,13 @@ export function AddUserPermission() {
   });
 
   const { isSubmitting } = form.formState;
+
+  const { items, inputValue, isLoading, loadMore, setInputValue } =
+  useInfiniteUserScroller<User>({
+    actionUrl: "/api/get-users", 
+    userStatus: "NOT_ASSIGNED_TO_BOARD",
+  });
+  console.log(items);
 
   return (
     <>
@@ -67,11 +86,54 @@ export function AddUserPermission() {
             name="userId"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <UsersCombobox
-                  form={form}
-                  usersWithoutRelationToBoard={usersWithoutRelationToBoard}
-                  value={field.value}
-                />
+                <Select
+                  value={field.value?.toString() ?? ""}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-[280px]">
+                    <SelectValue placeholder="Select an item" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <Input
+                      type="text"
+                      placeholder="Search users..."
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      className="w-full"
+                    />
+                    <div id="scrollableDiv">
+                      <InfiniteScroll
+                        dataLength={items.length}
+                        next={loadMore}
+                        hasMore={true}
+                        loader={
+                          <div className="flex justify-center p-2">
+                            <Loader2 className="h-6 w-6 animate-spin" />
+                          </div>
+                        }
+                        scrollableTarget="scrollableDiv"
+                        endMessage={
+                          <p className="text-center p-2 text-gray-500">
+                            No more items to load
+                          </p>
+                        }
+                      >
+                        {items.map((item) => (
+                          <SelectItem
+                            key={item.id}
+                            value={item?.id?.toString()}
+                          >
+                            {item.username}
+                            <UserAvatar
+                              avatarUrl={item.avatar}
+                              username={item.username}
+                            />
+                          </SelectItem>
+                        ))}
+                      </InfiniteScroll>
+                    </div>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

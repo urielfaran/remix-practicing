@@ -34,7 +34,7 @@ function EditLabelDialog({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger>{children}</DialogTrigger>
       <DialogPortal>
         <DialogOverlay />
         <DialogPrimitive.Content

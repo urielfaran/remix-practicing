@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useFetcher, useParams } from "react-router";
-import { USER_STATUS } from "~/routes/api/get-users";
+import { USER_STATUS } from "~/schemas/params.schema";
 
 /**
  * Custom hook that provides infinite scrolling for customer selection.
@@ -14,17 +14,17 @@ type ItemsResponse<T> = {
 
 interface useInfiniteUserScrollerProps {
   actionUrl: string;
-  userStatus: keyof typeof USER_STATUS
+  userStatus: keyof typeof USER_STATUS;
 }
 
 export function useInfiniteUserScroller<T>({
   actionUrl,
-  userStatus
+  userStatus,
 }: useInfiniteUserScrollerProps) {
   const params = useParams();
   const fetcher = useFetcher<ItemsResponse<T>>();
   const [page, setPage] = useState(0);
-  const [data, setData] = useState<T[]>([]);
+  const [items, setItems] = useState<T[]>([]);
   const [firstLoad, setFirstLoad] = useState(true);
   const [inputValue, setInputValue] = useState("");
   const [previousInput, setPreviousInput] = useState(inputValue);
@@ -32,7 +32,7 @@ export function useInfiniteUserScroller<T>({
   const isLoading = fetcher.state !== "idle";
   const itemsPerQuery = 5;
 
-  const loadNext = async () => {
+  const loadMore = async () => {
     let nextPage = page;
 
     if (inputValue !== previousInput) {
@@ -46,45 +46,46 @@ export function useInfiniteUserScroller<T>({
     }
 
     const query = `?page=${nextPage}&userStatus=${userStatus}&search=${inputValue}`;
-    await fetcher.load(`${actionUrl}${query}`);
+    await fetcher.load(actionUrl + query);
     setPage(nextPage);
   };
 
   useEffect(() => {
     if (inputValue !== previousInput) {
       setPage(0);
-      setData([]); // Clear data when search changes
+      setItems([]); // Clear data when search changes
       setPreviousInput(inputValue);
     }
   }, [inputValue, previousInput]);
 
   useEffect(() => {
+    console.log(fetcher.data);
     if (!fetcher.data || fetcher.state === "loading") return;
     if (page === 0) {
       // Replace data for first page or new search
-      setData(fetcher.data.items);
+      setItems(fetcher.data.items);
     } else {
       // Append data for subsequent pages
-      setData((prevData) => [...prevData, ...fetcher.data!.items]);
+      setItems((prevData) => [...prevData, ...fetcher.data!.items]);
     }
   }, [fetcher.data, page]);
 
   // Initial load and search changes
   useEffect(() => {
-    loadNext();
+    loadMore();
   }, [inputValue]);
 
   useEffect(() => {
     if (firstLoad) {
-      loadNext();
+      loadMore();
       setFirstLoad(false);
     }
   }, [firstLoad]);
 
   return {
     isLoading,
-    loadNext,
-    data,
+    loadMore,
+    items,
     inputValue,
     setInputValue,
   };

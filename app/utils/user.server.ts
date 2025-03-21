@@ -1,7 +1,7 @@
 import { Prisma, Status } from "@prisma/client";
 import { statusArray } from "~/components/UpdateTodoStatus";
 import { prisma } from "~/db.server";
-import { USER_STATUS } from "~/routes/api/get-users";
+import { USER_STATUS } from "~/schemas/params.schema";
 
 export async function getUserById(userId: number) {
   return await prisma.user.findUnique({
@@ -223,7 +223,6 @@ export async function getUsers({
       contains: search,
     },
   };
-
   switch (userStatus) {
     case "NOT_ASSIGNED_TO_BOARD": {
       where = {
@@ -236,6 +235,7 @@ export async function getUsers({
           },
         },
       };
+      break;
     }
     case "ASSIGNED_TO_BOARD_WITH_CURRENT": {
       where = {
@@ -246,6 +246,7 @@ export async function getUsers({
           },
         },
       };
+      break;
     }
     case "ASSIGNED_TO_BOARD_WITHOUT_CURRENT": {
       where = {
@@ -259,6 +260,7 @@ export async function getUsers({
           not: userId,
         },
       };
+      break;
     }
     case "ASSIGNED_TO_TODO": {
       where = {
@@ -269,24 +271,29 @@ export async function getUsers({
           },
         },
       };
+      break;
     }
-    case "NOT_ASSIGNED_TO_TODO": {
-      where = {
-        ...where,
-        UserBoardRelation: {
-          some: {
-            boardId: boardId,
+    case "NOT_ASSIGNED_TO_TODO":
+      {
+        where = {
+          ...where,
+          UserBoardRelation: {
+            some: {
+              boardId: boardId,
+            },
           },
-        },
-        Todos: {
-          none: {
-            id: todoId,
+          Todos: {
+            none: {
+              id: todoId,
+            },
           },
-        },
-      };
+        };
+      }
+      break;
+    default: {
+      break;
     }
   }
-
   return await prisma.user.findMany({
     where: { ...where },
     skip: usersInPage * page,
