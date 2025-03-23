@@ -44,7 +44,7 @@ export default [
   ]),
   layout("./routes/layout.tsx", [
     index("./routes/_index.tsx"),
-    route("board/:id/:name", "./routes/board.tsx"),
+    route("board/:id/:name/:data?", "./routes/board.tsx"),
   ]),
   route("/login", "./routes/login.tsx"),
 

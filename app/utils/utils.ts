@@ -3,6 +3,7 @@ import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
 import { getUserById } from "./user.server";
 import _ from "lodash";
+import { prisma } from "~/db.server";
 
 export async function getRequestField(
   name: string,
@@ -44,7 +45,12 @@ export async function getUserDateForNotification(request: Request) {
 
   const numberSendingUserId = Number(sendindUserId);
 
-  const user = await getUserById(numberSendingUserId);
+  const user = await prisma.user.findUnique({
+    where: { id: numberSendingUserId },
+    include: {
+      UserBoardRelation: true,
+    },
+  });;
 
   const username = user?.username;
 
@@ -62,3 +68,4 @@ export function getGroupedParamsByType(url: URL) {
   );
   return paramsByType;
 }
+

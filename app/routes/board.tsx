@@ -1,11 +1,10 @@
+import { Prisma } from "@prisma/client";
 import { useEffect } from "react";
-import { ActionFunctionArgs, data, redirect } from "react-router";
+import { ActionFunctionArgs, data, redirect, useParams } from "react-router";
 import { getValidatedFormData } from "remix-hook-form";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/auth/authenticator";
-import AddListButton from "~/components/action-buttons/AddListButton";
 import BoardHeader from "~/components/board-components/BoardHeader";
-import DisplayList from "~/components/display-data/DisplayList";
 import {
   updateTodoContentResolver,
   updateTodoContentSchemaType,
@@ -22,8 +21,9 @@ import {
   createTodoResolver,
   createTodoSchemaType,
 } from "~/components/forms/TodoForm";
+import Lists from "~/components/main-components/Lists";
+import TodoCalendar from "~/components/main-components/TodoCalendar";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { ConncetedUsersContext } from "~/hooks/conncetedUsersContext";
 import { UserIdContext } from "~/hooks/itemIdContexts";
 import { UsersProvider } from "~/hooks/usersContext";
 import { cn } from "~/lib/utils";
@@ -35,11 +35,17 @@ import { createTodo, getLastOrder, updateTodo } from "~/utils/todo.server";
 import { getActiveUsers, getUserWithBoardById } from "~/utils/user.server";
 import { getGroupedParamsByType, getRequestField } from "~/utils/utils";
 import type { Route } from "./+types/board";
-import { prisma } from "~/db.server";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: params.name }];
 }
+
+export type FullBoard = Prisma.BoardGetPayload<{
+  include: {
+    UserBoardRelation: { include: { user: { include: { Todos: true } } } };
+    lists: { include: { todos: { include: { labels: true } } } };
+  };
+}>;
 
 export async function loader({ params, request }: Route.LoaderArgs) {
   const boardId = Number(params.id);
@@ -77,10 +83,17 @@ function Board({ loaderData }: Route.ComponentProps) {
     setBoard(board);
   }, [board, permissions, setBoard, setPermissions]);
 
-  const connectedusers = board.UserBoardRelation.map(
-    (relation) => relation.user
-  );
-
+  const { data } = useParams();
+  const renderContent = () => {
+    switch (data) {
+      case "calendar": {
+        return <TodoCalendar board={board} />;
+      }
+      default: {
+        return <Lists board={board} />;
+      }
+    }
+  };
   return (
     <ScrollArea
       className={cn("flex min-w-0 h-screen overflow-y-hidden", className)}
@@ -93,14 +106,7 @@ function Board({ loaderData }: Route.ComponentProps) {
           </div>
         </UserIdContext.Provider>
       </UsersProvider>
-      <div className="flex flex-row gap-9 min-w-0 overflow-x-auto p-4">
-        <AddListButton />
-        <ConncetedUsersContext.Provider value={connectedusers}>
-          {board.lists.map((list) => (
-            <DisplayList key={list.id} list={list} />
-          ))}
-        </ConncetedUsersContext.Provider>
-      </div>
+      {renderContent()}
     </ScrollArea>
   );
 }

@@ -8,6 +8,7 @@ import ShareBoardDialog from "../dialogs/ShareBoardDialog";
 import EditableText from "../EditableText";
 import { FilterTodosSheet } from "../filter-components/FilterTodosSheet";
 import { Button } from "../ui/button";
+import SelectDataView from "./SelectDataView";
 
 export type BoardWithData = Prisma.BoardGetPayload<{
   include: {
@@ -58,6 +59,7 @@ function BoardHeader() {
               boardId={board.id}
               isFavorite={board.UserBoardRelation[0].isFavorite}
             />
+            <SelectDataView/>
           </div>
           <div className="flex flex-row mr-2 gap-3">
             <ShareBoardDialog>

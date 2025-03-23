@@ -1,6 +1,6 @@
 import { Board } from "@prisma/client";
 import { ChevronDownIcon } from "lucide-react";
-import { useLocation } from "react-router";
+import { useParams } from "react-router";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,8 +20,7 @@ interface BreadcrumbsProps {
 }
 
 function Breadcrumbs({ boards }: BreadcrumbsProps) {
-  const location = useLocation();
-  const locations = location.pathname.split("/");
+  const { name } = useParams();
 
   return (
     <Breadcrumb>
@@ -31,13 +30,13 @@ function Breadcrumbs({ boards }: BreadcrumbsProps) {
         </BreadcrumbItem>
         <BreadcrumbSeparator className="hidden md:block" />
         <BreadcrumbItem className="hidden md:block">Boards</BreadcrumbItem>
-        {locations[locations.length - 1] && (
+        {name && (
           <>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem>
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-1">
-                  {locations[locations.length - 1]} <ChevronDownIcon />
+                  {name} <ChevronDownIcon />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
                   {boards.map((board) => (
