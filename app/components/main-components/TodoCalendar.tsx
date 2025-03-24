@@ -2,19 +2,18 @@ import { useState } from "react";
 import { Calendar } from "~/components/ui/calendar";
 import { cn } from "~/lib/utils";
 import { FullBoard } from "~/routes/board";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { DialogTitle } from "@radix-ui/react-dialog";
-
-export function getAllBoardTodos(board: FullBoard) {
-  return board.lists.flatMap((list) => list.todos);
-}
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 
 interface TodoCalendarProps {
   board: FullBoard;
 }
 
 function TodoCalendar({ board }: TodoCalendarProps) {
-  const allTodos = getAllBoardTodos(board);
+  const allTodos = board.lists.flatMap((list) => list.todos);
   const [date, setDate] = useState<Date>(new Date());
   const [month, setMonth] = useState<Date>(new Date());
 
@@ -36,10 +35,15 @@ function TodoCalendar({ board }: TodoCalendarProps) {
     const dayTasks = getTasksForDate(day);
     const isSelected =
       selectedDate && day.toDateString() === selectedDate.toDateString();
+
     return (
-      <Dialog>
-        <DialogTrigger asChild>
-          <div className="relative flex h-full w-full flex-col items-center justify-start p-1">
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <div
+            className="relative flex h-full w-full flex-col items-center justify-start p-1 cursor-pointer"
+            role="button"
+            tabIndex={0}
+          >
             <span
               className={cn(
                 "flex h-8 w-8 items-center justify-center rounded-full transition-colors",
@@ -61,12 +65,21 @@ function TodoCalendar({ board }: TodoCalendarProps) {
               )}
             </div>
           </div>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogTitle>titel</DialogTitle>
-          test
-        </DialogContent>
-      </Dialog>
+        </HoverCardTrigger>
+        <HoverCardContent className="">
+          {dayTasks.length > 0 && day ? (
+            <div className="rounded-md overflow-hidden flex flex-col gap-1">
+              {dayTasks.map((task, index) => (
+                <p key={index} className="text-xs">
+                  {task?.title}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs">No tasks for this day</p>
+          )}
+        </HoverCardContent>
+      </HoverCard>
     );
   };
 
