@@ -25,8 +25,8 @@ export const userBoardSchema = z.object({
 
 export const shareBoardSchema = permissionType.merge(userBoardSchema);
 
-export const addPermissionsSchema = permissionType.merge(
-  z.object({
-    userId: z.number(),
-  })
-);
+export const userIdSchema = z.object({
+  userId: z.number(),
+});
+
+export const addPermissionsSchema = permissionType.merge(userIdSchema);

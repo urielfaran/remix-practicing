@@ -12,5 +12,5 @@ export const userParamsSchema = z.object({
   page: z.coerce.number(),
   userStatus: z.nativeEnum(USER_STATUS),
   search: z.string().optional(),
-  todoId: z.number().optional(),
+  todoId: z.coerce.number().optional(),
 });

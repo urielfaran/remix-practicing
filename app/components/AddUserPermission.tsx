@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Loader2Icon } from "lucide-react";
+import { User } from "@prisma/client";
+import { Check, ChevronsUpDown, Loader2, Loader2Icon } from "lucide-react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { Form, useFetcher } from "react-router";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
@@ -11,25 +13,23 @@ import {
   FormMessage,
   Form as ShadForm,
 } from "~/components/ui/form";
+import { useInfiniteScroller } from "~/hooks/useInfiniteScroller";
 import useResponseToast from "~/hooks/useResponseToast";
 import { useUsersRelations } from "~/hooks/usersContext";
 import { addPermissionsSchema } from "~/schemas/shareBoard.schema";
+import { useBoardStore } from "~/utils/board-store";
+import { Input } from "./ui/input";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
 import SelectUserPermission from "./user-components/SelectUserPermission";
-import { UsersCombobox } from "./UsersCombobox";
-import { useBoardStore } from "~/utils/board-store";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { useInfiniteUserScroller } from "~/hooks/useInfiniteUserScroller";
-import { User } from "@prisma/client";
 import UserAvatar from "./user-components/UserAvatar";
-import { Input } from "./ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { cn } from "~/lib/utils";
 
 export const addPermissionsResolver = zodResolver(addPermissionsSchema);
 export type addPermissionsSchemaType = z.infer<typeof addPermissionsSchema>;
@@ -66,18 +66,25 @@ export function AddUserPermission() {
 
   const { isSubmitting } = form.formState;
 
-  const { items, inputValue, isLoading, loadMore, setInputValue } =
-  useInfiniteUserScroller<User>({
-    actionUrl: "/api/get-users", 
-    userStatus: "NOT_ASSIGNED_TO_BOARD",
+  const {
+    scrollContainer,
+    setIsOpen,
+    items,
+    loadData,
+    setInputValue,
+    hasMore,
+  } = useInfiniteScroller<User>({
+    apiRoute: "/api/get-users",
+    additionalQuery: "userStatus=NOT_ASSIGNED_TO_BOARD",
   });
-  console.log(items);
 
   return (
     <>
       <ShadForm {...form}>
-        <Form
-          onSubmit={form.handleSubmit}
+      <Form
+        onSubmit={(e) => {
+          console.log(e);
+          form.handleSubmit}}
           className="flex flex-row gap-5 justify-between"
           action="/action/share-board"
         >
@@ -86,55 +93,78 @@ export function AddUserPermission() {
             name="userId"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <Select
-                  value={field.value?.toString() ?? ""}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger className="w-[280px]">
-                    <SelectValue placeholder="Select an item" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <Input
-                      type="text"
-                      placeholder="Search users..."
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      className="w-full"
-                    />
-                    <div id="scrollableDiv">
-                      <InfiniteScroll
-                        dataLength={items.length}
-                        next={loadMore}
-                        hasMore={true}
-                        loader={
-                          <div className="flex justify-center p-2">
-                            <Loader2 className="h-6 w-6 animate-spin" />
-                          </div>
-                        }
-                        scrollableTarget="scrollableDiv"
-                        endMessage={
-                          <p className="text-center p-2 text-gray-500">
-                            No more items to load
-                          </p>
-                        }
+                <Popover onOpenChange={setIsOpen}>
+                  <PopoverTrigger className="min-w-40">
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
                       >
-                        {items.map((item) => (
-                          <SelectItem
-                            key={item.id}
-                            value={item?.id?.toString()}
+                        {field.value
+                          ? items.find((item) => item.id === field.value)
+                              ?.username
+                          : "select user"}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 max-h-[400px] overflow-y-auto">
+                    <div>
+                      <Input
+                        placeholder="search user"
+                        className="h-9"
+                        onChange={(e) => {
+                          setInputValue(e.target.value);
+                        }}
+                      />
+                      <div ref={scrollContainer}>
+                        <InfiniteScroll
+                          dataLength={items.length}
+                          next={loadData}
+                          hasMore={hasMore}
+                          loader={null}
+                          scrollableTarget={"scroll-element"}
+                        >
+                          <div
+                            className="h-36 overflow-y-scroll"
+                            id="scroll-element"
                           >
-                            {item.username}
-                            <UserAvatar
-                              avatarUrl={item.avatar}
-                              username={item.username}
-                            />
-                          </SelectItem>
-                        ))}
-                      </InfiniteScroll>
+                            {items.map(({ id, avatar, username }) => (
+                              <div
+                                className="flex justify-between p-1 hover:bg-muted"
+                                key={id}
+                                onClick={() => {
+                                  form.setValue("userId", id);
+                                }}
+                              >
+                                <div className="flex flex-row gap-2">
+                                  <UserAvatar
+                                    avatarUrl={avatar}
+                                    username={username}
+                                  />
+                                  {username}
+                                </div>
+
+                                <Check
+                                  className={cn(
+                                    id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </InfiniteScroll>
+                      </div>
                     </div>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage className="text-right" />
               </FormItem>
             )}
           />

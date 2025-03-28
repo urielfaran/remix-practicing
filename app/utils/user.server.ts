@@ -296,6 +296,9 @@ export async function getUsers({
   }
   return await prisma.user.findMany({
     where: { ...where },
+    include: {
+      UserBoardRelation: true,
+    },
     skip: usersInPage * page,
     take: usersInPage,
   });

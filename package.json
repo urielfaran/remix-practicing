@@ -39,6 +39,7 @@
     "@react-router/node": "^7.0.0",
     "@react-router/serve": "^7.0.0",
     "@remix-run/react": "^2.15.3",
+    "@tanstack/react-table": "^8.21.2",
     "@types/node": "^22.10.5",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",

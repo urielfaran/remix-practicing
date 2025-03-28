@@ -14,7 +14,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const result = userParamsSchema.safeParse(urlParams);
 
   if (!result.success) {
-    console.log(result.error.errors, result.data);
+    console.log(result.error);
     return data(result.error);
   }
 
@@ -25,7 +25,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const boardId = pathSegments[pathSegments.indexOf("board") + 1];
 
   const { page, userStatus, todoId, search } = result.data;
-
+  console.log(result.data);
   const users = await getUsers({
     boardId: Number(boardId),
     userId: Number(userId),
@@ -34,7 +34,6 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     todoId,
     search,
   });
-  // console.log(users);
-
+  console.log(users);
   return { items: users, page };
 }

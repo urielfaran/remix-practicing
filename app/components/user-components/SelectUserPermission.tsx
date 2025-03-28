@@ -10,7 +10,7 @@ import {
 function SelectUserPermission() {
   return (
     <>
-      <SelectTrigger className="min-w-32">
+      <SelectTrigger className="min-w-40">
         <SelectValue placeholder="Select permission" />
       </SelectTrigger>
       <SelectContent>
